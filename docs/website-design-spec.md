@@ -40,38 +40,61 @@ This project is developed via Codex (or similar AI coding agent). Follow increme
    - `category-collapse-curves.jpg` (category chart)
    - `case-study-comparison.jpg` (regular vs tail-aware)
    - `distillation-example.png` (S1-S4 skill cards)
-8. **Do NOT push to GitHub** — only local commits, remote push happens later
+8. **Push after each commit** — commit + push to `gh-pages` branch, wait 1-2 min for deployment
 9. **Chart.js data is hardcoded** — all numbers come from the tables in this document
 10. **tasks.json is placeholder** — use 5-10 sample tasks, full data generated later
+11. **Current branch is `gh-pages`** — do NOT switch to master/main, that branch has benchmark code
+
+### Git Push & Deploy Workflow
+
+After each section is complete, execute the following to deploy:
+
+```bash
+cd D:\codes\tailskill
+git add -A
+git commit -m "feat: <section description>"
+git push origin gh-pages
+```
+
+**Live URL**: https://tailskill-bench.github.io/tailskill/
+- Push 后等待 1-2 分钟，GitHub Pages 会自动构建部署
+- 可以访问上面的 URL 实时查看效果
+- **分支**: 必须是 `gh-pages`，不要 push 到 `master` 或 `main`（那是 benchmark 代码）
 
 ### Codex System Prompt (copy-paste ready)
 
 ```
-You are building a static academic project webpage for the TailSkills paper (EMNLP 2026).
-The paper studies "Tail Knowledge Collapse" — how recursive skill distillation preserves
-common-case knowledge but progressively erodes rare exception-handling knowledge.
+你正在为 TailSkills 论文（EMNLP 2026）开发一个学术宣传网页。
 
-Project directory: D:\codes\tailskill\
-Tech stack: Pure HTML5 + CSS3 + vanilla JavaScript. No frameworks, no build tools.
-External CDN: Chart.js 4.x, Google Fonts (Instrument Serif, DM Sans, JetBrains Mono)
+## 你的任务
 
-Read the design specification at docs/website-design-spec.md for all details.
-Follow the commit strategy in Section 0. One section per commit, test after each.
+读取设计文档 docs/website-design-spec.md，按照其中的 Section 0（Codex Development Workflow）
+逐步开发。这是一份完整的设计规格书，包含配色、字体、9个Section的详细设计、交互规格、
+数据、动画等所有信息。
 
-Key constraints:
-- Light theme is DEFAULT (#fafaf8 bg), dark mode is toggleable
-- All colors via CSS custom properties for theme switching
-- Tail accent color: #E2ABB8, Common accent: #B2D9B3 (from the paper's LaTeX)
-- Hero interaction: compression slider S1→S4, tail keywords fade out
-- Chart.js for all data visualizations (collapse curves, retention bars)
-- 208 task gallery with category filters and search (data in data/tasks.json)
-- Mobile responsive, WCAG AA accessible, Lighthouse > 90
+## 关键约束
 
-Do NOT:
-- Use React, Next.js, or any framework
-- Install npm packages or create node_modules
-- Push to any remote repository
-- Use AI-generated generic aesthetics (Inter font, purple gradients, etc.)
+1. **技术栈**: 纯 HTML5 + CSS3 + vanilla JavaScript，无框架无构建工具
+2. **外部CDN**: Chart.js 4.x, Google Fonts (Instrument Serif, DM Sans, JetBrains Mono)
+3. **亮色主题为默认**（#fafaf8 暖白背景），暗色可切换
+4. **所有颜色用 CSS 变量**，便于主题切换
+5. **图片已就位** 在 static/images/ 下，使用设计文档中的文件名
+6. **按 Section 0 的 commit 策略**，一个 section 一个 commit
+7. **每次 commit 后必须 push**:
+   cd D:\codes\tailskill
+   git add -A
+   git commit -m "feat: <section描述>"
+   git push origin gh-pages
+8. **当前分支是 gh-pages**，不要切换到 master/main（那是 benchmark 代码）
+9. **不要使用 npm 或任何包管理器**，纯静态站点
+10. **Chart.js 数据直接硬编码**，数字全部来自设计文档中的表格
+11. **不要使用 AI 通用美学**（Inter字体、紫色渐变等），按照设计文档的字体和配色执行
+12. **push 后等 1-2 分钟**，访问 https://tailskill-bench.github.io/tailskill/ 验证效果
+
+## 立即开始
+
+先读取 docs/website-design-spec.md 完整了解设计文档，然后从 Commit 1（HTML骨架）
+开始执行。每完成一个 section，commit + push，然后继续下一个。
 ```
 
 ---
