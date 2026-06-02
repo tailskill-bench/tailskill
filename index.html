@@ -14,7 +14,7 @@
   <body>
     <a class="skip-link" href="#main">Skip to content</a>
 
-    <header class="site-header" data-commit-marker="commit-6-main-results">
+    <header class="site-header" data-commit-marker="commit-7-ablation-retention">
       <nav class="site-nav" aria-label="Primary navigation">
         <a class="brand" href="#hero" aria-label="TailSkills home">TailSkills</a>
         <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-links">
@@ -383,7 +383,68 @@
         <div class="section-inner">
           <p class="section-kicker">Retention Analysis</p>
           <h2 id="ablation-title">Ablation Studies</h2>
-          <p class="section-placeholder">Retention chart, findings, and deletion ablation callout will be added in Commit 7.</p>
+          <div class="ablation-layout">
+            <article class="chart-panel">
+              <h3>Instruction Retention Across Compression</h3>
+              <div class="chart-wrap">
+                <canvas id="retention-chart" aria-label="Grouped bar chart showing total, regular content, and tail logic retention from S1 to S4." role="img"></canvas>
+              </div>
+            </article>
+
+            <div class="finding-grid" aria-label="Ablation key findings">
+              <article class="finding-card finding-card--tail">
+                <span>Tail Retention at S4</span>
+                <strong>15.7%</strong>
+                <p>versus 48.7% regular content</p>
+              </article>
+              <article class="finding-card finding-card--tail">
+                <span>Complete Tail Loss at S4</span>
+                <strong>67.3%</strong>
+                <p>two thirds of variants lose all tail knowledge</p>
+              </article>
+              <article class="finding-card finding-card--tail">
+                <span>Tail Forgetting Rate</span>
+                <strong>48.0%</strong>
+                <p>tasks that pass at S1 but fail at S2</p>
+              </article>
+              <article class="finding-card finding-card--common">
+                <span>Common Forgetting Rate</span>
+                <strong>3.3%</strong>
+                <p>same depth, nearly zero degradation</p>
+              </article>
+            </div>
+          </div>
+
+          <aside class="deletion-callout">
+            Removing the defensive fragment from S1 makes <strong>0/48</strong> tasks pass, down from <strong>48/48</strong>.
+          </aside>
+
+          <div class="table-wrap compact-table" aria-label="Forgetting rate data">
+            <table class="results-table">
+              <thead>
+                <tr>
+                  <th scope="col">Distribution</th>
+                  <th scope="col">F(2)</th>
+                  <th scope="col">F(3)</th>
+                  <th scope="col">F(4)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th scope="row">Common (Dc)</th>
+                  <td>-3.3%</td>
+                  <td>3.3%</td>
+                  <td>3.3%</td>
+                </tr>
+                <tr class="metric-row">
+                  <th scope="row">Tail (Dt)</th>
+                  <td>48.0%</td>
+                  <td>63.4%</td>
+                  <td>44.6%</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </section>
 
