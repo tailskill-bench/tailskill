@@ -14,7 +14,7 @@
   <body>
     <a class="skip-link" href="#main">Skip to content</a>
 
-    <header class="site-header" data-commit-marker="commit-8-case-study">
+    <header class="site-header" data-commit-marker="commit-9-task-gallery">
       <nav class="site-nav" aria-label="Primary navigation">
         <a class="brand" href="#hero" aria-label="TailSkills home">TailSkills</a>
         <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-links">
@@ -512,7 +512,23 @@
         <div class="section-inner">
           <p class="section-kicker">208 Exception-Heavy Tasks</p>
           <h2 id="task-gallery-title">Task Gallery</h2>
-          <p class="section-placeholder">Search, filters, sample tasks, and expandable cards will be added in Commit 9.</p>
+          <div class="gallery-toolbar" aria-label="Task gallery controls">
+            <label class="search-field">
+              <span class="sr-only">Search tasks</span>
+              <input id="task-search" type="search" placeholder="Search tasks or domains" autocomplete="off">
+            </label>
+            <div class="filter-group" aria-label="Filter by category">
+              <button type="button" class="filter-button is-active" data-filter="all">All</button>
+              <button type="button" class="filter-button filter-button--a" data-filter="A">A: Encode</button>
+              <button type="button" class="filter-button filter-button--b" data-filter="B">B: FileSys</button>
+              <button type="button" class="filter-button filter-button--c" data-filter="C">C: DataQl</button>
+              <button type="button" class="filter-button filter-button--d" data-filter="D">D: Network</button>
+              <button type="button" class="filter-button filter-button--e" data-filter="E">E: Depend</button>
+              <button type="button" class="filter-button filter-button--g" data-filter="G">G: Secure</button>
+            </div>
+          </div>
+          <p class="gallery-count" id="gallery-count" aria-live="polite">Loading sample tasks...</p>
+          <div class="task-grid" id="task-grid" aria-live="polite"></div>
         </div>
       </section>
 

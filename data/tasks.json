@@ -1,0 +1,188 @@
+{
+  "tasks": [
+    {
+      "id": "earthquake-phase-association",
+      "domain": "Seismology",
+      "variants": [
+        {
+          "type": "A1_bom",
+          "category": "A",
+          "category_name": "Data Encoding",
+          "variant_name": "BOM Injection",
+          "fragility": "Med",
+          "results": { "s1": 1.0, "s2": 0.0, "s3": 0.0, "s4": 0.0 }
+        },
+        {
+          "type": "A2_zero_width",
+          "category": "A",
+          "category_name": "Data Encoding",
+          "variant_name": "Zero-width Characters",
+          "fragility": "Med-High",
+          "results": { "s1": 1.0, "s2": 1.0, "s3": 0.0, "s4": 0.0 }
+        },
+        {
+          "type": "D1_dns_jitter",
+          "category": "D",
+          "category_name": "Network / Service",
+          "variant_name": "DNS Jitter",
+          "fragility": "Med-High",
+          "results": { "s1": 1.0, "s2": 0.0, "s3": 0.0, "s4": 1.0 }
+        }
+      ]
+    },
+    {
+      "id": "satellite-cloud-mask",
+      "domain": "Remote Sensing",
+      "variants": [
+        {
+          "type": "C3_extreme_values",
+          "category": "C",
+          "category_name": "Data Quality",
+          "variant_name": "Extreme Values",
+          "fragility": "High",
+          "results": { "s1": 1.0, "s2": 0.0, "s3": 0.0, "s4": 0.0 }
+        },
+        {
+          "type": "B2_output_contamination",
+          "category": "B",
+          "category_name": "File System",
+          "variant_name": "Output Contamination",
+          "fragility": "Med",
+          "results": { "s1": 1.0, "s2": 1.0, "s3": 1.0, "s4": 0.0 }
+        }
+      ]
+    },
+    {
+      "id": "clinical-lab-normalizer",
+      "domain": "Healthcare",
+      "variants": [
+        {
+          "type": "C1_nan_inf",
+          "category": "C",
+          "category_name": "Data Quality",
+          "variant_name": "NaN/Inf Poisoning",
+          "fragility": "High",
+          "results": { "s1": 1.0, "s2": 0.0, "s3": 0.0, "s4": 0.0 }
+        },
+        {
+          "type": "E1_missing_optional_dep",
+          "category": "E",
+          "category_name": "Dependency",
+          "variant_name": "Missing Optional Dep",
+          "fragility": "Med",
+          "results": { "s1": 1.0, "s2": 1.0, "s3": 0.0, "s4": 0.0 }
+        }
+      ]
+    },
+    {
+      "id": "financial-ledger-reconciler",
+      "domain": "Finance",
+      "variants": [
+        {
+          "type": "C2_duplicate_keys",
+          "category": "C",
+          "category_name": "Data Quality",
+          "variant_name": "Duplicate Primary Keys",
+          "fragility": "Low",
+          "results": { "s1": 1.0, "s2": 1.0, "s3": 1.0, "s4": 1.0 }
+        },
+        {
+          "type": "G1_multi_vector",
+          "category": "G",
+          "category_name": "Security",
+          "variant_name": "Multi-vector Attack",
+          "fragility": "High",
+          "results": { "s1": 1.0, "s2": 0.0, "s3": 1.0, "s4": 0.0 }
+        }
+      ]
+    },
+    {
+      "id": "genomics-fastq-qc",
+      "domain": "Bioinformatics",
+      "variants": [
+        {
+          "type": "B1_read_only_output",
+          "category": "B",
+          "category_name": "File System",
+          "variant_name": "Read-only Output Dir",
+          "fragility": "Med",
+          "results": { "s1": 1.0, "s2": 1.0, "s3": 0.0, "s4": 0.0 }
+        },
+        {
+          "type": "A1_bom",
+          "category": "A",
+          "category_name": "Data Encoding",
+          "variant_name": "BOM Injection",
+          "fragility": "Med",
+          "results": { "s1": 1.0, "s2": 0.0, "s3": 0.0, "s4": 0.0 }
+        }
+      ]
+    },
+    {
+      "id": "weather-api-gap-filler",
+      "domain": "Climate",
+      "variants": [
+        {
+          "type": "D2_https_throttling",
+          "category": "D",
+          "category_name": "Network / Service",
+          "variant_name": "HTTPS Connection Throttling",
+          "fragility": "Med-High",
+          "results": { "s1": 1.0, "s2": 0.0, "s3": 0.0, "s4": 1.0 }
+        },
+        {
+          "type": "E2_version_drift",
+          "category": "E",
+          "category_name": "Dependency",
+          "variant_name": "Library Version Drift",
+          "fragility": "High",
+          "results": { "s1": 1.0, "s2": 1.0, "s3": 0.0, "s4": 0.0 }
+        }
+      ]
+    },
+    {
+      "id": "warehouse-inventory-cleaner",
+      "domain": "Operations",
+      "variants": [
+        {
+          "type": "C4_type_confusion",
+          "category": "C",
+          "category_name": "Data Quality",
+          "variant_name": "Type Confusion",
+          "fragility": "High",
+          "results": { "s1": 1.0, "s2": 0.0, "s3": 0.0, "s4": 0.0 }
+        },
+        {
+          "type": "G2_security_fallback",
+          "category": "G",
+          "category_name": "Security",
+          "variant_name": "Security Fallback",
+          "fragility": "High",
+          "results": { "s1": 1.0, "s2": 0.0, "s3": 0.0, "s4": 0.0 }
+        }
+      ]
+    },
+    {
+      "id": "astronomy-transient-matcher",
+      "domain": "Astronomy",
+      "variants": [
+        {
+          "type": "A2_zero_width",
+          "category": "A",
+          "category_name": "Data Encoding",
+          "variant_name": "Zero-width Characters",
+          "fragility": "Med-High",
+          "results": { "s1": 1.0, "s2": 0.0, "s3": 0.0, "s4": 0.0 }
+        },
+        {
+          "type": "D1_dns_jitter",
+          "category": "D",
+          "category_name": "Network / Service",
+          "variant_name": "DNS Jitter",
+          "fragility": "Med-High",
+          "results": { "s1": 1.0, "s2": 1.0, "s3": 0.0, "s4": 1.0 }
+        }
+      ]
+    }
+  ]
+}
