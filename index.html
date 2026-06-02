@@ -14,7 +14,7 @@
   <body>
     <a class="skip-link" href="#main">Skip to content</a>
 
-    <header class="site-header" data-commit-marker="commit-5-benchmark-taxonomy">
+    <header class="site-header" data-commit-marker="commit-6-main-results">
       <nav class="site-nav" aria-label="Primary navigation">
         <a class="brand" href="#hero" aria-label="TailSkills home">TailSkills</a>
         <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-links">
@@ -258,7 +258,124 @@
         <div class="section-inner">
           <p class="section-kicker">Collapse Curves</p>
           <h2 id="main-results-title">Main Results</h2>
-          <p class="section-placeholder">Chart.js curves, data table, and takeaway cards will be added in Commit 6.</p>
+          <div class="chart-grid">
+            <article class="chart-panel">
+              <h3>Overall Tail-Collapse Curve</h3>
+              <div class="chart-wrap">
+                <canvas id="overall-chart" aria-label="Line chart comparing common-case and tail-case pass rates across S1 to S4." role="img"></canvas>
+              </div>
+            </article>
+            <article class="chart-panel">
+              <h3>Category-Specific Collapse</h3>
+              <div class="chart-wrap">
+                <canvas id="category-chart" aria-label="Line chart showing category-specific tail pass rates across S1 to S4." role="img"></canvas>
+              </div>
+            </article>
+          </div>
+
+          <div class="table-wrap" aria-label="Main results pass rates and collapse metrics">
+            <table class="results-table">
+              <thead>
+                <tr>
+                  <th scope="col">Distribution / Category</th>
+                  <th scope="col">S1</th>
+                  <th scope="col">S2</th>
+                  <th scope="col">S3</th>
+                  <th scope="col">S4</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th scope="row">Common-case</th>
+                  <td>50.8%</td>
+                  <td>52.5%</td>
+                  <td>49.2%</td>
+                  <td>49.2%</td>
+                </tr>
+                <tr>
+                  <th scope="row">Tail-case</th>
+                  <td>50.5%</td>
+                  <td>35.4%</td>
+                  <td>23.4%</td>
+                  <td>23.1%</td>
+                </tr>
+                <tr class="metric-row">
+                  <th scope="row">Gap</th>
+                  <td>0.3%</td>
+                  <td>17.1%</td>
+                  <td>25.8%</td>
+                  <td>26.1%</td>
+                </tr>
+                <tr class="metric-row">
+                  <th scope="row">Collapse Index</th>
+                  <td>0.00</td>
+                  <td>0.49</td>
+                  <td>0.64</td>
+                  <td>0.65</td>
+                </tr>
+                <tr class="category-row category-row--a">
+                  <th scope="row">A: Encoding</th>
+                  <td>43.5%</td>
+                  <td>26.0%</td>
+                  <td>17.4%</td>
+                  <td>14.3%</td>
+                </tr>
+                <tr class="category-row category-row--b">
+                  <th scope="row">B: File System</th>
+                  <td>51.7%</td>
+                  <td>38.3%</td>
+                  <td>30.9%</td>
+                  <td>28.3%</td>
+                </tr>
+                <tr class="category-row category-row--c">
+                  <th scope="row">C: Data Quality</th>
+                  <td>39.5%</td>
+                  <td>28.2%</td>
+                  <td>17.6%</td>
+                  <td>5.1%</td>
+                </tr>
+                <tr class="category-row category-row--d">
+                  <th scope="row">D: Network</th>
+                  <td>48.4%</td>
+                  <td>34.3%</td>
+                  <td>14.3%</td>
+                  <td>34.3%</td>
+                </tr>
+                <tr class="category-row category-row--e">
+                  <th scope="row">E: Dependency</th>
+                  <td>81.8%</td>
+                  <td>59.1%</td>
+                  <td>40.0%</td>
+                  <td>45.5%</td>
+                </tr>
+                <tr class="category-row category-row--g">
+                  <th scope="row">G: Multi-vector</th>
+                  <td>66.7%</td>
+                  <td>33.3%</td>
+                  <td>50.0%</td>
+                  <td>0.0%</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="takeaway-grid" aria-label="Main result takeaways">
+            <article class="takeaway-card">
+              <strong>27.4pp Drop</strong>
+              <span>Tail-case: 50.5% to 23.1%</span>
+              <p>54% relative degradation</p>
+            </article>
+            <article class="takeaway-card">
+              <strong>CI = 0.65</strong>
+              <span>at S4</span>
+              <p>Tail degrades roughly 2x faster than common-case.</p>
+            </article>
+            <article class="takeaway-card">
+              <strong>0.3% Gap</strong>
+              <span>at S1 baseline</span>
+              <p>Oracle-verified variants are solvable before compression.</p>
+            </article>
+          </div>
         </div>
       </section>
 
@@ -295,6 +412,7 @@
       </section>
     </main>
 
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.6/dist/chart.umd.min.js" defer></script>
     <script src="static/js/main.js" defer></script>
   </body>
 </html>
