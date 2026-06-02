@@ -14,7 +14,7 @@
   <body>
     <a class="skip-link" href="#main">Skip to content</a>
 
-    <header class="site-header" data-commit-marker="commit-7-ablation-retention">
+    <header class="site-header" data-commit-marker="commit-8-case-study">
       <nav class="site-nav" aria-label="Primary navigation">
         <a class="brand" href="#hero" aria-label="TailSkills home">TailSkills</a>
         <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-links">
@@ -452,7 +452,59 @@
         <div class="section-inner">
           <p class="section-kicker">Regular vs Tail-Aware</p>
           <h2 id="case-study-title">Case Study</h2>
-          <p class="section-placeholder">Comparison image and hover emphasis will be added in Commit 8.</p>
+          <figure class="image-figure case-figure">
+            <div class="image-frame">
+              <img src="static/images/case-study-comparison.jpg" alt="Comparison of regular distillation dropping extreme value handling and tail-aware distillation preserving it." width="2085" height="1280" loading="lazy">
+            </div>
+            <figcaption>
+              A C4 tail variant exposes the difference between preserving the workflow and preserving the exception clause.
+            </figcaption>
+          </figure>
+
+          <div class="case-comparison" aria-label="Regular distillation and tail-aware distillation comparison">
+            <article class="case-panel case-panel--regular">
+              <h3>Regular Distillation</h3>
+              <dl>
+                <div>
+                  <dt>Keeps</dt>
+                  <dd>Core workflow</dd>
+                </div>
+                <div>
+                  <dt>Drops</dt>
+                  <dd>Extreme value handling</dd>
+                </div>
+                <div>
+                  <dt>Result</dt>
+                  <dd>Heat = 85.94%</dd>
+                </div>
+                <div>
+                  <dt>Verifier</dt>
+                  <dd class="verdict verdict--fail">FAIL</dd>
+                </div>
+              </dl>
+            </article>
+            <article class="case-panel case-panel--aware">
+              <h3>Tail-Aware Distillation</h3>
+              <dl>
+                <div>
+                  <dt>Keeps</dt>
+                  <dd>Core workflow</dd>
+                </div>
+                <div>
+                  <dt>Keeps</dt>
+                  <dd>Extreme value handling</dd>
+                </div>
+                <div>
+                  <dt>Result</dt>
+                  <dd>Heat = 49.66%</dd>
+                </div>
+                <div>
+                  <dt>Verifier</dt>
+                  <dd class="verdict verdict--pass">PASS</dd>
+                </div>
+              </dl>
+            </article>
+          </div>
         </div>
       </section>
 

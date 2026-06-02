@@ -729,6 +729,102 @@ h3 {
   min-width: 520px;
 }
 
+.case-figure {
+  max-width: 980px;
+}
+
+.case-comparison {
+  display: grid;
+  gap: 1rem;
+  margin-top: 1.4rem;
+}
+
+.case-panel {
+  min-height: 20rem;
+  padding: 1.1rem;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.case-panel:hover,
+.case-panel:focus-within {
+  transform: translateY(-2px);
+  box-shadow: 0 24px 60px var(--shadow-color);
+}
+
+.case-panel--regular {
+  border-color: color-mix(in srgb, var(--accent-tail) 52%, var(--border));
+}
+
+.case-panel--regular:hover,
+.case-panel--regular:focus-within {
+  border-color: var(--accent-tail);
+}
+
+.case-panel--aware {
+  border-color: color-mix(in srgb, var(--accent-common) 52%, var(--border));
+}
+
+.case-panel--aware:hover,
+.case-panel--aware:focus-within {
+  border-color: var(--accent-common);
+}
+
+.case-panel h3 {
+  margin-bottom: 1rem;
+}
+
+.case-panel dl {
+  display: grid;
+  gap: 0.8rem;
+  margin: 0;
+}
+
+.case-panel dl div {
+  display: grid;
+  grid-template-columns: 7rem minmax(0, 1fr);
+  gap: 0.8rem;
+  align-items: baseline;
+  padding-bottom: 0.8rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.case-panel dt {
+  color: var(--text-secondary);
+  font-family: var(--font-code);
+  font-size: 0.78rem;
+  text-transform: uppercase;
+}
+
+.case-panel dd {
+  margin: 0;
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.verdict {
+  display: inline-flex;
+  width: fit-content;
+  padding: 0.18rem 0.48rem;
+  font-family: var(--font-code);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+}
+
+.verdict--fail {
+  color: var(--accent-tail);
+  background: color-mix(in srgb, var(--accent-tail) 14%, transparent);
+  border-color: color-mix(in srgb, var(--accent-tail) 70%, var(--border));
+}
+
+.verdict--pass {
+  color: color-mix(in srgb, var(--accent-common) 70%, var(--text-primary));
+  background: color-mix(in srgb, var(--accent-common) 18%, transparent);
+  border-color: color-mix(in srgb, var(--accent-common) 70%, var(--border));
+}
+
 @keyframes detail-open {
   from {
     opacity: 0;
@@ -1056,6 +1152,10 @@ h3 {
   }
 
   .finding-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .case-comparison {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
