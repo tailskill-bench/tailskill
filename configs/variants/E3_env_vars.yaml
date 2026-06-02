@@ -1,0 +1,28 @@
+variant_id: E3_env_vars
+display_name: "Environment Variable Poisoning"
+category: dependency_runtime
+taxonomy_ref: "E3"
+
+description: |
+  Set LANG=C LC_ALL=C (breaking UTF-8 locale) and HOME=/nonexistent.
+  Tests whether skill explicitly specifies encoding parameters and uses
+  os.environ.get() with safe defaults instead of relying on locale.
+
+recovery_mechanism: "os.environ.get('HOME', '/root') + explicit encoding='utf-8'"
+
+preconditions:
+  uses_env_vars: true
+
+injection:
+  layer: dockerfile
+
+dockerfile_append: |
+  ENV LANG=C
+  ENV LC_ALL=C
+  ENV HOME=/nonexistent
+  RUN mkdir -p /nonexistent 2>/dev/null || true
+
+extra_test: test_output_file_exists
+
+expected_failure_mode: CRASH
+failure_description: "UnicodeDecodeError from LANG=C defaulting to ASCII, or FileNotFoundError from invalid HOME"

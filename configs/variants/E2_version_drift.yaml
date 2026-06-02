@@ -1,0 +1,29 @@
+variant_id: E2_version_drift
+display_name: "Library Version API Drift"
+category: dependency_runtime
+taxonomy_ref: "E2"
+
+description: |
+  Downgrade a key library (e.g. pandas 2.x → 1.5.x, openpyxl 3.1 → 3.0)
+  where API surface has changed (e.g. DataFrame.append removed in 2.x).
+  Tests whether skill has version-conditional code paths.
+
+recovery_mechanism: "hasattr(pd.DataFrame, 'append') branching for version compat"
+
+preconditions:
+  has_version_sensitive_deps: true
+
+injection:
+  layer: dockerfile
+  params:
+    downgrades:
+      - "pandas==1.5.3"
+      - "openpyxl==3.0.10"
+
+dockerfile_append: |
+  RUN pip install --break-system-packages --force-reinstall pandas==1.5.3 openpyxl==3.0.10 2>/dev/null || true
+
+extra_test: test_output_file_exists
+
+expected_failure_mode: CRASH
+failure_description: "AttributeError when calling methods that don't exist in older library versions"

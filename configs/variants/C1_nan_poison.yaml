@@ -1,0 +1,31 @@
+variant_id: C1_nan_poison
+display_name: "NaN/Inf Poisoning"
+category: data_boundary
+taxonomy_ref: "C1"
+
+description: |
+  Inject 2% NaN and 0.5% Inf into numeric columns.
+  Tests whether skill has dropna/fillna/isfinite defense.
+
+recovery_mechanism: "df = df[np.isfinite(df[col])] or df[col].fillna(0)"
+
+preconditions:
+  required_file_types: [".csv", ".xlsx", ".tsv"]
+  required_column_types: ["numeric"]
+  min_data_rows: 50
+
+injection:
+  layer: data
+  script_function: nan_inf
+  params:
+    nan_ratio: 0.02
+    inf_ratio: 0.005
+
+dockerfile_append: |
+  COPY _tail_inject.py /tmp/_tail_inject.py
+  RUN python3 /tmp/_tail_inject.py nan_inf {target_file} {col_idx}
+
+extra_test: test_no_nan_in_numeric_output
+
+expected_failure_mode: SILENT
+failure_description: "NaN propagates through aggregation chain, silently corrupting all results"

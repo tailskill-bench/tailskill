@@ -1,0 +1,25 @@
+variant_id: H2_large_file
+display_name: "Large File Output Integrity"
+category: output_format
+taxonomy_ref: "H2"
+
+description: |
+  Add test assertions checking output file tail integrity — verifying
+  the last N rows exist, total row count matches expected, and no
+  truncation occurred. Tests whether skill uses flush()/fsync() and
+  proper buffered writing for large outputs.
+
+recovery_mechanism: "f.flush() + os.fsync(f.fileno()) after writing; with-statement for cleanup"
+
+preconditions:
+  output_could_be_large: true
+
+injection:
+  layer: test
+
+dockerfile_append: ""
+
+extra_test: test_output_tail_integrity
+
+expected_failure_mode: SILENT
+failure_description: "Output file is truncated at end — missing last rows due to unflushed buffer on abnormal exit"

@@ -1,0 +1,30 @@
+variant_id: E1_missing_dep
+display_name: "Optional Dependency Removed"
+category: dependency_runtime
+taxonomy_ref: "E1"
+
+description: |
+  Uninstall non-core optional dependencies (e.g. lxml, chardet, beautifulsoup4)
+  that have stdlib fallbacks. Tests whether skill has try-import-except with
+  graceful fallback paths.
+
+recovery_mechanism: "try: import lxml; except ImportError: use html.parser fallback"
+
+preconditions:
+  has_optional_deps: true
+
+injection:
+  layer: dockerfile
+  params:
+    deps:
+      - lxml
+      - chardet
+      - cchardet
+
+dockerfile_append: |
+  RUN pip uninstall -y lxml chardet cchardet 2>/dev/null || true
+
+extra_test: test_output_file_exists
+
+expected_failure_mode: CRASH
+failure_description: "ImportError when skill directly imports optional dependency without try-except fallback"

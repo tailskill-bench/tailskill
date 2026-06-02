@@ -1,0 +1,29 @@
+variant_id: G1_multi_vector
+display_name: "Multi-Vector Attack Surface"
+category: security_specific
+taxonomy_ref: "G1"
+
+description: |
+  Add a second exploit vector to security-fix tasks (e.g. SSH subsystem
+  request alongside the exec request CVE). Tests whether skill patches
+  all message types at the authentication check layer rather than only
+  the single most obvious exploit path.
+
+recovery_mechanism: "Unified authentication check at message dispatch layer for ALL message types"
+
+preconditions:
+  task_type: security_fix
+  has_multiple_attack_surfaces: true
+
+injection:
+  layer: test
+  custom_inject: true
+
+dockerfile_append: |
+  # Additional exploit payload for secondary attack vector
+  COPY _multi_vector_exploit.py /tmp/_multi_vector_exploit.py
+
+extra_test: test_secondary_vector_blocked
+
+expected_failure_mode: SILENT
+failure_description: "Only the primary exploit is patched; secondary attack vector (e.g. subsystem request) bypasses fix undetected"

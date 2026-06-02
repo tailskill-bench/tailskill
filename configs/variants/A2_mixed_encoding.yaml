@@ -1,0 +1,27 @@
+variant_id: A2_mixed_encoding
+display_name: "Mixed Encoding Contamination"
+category: data_encoding
+taxonomy_ref: "A2"
+
+description: |
+  Inject Latin-1 characters into non-critical text fields (place names, descriptions).
+  Tests whether skill uses chardet detection or errors='replace' defense.
+
+recovery_mechanism: "open(f, encoding='utf-8', errors='replace') or chardet.detect()"
+
+preconditions:
+  required_file_types: [".csv", ".xlsx", ".txt"]
+  has_text_columns: true
+
+injection:
+  layer: data
+  script_function: mixed_encoding
+
+dockerfile_append: |
+  COPY _tail_inject.py /tmp/_tail_inject.py
+  RUN python3 /tmp/_tail_inject.py mixed_encoding {target_file} {text_col_idx}
+
+extra_test: test_output_file_exists
+
+expected_failure_mode: CRASH
+failure_description: "UnicodeDecodeError when reading file with strict UTF-8 mode"

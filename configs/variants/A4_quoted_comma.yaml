@@ -1,0 +1,27 @@
+variant_id: A4_quoted_comma
+display_name: "RFC 4180 Quoted Comma Fields"
+category: data_encoding
+taxonomy_ref: "A4"
+
+description: |
+  Inject properly-quoted fields containing commas into CSV text columns.
+  File remains RFC 4180 compliant. Fails only if skill uses naive split(',').
+
+recovery_mechanism: "csv.reader() or pd.read_csv() — both handle quoted fields by default"
+
+preconditions:
+  required_file_types: [".csv"]
+  has_text_columns: true
+
+injection:
+  layer: data
+  script_function: quoted_comma
+
+dockerfile_append: |
+  COPY _tail_inject.py /tmp/_tail_inject.py
+  RUN python3 /tmp/_tail_inject.py quoted_comma {target_file} {text_col_idx}
+
+extra_test: test_output_file_exists
+
+expected_failure_mode: CRASH
+failure_description: "line.split(',') produces wrong field count; IndexError or data misalignment"

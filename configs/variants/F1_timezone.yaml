@@ -1,0 +1,27 @@
+variant_id: F1_timezone
+display_name: "Timezone Shift Attack"
+category: timing_concurrency
+taxonomy_ref: "F1"
+
+description: |
+  Change container timezone from UTC to Asia/Kolkata (UTC+5:30).
+  Tests whether skill uses timezone-aware datetime operations
+  (datetime.now(timezone.utc)) instead of naive datetime.now().
+
+recovery_mechanism: "datetime.now(timezone.utc) or explicit tz_localize/tz_convert"
+
+preconditions:
+  has_datetime_operations: true
+
+injection:
+  layer: dockerfile
+
+dockerfile_append: |
+  RUN ln -sf /usr/share/zoneinfo/Asia/Kolkata /etc/localtime
+  ENV TZ=Asia/Kolkata
+  RUN echo "Asia/Kolkata" > /etc/timezone
+
+extra_test: test_output_file_exists
+
+expected_failure_mode: SILENT
+failure_description: "datetime.now() returns IST (+5:30); date comparisons cross day boundaries silently producing wrong results"

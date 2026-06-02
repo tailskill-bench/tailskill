@@ -1,0 +1,25 @@
+variant_id: G2_fix_regression
+display_name: "Security Fix Regression Test"
+category: security_specific
+taxonomy_ref: "G2"
+
+description: |
+  Add test assertions verifying that legitimate operations still work
+  after the security fix is applied. Tests whether skill applies
+  a precise fix (only blocking unauthenticated access) rather than
+  an overly aggressive patch that breaks legitimate functionality.
+
+recovery_mechanism: "Precise conditional fix: reject only unauthenticated requests, allow authenticated ones"
+
+preconditions:
+  task_type: security_fix
+
+injection:
+  layer: test
+
+dockerfile_append: ""
+
+extra_test: test_legitimate_operations_pass
+
+expected_failure_mode: SILENT
+failure_description: "Overly aggressive fix blocks legitimate authenticated operations alongside exploits"

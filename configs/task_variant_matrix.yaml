@@ -1,0 +1,679 @@
+# Task × Variant Applicability Matrix
+# Defines which variants apply to which tasks and with what parameters.
+
+tasks:
+  sales-pivot-analysis:
+    data_files:
+      - path: "environment/income.xlsx"
+        numeric_columns: [3, 4, 5]
+        text_columns: [1, 2]
+        key_column: 0
+    output_file: "/root/demographic_analysis.xlsx"
+    applicable_variants:
+      - C1_nan_poison:     { target_file: "/root/income.xlsx", col_idx: 4 }
+      - C5_type_confusion: { target_file: "/root/income.xlsx", col_idx: 4 }
+      - C3_duplicate_keys: { target_file: "/root/income.xlsx", key_col_idx: 0 }
+      - C4_extremes:       { target_file: "/root/income.xlsx", col_idx: 3 }
+      - A1_bom:            { target_file: "/root/income.xlsx" }
+      - A3_zero_width:     { target_file: "/root/income.xlsx", col_idx: 4 }
+      - B1_readonly_output: {}
+      - B3_dirty_output:   { output_file: "demographic_analysis.xlsx" }
+      - S1_column_rename:  { target_file: "/root/income.xlsx" }
+      - S2_column_reorder: { target_file: "/root/income.xlsx" }
+
+  fix-erlang-ssh-cve:
+    applicable_variants:
+      - G1_multi_vector:    {}
+      - G2_fix_regression:  {}
+
+  software-dependency-audit:
+    applicable_variants:
+      - D1_dns_jitter:         {}
+      - D2_rate_limit:         {}
+      - D3_connection_delay:   {}
+      - E1_missing_dep:        { dep: "packaging" }
+
+  react-performance-debugging:
+    applicable_variants:
+      - E1_missing_dep:       { dep: "tailwindcss" }
+      - E2_version_drift:      { package: "next", old_version: "14.0.0" }
+      - B1_readonly_output:    {}
+
+  organize-messy-files:
+    applicable_variants:
+      - A2_mixed_encoding: { target_file: "/root/files/*.pdf", text_col_idx: 0 }
+      - B1_readonly_output: {}
+
+  earthquake-phase-association:
+    data_files:
+      - path: "environment/data/stations.csv"
+        numeric_columns: [4, 5, 6, 7]  # longitude, latitude, elevation_m, response
+        text_columns: [0, 1, 2, 3]     # network, station, location, channel
+        key_column: 1                   # station
+    output_file: "/root/results.csv"
+    applicable_variants:
+      - A1_bom:            { target_file: "/root/data/stations.csv" }
+      - A3_zero_width:     { target_file: "/root/data/stations.csv", col_idx: 6 }
+      - B1_readonly_output: {}
+      - B3_dirty_output:   { output_file: "results.csv" }
+      - C1_nan_poison:     { target_file: "/root/data/stations.csv", col_idx: 6 }
+      - C3_duplicate_keys: { target_file: "/root/data/stations.csv", key_col_idx: 1 }
+      - C4_extremes:       { target_file: "/root/data/stations.csv", col_idx: 6 }
+
+  powerlifting-coef-calc:
+    data_files:
+      - path: "environment/openipf_cleaned.xlsx"
+        numeric_columns: [8, 10, 11, 12]
+        text_columns: [0, 1]
+        key_column: 0
+    output_file: "/root/data/openipf.xlsx"
+    applicable_variants:
+      - C1_nan_poison:     { target_file: "/root/data/openipf.xlsx", col_idx: 8 }
+      - C3_duplicate_keys: { target_file: "/root/data/openipf.xlsx", key_col_idx: 0 }
+      - C4_extremes:       { target_file: "/root/data/openipf.xlsx", col_idx: 10 }
+      - C5_type_confusion: { target_file: "/root/data/openipf.xlsx", col_idx: 8 }
+      - B1_readonly_output: {}
+
+  citation-check:
+    data_files:
+      - path: "environment/test.bib"
+        format: bibtex
+    output_file: "/root/answer.json"
+    applicable_variants:
+      - A1_bom:            { target_file: "/root/test.bib" }
+      - A3_zero_width:     { target_file: "/root/test.bib", mode: bibtex }
+      - B1_readonly_output: {}
+
+  weighted-gdp-calc:
+    data_files:
+      - path: "environment/gdp.xlsx"
+        numeric_columns: [4, 5, 6, 7, 8]
+        text_columns: [0, 1]
+        key_column: 1
+    output_file: "/root/gdp.xlsx"
+    applicable_variants:
+      - A1_bom:            { target_file: "/root/gdp.xlsx" }
+      - A3_zero_width:     { target_file: "/root/gdp.xlsx", col_idx: 4 }
+      - B1_readonly_output: {}
+      - B3_dirty_output:   { output_file: "gdp.xlsx" }
+      - C1_nan_poison:     { target_file: "/root/gdp.xlsx", col_idx: 4 }
+      - C4_extremes:       { target_file: "/root/gdp.xlsx", col_idx: 4 }
+      - C5_type_confusion: { target_file: "/root/gdp.xlsx", col_idx: 4 }
+
+  protein-expression-analysis:
+    data_files:
+      - path: "environment/data/protein_expression.xlsx"
+        numeric_columns: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+        text_columns: [0]
+        key_column: 0
+    output_file: "/root/protein_expression.xlsx"
+    applicable_variants:
+      - A1_bom:            { target_file: "/root/protein_expression.xlsx" }
+      - A3_zero_width:     { target_file: "/root/protein_expression.xlsx", col_idx: 4 }
+      - B1_readonly_output: {}
+      - B3_dirty_output:   { output_file: "protein_expression.xlsx" }
+      - C1_nan_poison:     { target_file: "/root/protein_expression.xlsx", col_idx: 4 }
+      - C4_extremes:       { target_file: "/root/protein_expression.xlsx", col_idx: 4 }
+      - C5_type_confusion: { target_file: "/root/protein_expression.xlsx", col_idx: 4 }
+
+  reserves-at-risk-calc:
+    data_files:
+      - path: "environment/test-rar.xlsx"
+        numeric_columns: [2, 3, 4, 5, 6]
+        text_columns: [0, 1]
+        key_column: 0
+    output_file: "/root/output/rar_result.xlsx"
+    applicable_variants:
+      - A1_bom:            { target_file: "/root/data/test-rar.xlsx" }
+      - A3_zero_width:     { target_file: "/root/data/test-rar.xlsx", col_idx: 4 }
+      - B1_readonly_output: {}
+      - B3_dirty_output:   { output_file: "rar_result.xlsx" }
+      - C1_nan_poison:     { target_file: "/root/data/test-rar.xlsx", col_idx: 4 }
+      - C4_extremes:       { target_file: "/root/data/test-rar.xlsx", col_idx: 4 }
+      - C5_type_confusion: { target_file: "/root/data/test-rar.xlsx", col_idx: 4 }
+
+  lake-warming-attribution:
+    data_files:
+      - path: "environment/data/water_temperature.csv"
+        numeric_columns: [1]
+        text_columns: []
+        key_column: 0
+      - path: "environment/data/climate.csv"
+        numeric_columns: [1, 2, 3, 4, 5]
+        text_columns: []
+        key_column: 0
+      - path: "environment/data/land_cover.csv"
+        numeric_columns: [1, 2]
+        text_columns: []
+        key_column: 0
+      - path: "environment/data/hydrology.csv"
+        numeric_columns: [1, 2]
+        text_columns: []
+        key_column: 0
+    output_file: "/root/output/trend_result.csv"
+    applicable_variants:
+      - A1_bom:            { target_file: "/root/data/water_temperature.csv" }
+      - A3_zero_width:     { target_file: "/root/data/water_temperature.csv" }
+      - B1_readonly_output: {}
+      - C1_nan_poison:     { target_file: "/root/data/water_temperature.csv", col_idx: 1 }
+      - C4_extremes:       { target_file: "/root/data/climate.csv", col_idx: 2 }
+
+  xlsx-recover-data:
+    data_files:
+      - path: "environment/nasa_budget_incomplete.xlsx"
+        numeric_columns: [2, 3, 4, 5, 6, 7, 8, 9, 10]
+        text_columns: [0, 1]
+        key_column: 0
+    output_file: "/root/nasa_budget_recovered.xlsx"
+    applicable_variants:
+      - A1_bom:            { target_file: "/root/nasa_budget_incomplete.xlsx" }
+      - A3_zero_width:     { target_file: "/root/nasa_budget_incomplete.xlsx", col_idx: 4 }
+      - B1_readonly_output: {}
+      - B3_dirty_output:   { output_file: "nasa_budget_recovered.xlsx" }
+      - C1_nan_poison:     { target_file: "/root/nasa_budget_incomplete.xlsx", col_idx: 4 }
+      - C4_extremes:       { target_file: "/root/nasa_budget_incomplete.xlsx", col_idx: 4 }
+      - C5_type_confusion: { target_file: "/root/nasa_budget_incomplete.xlsx", col_idx: 4 }
+
+  econ-detrending-correlation:
+    data_files:
+      - path: "environment/CPI.xlsx"
+        numeric_columns: [0, 1]
+        key_column: 0
+    output_file: "/root/answer.txt"
+    applicable_variants:
+      - A1_bom:            { target_file: "/root/CPI.xlsx" }
+      - A3_zero_width:     { target_file: "/root/CPI.xlsx", col_idx: 1 }
+      - B1_readonly_output: {}
+      - E1_missing_dep:     { dep: "statsmodels" }
+
+  adaptive-cruise-control:
+    data_files:
+      - path: "environment/sensor_data.csv"
+        numeric_columns: [1, 2, 3]
+        text_columns: []
+        key_column: 0
+    output_file: "/root/simulation_results.csv"
+    applicable_variants:
+      - A1_bom:            { target_file: "/root/sensor_data.csv" }
+      - A3_zero_width:     { target_file: "/root/sensor_data.csv", col_idx: 3 }
+      - B1_readonly_output: {}
+      - B3_dirty_output:   { output_file: "simulation_results.csv" }
+
+  dapt-intrusion-detection:
+    data_files:
+      - path: "environment/network_stats_template.csv"
+        numeric_columns: [1]
+        text_columns: [0]
+        key_column: 0
+    output_file: "/root/network_stats.csv"
+    applicable_variants:
+      - A1_bom:            { target_file: "/root/network_stats.csv" }
+      - A3_zero_width:     { target_file: "/root/network_stats.csv", col_idx: 0 }
+      - B1_readonly_output: {}
+      - E1_missing_dep:    { dep: "scapy" }
+
+  lab-unit-harmonization:
+    data_files:
+      - path: "environment/data/ckd_lab_data.csv"
+        numeric_columns: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62]
+        text_columns: []
+        key_column: 0
+    output_file: "/root/ckd_lab_data_harmonized.csv"
+    applicable_variants:
+      - A1_bom:            { target_file: "/root/environment/data/ckd_lab_data.csv" }
+      - A3_zero_width:     { target_file: "/root/environment/data/ckd_lab_data.csv" }
+      - B1_readonly_output: {}
+      - C1_nan_poison:     { target_file: "/root/environment/data/ckd_lab_data.csv", col_idx: 1 }
+      - C4_extremes:       { target_file: "/root/environment/data/ckd_lab_data.csv", col_idx: 1 }
+      - C5_type_confusion: { target_file: "/root/environment/data/ckd_lab_data.csv", col_idx: 1 }
+
+
+  grid-dispatch-operator:
+    data_files:
+      - path: "environment/network.json"
+        format: json
+        numeric_columns: []
+        key_column: null
+    output_file: "/root/report.json"
+    applicable_variants:
+      - B1_readonly_output: {}
+      - D1_dns_jitter: {}
+      - D2_rate_limit: {}
+      - E1_missing_dep: { dep: "cvxpy" }
+
+  energy-market-pricing:
+    data_files:
+      - path: "environment/network.json"
+        format: json
+        numeric_columns: []
+        key_column: null
+    output_file: "/root/report.json"
+    applicable_variants:
+      - B1_readonly_output: {}
+      - E1_missing_dep:     { dep: "cvxpy" }
+
+  energy-ac-optimal-power-flow:
+    data_files:
+      - path: "environment/network.json"
+        format: json
+        numeric_columns: []
+        key_column: null
+    output_file: "/root/report.json"
+    applicable_variants:
+      - B1_readonly_output: {}
+      - E1_missing_dep:     { dep: "casadi" }
+
+  hvac-control:
+    data_files:
+      - path: "environment/room_config.json"
+        format: json
+        numeric_columns: []
+        key_column: null
+    output_file: "/root/metrics.json"
+    applicable_variants:
+      - B1_readonly_output: {}
+      - E1_missing_dep:     { dep: "scipy" }
+
+  r2r-mpc-control:
+    data_files:
+      - path: "environment/system_config.json"
+        format: json
+        numeric_columns: []
+        key_column: null
+    output_file: "/root/metrics.json"
+    applicable_variants:
+      - B1_readonly_output: {}
+      - E1_missing_dep:     { dep: "scipy" }
+
+  enterprise-information-search:
+    data_files:
+      - path: "environment/DATA"
+        format: directory
+        numeric_columns: []
+        key_column: null
+    output_file: "/root/answer.json"
+    applicable_variants:
+      - B1_readonly_output: {}
+      - A3_zero_width: {}
+
+  earthquake-plate-calculation:
+    data_files:
+      - path: "environment/earthquakes_2024.json"
+        format: json
+        numeric_columns: []
+        key_column: null
+    output_file: "/root/answer.json"
+    applicable_variants:
+      - B1_readonly_output: {}
+      - B3_dirty_output: {}
+      - D1_dns_jitter: {}
+      - D2_rate_limit: {}
+      - E1_missing_dep: { dep: "geopandas" }
+
+  manufacturing-equipment-maintenance:
+    data_files:
+      - path: "environment/data/mes_log.csv"
+        format: csv
+        numeric_columns: []
+        key_column: null
+      - path: "environment/data/thermocouples.csv"
+        format: csv
+        numeric_columns: []
+        key_column: null
+    output_file: "/app/output"
+    applicable_variants:
+      - B1_readonly_output: {}
+      - A1_bom: { target_file: "/app/data/mes_log.csv" }
+      - A3_zero_width: { target_file: "/app/data/mes_log.csv" }
+      - C1_nan_poison: { target_file: "/app/data/thermocouples.csv", col_idx: 7 }
+
+  dialogue-parser:
+    data_files:
+      - path: "environment/script.txt"
+        format: txt
+        numeric_columns: []
+        key_column: null
+    output_file: "/app/dialogue.json"
+    applicable_variants:
+      - B1_readonly_output: {}
+      - A1_bom: { target_file: "/app/script.txt" }
+      - A3_zero_width: { target_file: "/app/script.txt" }
+
+  sec-financial-report:
+    data_files:
+      - path: "environment/13f-2025-q2.zip"
+        format: zip
+        numeric_columns: []
+        key_column: null
+    output_file: "/root/answers.json"
+    applicable_variants:
+      - B1_readonly_output: {}
+      - D1_dns_jitter: {}
+      - D2_rate_limit: {}
+
+  exoplanet-detection-period:
+    data_files:
+      - path: "environment/data/tess_lc.txt"
+        format: txt
+        numeric_columns: []
+        key_column: null
+    output_file: "/root/period.txt"
+    applicable_variants:
+      - B1_readonly_output: {}
+      - E1_missing_dep:     { dep: "transitleastsquares" }
+
+  mars-clouds-clustering:
+    data_files:
+      - path: "environment/data/citsci_train.csv"
+        format: csv
+        numeric_columns: []
+        key_column: null
+    output_file: "/root/pareto_frontier.csv"
+    applicable_variants:
+      - B1_readonly_output: {}
+      - E1_missing_dep:     { dep: "scikit-learn" }
+
+  flood-risk-analysis:
+    data_files:
+      - path: "environment/data/michigan_stations.txt"
+        format: txt
+        numeric_columns: []
+        key_column: null
+    output_file: "/root/output/flood_results.csv"
+    applicable_variants:
+      - A1_bom:            { target_file: "/root/data/michigan_stations.txt" }
+      - A3_zero_width:     { target_file: "/root/data/michigan_stations.txt" }
+      - B1_readonly_output: {}
+      - E1_missing_dep:     { dep: "dataretrieval" }
+      - D1_dns_jitter:     {}
+      - D2_rate_limit:     {}
+
+  crystallographic-wyckoff-position-analysis:
+    data_files:
+      - path: "environment/*.cif"
+        format: cif
+        numeric_columns: []
+        key_column: null
+    output_file: "/root/workspace/solution.py"
+    applicable_variants:
+      - B1_readonly_output: {}
+      - D1_dns_jitter: {}
+      - D2_rate_limit: {}
+      - E1_missing_dep: { dep: "pymatgen" }
+
+  pptx-reference-formatting:
+    data_files:
+      - path: "environment/Awesome-Agent-Papers.pptx"
+        format: pptx
+        numeric_columns: []
+        key_column: null
+    output_file: "/root/Awesome-Agent-Papers_processed.pptx"
+    applicable_variants:
+      - B1_readonly_output: {}
+      - E1_missing_dep: { dep: "lxml" }
+
+  edit-pdf:
+    data_files:
+      - path: "environment/input/input.pdf"
+        format: pdf
+        numeric_columns: []
+        key_column: null
+    output_file: "/root/output/output.pdf"
+    applicable_variants:
+      - B1_readonly_output: {}
+      - E1_missing_dep:     { dep: "PyMuPDF" }
+
+  paper-anonymizer:
+    data_files:
+      - path: "environment/paper1.pdf"
+        format: pdf
+        numeric_columns: []
+        key_column: null
+    output_file: "/root/redacted/paper1.pdf"
+    applicable_variants:
+      - B1_readonly_output: {}
+      - D1_dns_jitter: {}
+      - D2_rate_limit: {}
+      - E1_missing_dep: { dep: "pymupdf" }
+
+  court-form-filling:
+    data_files:
+      - path: "environment/sc100-blank.pdf"
+        format: pdf
+        numeric_columns: []
+        key_column: null
+    output_file: "/root/sc100-filled.pdf"
+    applicable_variants:
+      - B1_readonly_output: {}
+      - D1_dns_jitter: {}
+      - D2_rate_limit: {}
+      - E1_missing_dep: { dep: "pypdf" }
+
+  exceltable-in-ppt:
+    data_files:
+      - path: "environment/input.pptx"
+        format: pptx
+        numeric_columns: []
+        key_column: null
+    output_file: "/root/results.pptx"
+    applicable_variants:
+      - B1_readonly_output: {}
+      - D1_dns_jitter: {}
+      - D2_rate_limit: {}
+      - E1_missing_dep: { dep: "python-pptx" }
+
+  offer-letter-generator:
+    data_files:
+      - path: "environment/offer_letter_template.docx"
+        format: docx
+        numeric_columns: []
+        key_column: null
+    output_file: "/root/offer_letter_filled.docx"
+    applicable_variants:
+      - B1_readonly_output: {}
+      - A3_zero_width:      {}
+      - E1_missing_dep:     { dep: "python-docx" }
+
+  parallel-tfidf-search:
+    data_files:
+      - path: "environment/workspace/"
+        format: py
+        numeric_columns: []
+        key_column: null
+    output_file: "/root/workspace/parallel_solution.py"
+    applicable_variants:
+      - B1_readonly_output: {}
+
+  azure-bgp-oscillation-route-leak:
+    data_files:
+      - path: "environment/data/"
+        format: json
+        numeric_columns: []
+        key_column: null
+    output_file: "/app/output/solution.json"
+    applicable_variants:
+      - B1_readonly_output: {}
+      - D1_dns_jitter: {}
+      - D2_rate_limit: {}
+
+  manufacturing-fjsp-optimization:
+    data_files:
+      - path: "environment/data/"
+        format: csv
+        numeric_columns: []
+        key_column: null
+    output_file: "/app/output/solution.json"
+    applicable_variants:
+      - B1_readonly_output: {}
+      - A1_bom: { target_file: "/app/data/amazon-purchases-2019-2020_dirty.csv" }
+      - A3_zero_width: { target_file: "/app/data/amazon-purchases-2019-2020_dirty.csv" }
+
+  civ6-adjacency-optimizer:
+    data_files:
+      - path: "environment/data/"
+        format: json
+        numeric_columns: []
+        key_column: null
+    output_file: "/output/scenario_3.json"
+    applicable_variants:
+      - B1_readonly_output: {}
+      - D1_dns_jitter: {}
+      - D2_rate_limit: {}
+
+  manufacturing-codebook-normalization:
+    data_files:
+      - path: "environment/data/"
+        format: csv
+        numeric_columns: []
+        key_column: null
+    output_file: "/app/output/solution.json"
+    applicable_variants:
+      - B1_readonly_output: {}
+
+  data-to-d3:
+    data_files:
+      - path: "environment/data/stock-descriptions.csv"
+        format: csv
+        numeric_columns: [4]
+        key_column: null
+    output_file: "/root/output/index.html"
+    applicable_variants:
+      - B1_readonly_output: {}
+      - A1_bom: { target_file: "/root/data/stock-descriptions.csv" }
+      - A3_zero_width: { target_file: "/root/data/stock-descriptions.csv" }
+      - C1_nan_poison: { target_file: "/root/data/stock-descriptions.csv", col_idx: 4 }
+      - C4_extremes: { target_file: "/root/data/stock-descriptions.csv", col_idx: 4 }
+      - C5_type_confusion: { target_file: "/root/data/stock-descriptions.csv", col_idx: 4 }
+
+  pdf-excel-diff:
+    data_files:
+      - path: "environment/employees_current.xlsx"
+        format: xlsx
+        numeric_columns: []
+        key_column: null
+    output_file: "/root/diff_report.json"
+    applicable_variants:
+      - B1_readonly_output: {}
+      - A3_zero_width: { target_file: "/root/employees_current.xlsx" }
+      - C1_nan_poison: { target_file: "/root/employees_current.xlsx", col_idx: 8 }
+      - C4_extremes: { target_file: "/root/employees_current.xlsx", col_idx: 8 }
+      - C5_type_confusion: { target_file: "/root/employees_current.xlsx", col_idx: 8 }
+      - A1_bom:            { target_file: "/root/employees_current.xlsx" }
+
+  taxonomy-tree-merge:
+    data_files:
+      - path: "environment/data/"
+        format: csv
+        numeric_columns: []
+        key_column: null
+    output_file: "/root/output/unified_taxonomy_full.csv"
+    applicable_variants:
+      - B1_readonly_output: {}
+      - A1_bom: { target_file: "/root/data/amazon_product_categories.csv" }
+      - A3_zero_width: { target_file: "/root/data/amazon_product_categories.csv" }
+
+  trend-anomaly-causal-inference:
+    data_files:
+      - path: "environment/data/"
+        format: csv
+        numeric_columns: []
+        key_column: null
+    output_file: "/app/output"
+    applicable_variants:
+      - B1_readonly_output: {}
+      - A1_bom: { target_file: "/app/data/amazon-purchases-2019-2020_dirty.csv" }
+      - A3_zero_width: { target_file: "/app/data/amazon-purchases-2019-2020_dirty.csv" }
+      - C1_nan_poison: { target_file: "/app/data/amazon-purchases-2019-2020_dirty.csv", col_idx: 2 }
+      - C4_extremes: { target_file: "/app/data/amazon-purchases-2019-2020_dirty.csv", col_idx: 2 }
+
+  gh-repo-analytics:
+    data_files: []
+    output_file: "/app/report.json"
+    applicable_variants:
+      - B1_readonly_output: {}
+      - D1_dns_jitter: {}
+      - D2_rate_limit: {}
+
+  find-topk-similiar-chemicals:
+    data_files:
+      - path: "environment/molecules.pdf"
+        format: pdf
+        numeric_columns: []
+        key_column: null
+    output_file: "/root/workspace/solution.py"
+    applicable_variants:
+      - B1_readonly_output: {}
+      - D1_dns_jitter: {}
+      - D2_rate_limit: {}
+      - E1_missing_dep: { dep: "pubchempy" }
+
+  pg-essay-to-audiobook:
+    data_files: []
+    output_file: "/root/audiobook.mp3"
+    applicable_variants:
+      - D1_dns_jitter: {}
+      - D2_rate_limit: {}
+
+  glm-lake-mendota:
+    data_files:
+      - path: "environment/field_temp_oxy.csv"
+        format: csv
+    output_file: "/root/output/output.nc"
+    applicable_variants:
+      - B1_readonly_output: {}
+      - D1_dns_jitter: {}
+      - D2_rate_limit: {}
+
+  seismic-phase-picking:
+    data_files: []
+    output_file: "/root/results.csv"
+    applicable_variants:
+      - B1_readonly_output: {}
+      - D1_dns_jitter: {}
+      - D2_rate_limit: {}
+
+  setup-fuzzing-py:
+    data_files: []
+    output_file: "/root/fuzz.log"
+    applicable_variants:
+      - B1_readonly_output: {}
+
+  scheduling-email-assistant:
+    data_files: []
+    output_file: "/root/results.json"
+    applicable_variants:
+      - B1_readonly_output: {}
+
+  flink-query:
+    data_files: []
+    output_file: "/root/results.txt"
+    applicable_variants:
+      - B1_readonly_output: {}
+      - D1_dns_jitter: {}
+      - D2_rate_limit: {}
+
+  mhc-layer-impl:
+    data_files: []
+    output_file: "/root/results.json"
+    applicable_variants:
+      - B1_readonly_output: {}
+
+  suricata-custom-exfil:
+    data_files: []
+    output_file: "/root/local.rules"
+    applicable_variants:
+      - G1_multi_vector: {}
+
+  fix-druid-loophole-cve:
+    data_files: []
+    output_file: "/root/patch.diff"
+    applicable_variants:
+      - G1_multi_vector: {}
+      - G2_fix_regression: {}
+
+  fix-visual-stability:
+    data_files: []
+    output_file: "/root/fix.patch"
+    applicable_variants:
+      - E1_missing_dep: { dep: "playwright" }
+      - E2_version_drift: { package: "playwright", old_version: "1.40.0" }

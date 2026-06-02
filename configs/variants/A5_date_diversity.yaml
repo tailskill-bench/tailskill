@@ -1,0 +1,27 @@
+variant_id: A5_date_diversity
+display_name: "Date Format Diversity"
+category: data_encoding
+taxonomy_ref: "A5"
+
+description: |
+  Mix DD/MM/YYYY formatted dates (with day>12 for unambiguity) into a
+  column that primarily uses YYYY-MM-DD. Tests dateutil/dayfirst defense.
+
+recovery_mechanism: "dateutil.parser.parse() with dayfirst=True, or format-aware parsing"
+
+preconditions:
+  required_file_types: [".csv", ".xlsx"]
+  has_date_columns: true
+
+injection:
+  layer: data
+  script_function: date_diversity
+
+dockerfile_append: |
+  COPY _tail_inject.py /tmp/_tail_inject.py
+  RUN python3 /tmp/_tail_inject.py date_diversity {target_file} {date_col_idx}
+
+extra_test: test_output_file_exists
+
+expected_failure_mode: CRASH
+failure_description: "pd.to_datetime(format='%Y-%m-%d') fails on DD/MM/YYYY formatted rows"

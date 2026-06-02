@@ -1,0 +1,25 @@
+variant_id: H1_strict_schema
+display_name: "Strict Output Schema Validation"
+category: output_format
+taxonomy_ref: "H1"
+
+description: |
+  Add test assertions that verify output is a genuine Pivot Table
+  (not static values), has correct sheet names, proper data types,
+  and valid JSON schema where applicable. Tests whether skill produces
+  structurally correct output, not just "close enough" values.
+
+recovery_mechanism: "Use openpyxl PivotTable API; json.dumps with schema; proper worksheet naming"
+
+preconditions:
+  has_structured_output: true
+
+injection:
+  layer: test
+
+dockerfile_append: ""
+
+extra_test: test_output_schema_compliance
+
+expected_failure_mode: SILENT
+failure_description: "Output contains correct values as static data but lacks proper structure (no pivot tables, wrong schema)"

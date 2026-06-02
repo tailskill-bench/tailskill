@@ -1,0 +1,30 @@
+variant_id: D1_dns_jitter
+display_name: "DNS Intermittent Failure"
+category: network_service
+taxonomy_ref: "D1"
+
+description: |
+  Apply 50% random packet drop to DNS queries using iptables.
+  Tests whether skill has retry/tenacity logic for network operations.
+
+recovery_mechanism: "tenacity @retry(stop=stop_after_attempt(3), wait=wait_exponential())"
+
+preconditions:
+  requires_network: true
+
+injection:
+  layer: dockerfile
+
+dockerfile_append: |
+  RUN apt-get update -qq && apt-get install -y -qq iptables iproute2 > /dev/null 2>&1 || true
+  RUN echo '#!/bin/bash\niptables -A OUTPUT -p udp --dport 53 -m statistic --mode random --probability 0.5 -j DROP 2>/dev/null || true' > /usr/local/bin/dns_jitter.sh && \
+      chmod +x /usr/local/bin/dns_jitter.sh
+  # DNS jitter is activated at container startup via entrypoint wrapper
+  RUN echo '#!/bin/bash\n/usr/local/bin/dns_jitter.sh\nexec "$@"' > /usr/local/bin/entrypoint_wrapper.sh && \
+      chmod +x /usr/local/bin/entrypoint_wrapper.sh
+  ENTRYPOINT ["/usr/local/bin/entrypoint_wrapper.sh"]
+
+extra_test: test_output_file_exists
+
+expected_failure_mode: CRASH
+failure_description: "First DNS resolution fails with ConnectionError; no retry logic means immediate abort"

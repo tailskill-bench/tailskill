@@ -1,0 +1,24 @@
+variant_id: B1_readonly_output
+display_name: "Write-Protected Output Directory"
+category: filesystem_state
+taxonomy_ref: "B1"
+
+description: |
+  Set the output directory to read-only (chmod 555).
+  Tests whether skill uses os.makedirs + os.chmod defense.
+
+recovery_mechanism: "os.chmod(dir, 0o755) — Docker runs as root so chmod always works"
+
+preconditions:
+  required_output_dir: true
+
+injection:
+  layer: dockerfile
+
+dockerfile_append: |
+  RUN mkdir -p /root/output && chmod 555 /root/output && chmod 555 /root
+
+extra_test: test_output_file_exists
+
+expected_failure_mode: CRASH
+failure_description: "PermissionError or FileNotFoundError when trying to write output"

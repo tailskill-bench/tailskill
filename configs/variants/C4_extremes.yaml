@@ -1,0 +1,29 @@
+variant_id: C4_extremes
+display_name: "Extreme & Boundary Values"
+category: data_boundary
+taxonomy_ref: "C4"
+
+description: |
+  Inject zero, negative, and -999 values into numeric columns where
+  positive values are semantically required (e.g. population, income).
+
+recovery_mechanism: "df = df[df[col] > 0] or df[col].clip(lower=1)"
+
+preconditions:
+  required_file_types: [".csv", ".xlsx"]
+  required_column_types: ["numeric"]
+
+injection:
+  layer: data
+  script_function: extremes
+  params:
+    n: 3
+
+dockerfile_append: |
+  COPY _tail_inject.py /tmp/_tail_inject.py
+  RUN python3 /tmp/_tail_inject.py extremes {target_file} {col_idx}
+
+extra_test: test_output_file_exists
+
+expected_failure_mode: CRASH
+failure_description: "ZeroDivisionError when dividing by zero value, or negative results corrupt aggregation"

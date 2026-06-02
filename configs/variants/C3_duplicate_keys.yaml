@@ -1,0 +1,30 @@
+variant_id: C3_duplicate_keys
+display_name: "Duplicate Key Collision"
+category: data_boundary
+taxonomy_ref: "C3"
+
+description: |
+  Inject 3 duplicate rows with same primary key but slightly different values.
+  Tests whether skill uses drop_duplicates() or merge validate='one_to_one'.
+
+recovery_mechanism: "df.drop_duplicates(subset=[key_col], keep='first')"
+
+preconditions:
+  required_file_types: [".csv", ".xlsx"]
+  has_key_column: true
+  min_data_rows: 50
+
+injection:
+  layer: data
+  script_function: duplicate_keys
+  params:
+    n_dupes: 3
+
+dockerfile_append: |
+  COPY _tail_inject.py /tmp/_tail_inject.py
+  RUN python3 /tmp/_tail_inject.py duplicate_keys {target_file} {key_col_idx}
+
+extra_test: test_output_file_exists
+
+expected_failure_mode: SILENT
+failure_description: "merge() produces cartesian product on duplicate keys; aggregation totals inflated silently"

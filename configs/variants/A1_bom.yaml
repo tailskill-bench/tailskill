@@ -1,0 +1,26 @@
+variant_id: A1_bom
+display_name: "UTF-8 BOM Injection"
+category: data_encoding
+taxonomy_ref: "A1"
+
+description: |
+  Inject UTF-8 BOM (byte order mark) at the start of CSV/text input files.
+  Tests whether skill uses encoding='utf-8-sig' parameter.
+
+recovery_mechanism: "pd.read_csv(f, encoding='utf-8-sig')"
+
+preconditions:
+  required_file_types: [".csv", ".txt", ".tsv", ".json"]
+
+injection:
+  layer: data
+  script_function: bom
+
+dockerfile_append: |
+  COPY _tail_inject.py /tmp/_tail_inject.py
+  RUN python3 /tmp/_tail_inject.py bom {target_file}
+
+extra_test: test_no_bom_in_output
+
+expected_failure_mode: CRASH
+failure_description: "First column name becomes '\\ufeffcolumn' causing KeyError on access"

@@ -1,0 +1,29 @@
+variant_id: A3_zero_width
+display_name: "Zero-Width Character Injection"
+category: data_encoding
+taxonomy_ref: "A3"
+
+description: |
+  Insert invisible zero-width Unicode characters (U+200B, U+200C, U+200D)
+  into 3% of numeric field values. Visually identical but breaks float parsing.
+
+recovery_mechanism: "unicodedata.category(c) filter to remove Cf/Cc categories"
+
+preconditions:
+  required_file_types: [".csv", ".xlsx"]
+  required_column_types: ["numeric"]
+
+injection:
+  layer: data
+  script_function: zero_width
+  params:
+    ratio: 0.03
+
+dockerfile_append: |
+  COPY _tail_inject.py /tmp/_tail_inject.py
+  RUN python3 /tmp/_tail_inject.py zero_width {target_file} {col_idx}
+
+extra_test: test_output_file_exists
+
+expected_failure_mode: CRASH
+failure_description: "ValueError on float() conversion due to invisible zero-width chars in numeric strings"

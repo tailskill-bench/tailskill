@@ -1,0 +1,27 @@
+variant_id: F2_subprocess_timeout
+display_name: "Subprocess Timeout Missing"
+category: timing_concurrency
+taxonomy_ref: "F2"
+
+description: |
+  Wrap a commonly-invoked tool (e.g. python3) so it injects 30s delay
+  when script name matches a pattern. Tests whether skill sets
+  subprocess.run(timeout=) and has fallback execution paths.
+
+recovery_mechanism: "subprocess.run(..., timeout=60, input='') + try-except fallback"
+
+preconditions:
+  uses_subprocess: true
+
+injection:
+  layer: dockerfile
+
+dockerfile_append: |
+  RUN cp /usr/bin/python3 /usr/bin/python3.real && \
+      printf '#!/bin/bash\nif echo "$@" | grep -q "process\\|transform\\|convert"; then\n  sleep 30 && /usr/bin/python3.real "$@"\nelse\n  /usr/bin/python3.real "$@"\nfi\n' > /usr/bin/python3 && \
+      chmod +x /usr/bin/python3
+
+extra_test: test_output_file_exists
+
+expected_failure_mode: HANG
+failure_description: "subprocess.run() without timeout blocks indefinitely on delayed process; task hits global timeout"

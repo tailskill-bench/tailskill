@@ -1,0 +1,28 @@
+variant_id: D3_connection_delay
+display_name: "Intermittent Connection Delay"
+category: network_service
+taxonomy_ref: "D3"
+
+description: |
+  Inject 5-second delay on 30% of outbound TCP connections using tc/netem.
+  Remaining 70% are unaffected. Tests whether skill sets timeout parameters
+  and has retry-on-timeout logic.
+
+recovery_mechanism: "requests.get(url, timeout=(3, 10)) + retry on Timeout exception"
+
+preconditions:
+  requires_network: true
+
+injection:
+  layer: dockerfile
+
+dockerfile_append: |
+  RUN apt-get update -qq && apt-get install -y -qq iproute2 > /dev/null 2>&1 || true
+  RUN echo '#!/bin/bash\ntc qdisc add dev eth0 root netem delay 5000ms 0ms 30% 2>/dev/null || true\nexec "$@"' > /usr/local/bin/delay_wrapper.sh && \
+      chmod +x /usr/local/bin/delay_wrapper.sh
+  ENTRYPOINT ["/usr/local/bin/delay_wrapper.sh"]
+
+extra_test: test_output_file_exists
+
+expected_failure_mode: HANG
+failure_description: "requests.get() without timeout hangs on delayed connections; task eventually hits global timeout"

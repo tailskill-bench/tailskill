@@ -1,0 +1,24 @@
+variant_id: B3_dirty_output
+display_name: "Pre-existing Dirty Output File"
+category: filesystem_state
+taxonomy_ref: "B3"
+
+description: |
+  Place a corrupted file at the expected output path before agent runs.
+  Tests whether skill removes/overwrites existing files before writing.
+
+recovery_mechanism: "os.remove(path) before writing, or open in 'w' mode (not 'a')"
+
+preconditions:
+  required_output_file: true
+
+injection:
+  layer: dockerfile
+
+dockerfile_append: |
+  RUN echo "CORRUPTED_NOT_VALID_XLSX" > /root/{output_file}
+
+extra_test: test_output_file_exists
+
+expected_failure_mode: CRASH
+failure_description: "openpyxl.load_workbook() on corrupted file raises InvalidFileException"

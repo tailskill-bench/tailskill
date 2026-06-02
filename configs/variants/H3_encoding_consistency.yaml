@@ -1,0 +1,24 @@
+variant_id: H3_encoding_consistency
+display_name: "Output Encoding Consistency"
+category: output_format
+taxonomy_ref: "H3"
+
+description: |
+  Add test assertions verifying output CSV uses pure UTF-8 (no BOM),
+  LF line endings (not CRLF), and contains no NUL bytes. Tests whether
+  skill explicitly specifies encoding and newline parameters on output.
+
+recovery_mechanism: "open(path, 'w', encoding='utf-8', newline='\\n')"
+
+preconditions:
+  output_is_text: true
+
+injection:
+  layer: test
+
+dockerfile_append: ""
+
+extra_test: test_output_encoding_clean
+
+expected_failure_mode: SILENT
+failure_description: "Output contains BOM prefix, CRLF line endings, or NUL bytes due to platform-default encoding"

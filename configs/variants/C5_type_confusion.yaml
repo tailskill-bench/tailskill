@@ -1,0 +1,30 @@
+variant_id: C5_type_confusion
+display_name: "Type Confusion Injection"
+category: data_boundary
+taxonomy_ref: "C5"
+
+description: |
+  Replace a few numeric values with non-numeric markers like 'N/A', '-', '#REF!'.
+  Tests whether skill uses pd.to_numeric(errors='coerce') defense.
+
+recovery_mechanism: "pd.to_numeric(df[col], errors='coerce').dropna()"
+
+preconditions:
+  required_file_types: [".csv", ".xlsx", ".tsv"]
+  required_column_types: ["numeric"]
+  min_data_rows: 20
+
+injection:
+  layer: data
+  script_function: type_confusion
+  params:
+    n: 5
+
+dockerfile_append: |
+  COPY _tail_inject.py /tmp/_tail_inject.py
+  RUN python3 /tmp/_tail_inject.py type_confusion {target_file} {col_idx}
+
+extra_test: test_output_file_exists
+
+expected_failure_mode: CRASH
+failure_description: "astype(float) fails with ValueError on non-numeric marker strings"

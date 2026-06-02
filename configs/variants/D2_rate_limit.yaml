@@ -1,0 +1,30 @@
+variant_id: D2_rate_limit
+display_name: "HTTP 429 Rate Limiting"
+category: network_service
+taxonomy_ref: "D2"
+
+description: |
+  Intercept outbound HTTP requests and return 429 (Too Many Requests) for
+  the first 2 attempts. Third attempt and onward succeed normally.
+  Tests whether skill implements exponential backoff on 429 responses.
+
+recovery_mechanism: "Retry with exponential backoff; respect Retry-After header"
+
+preconditions:
+  requires_http_requests: true
+
+injection:
+  layer: dockerfile
+
+dockerfile_append: |
+  RUN pip install --break-system-packages mitmproxy 2>/dev/null || true
+  COPY _rate_limit_addon.py /tmp/_rate_limit_addon.py
+  # mitmproxy addon script that returns 429 for first 2 requests per host
+  RUN echo '#!/bin/bash\nmitmdump --mode transparent --quiet -s /tmp/_rate_limit_addon.py &\nsleep 1\nexec "$@"' > /usr/local/bin/ratelimit_wrapper.sh && \
+      chmod +x /usr/local/bin/ratelimit_wrapper.sh
+  ENTRYPOINT ["/usr/local/bin/ratelimit_wrapper.sh"]
+
+extra_test: test_output_file_exists
+
+expected_failure_mode: CRASH
+failure_description: "requests.get() raises HTTPError on 429; no backoff means skill aborts on first rate-limited response"
