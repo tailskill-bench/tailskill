@@ -14,7 +14,7 @@
   <body>
     <a class="skip-link" href="#main">Skip to content</a>
 
-    <header class="site-header" data-commit-marker="commit-2-base-theme">
+    <header class="site-header" data-commit-marker="commit-3-hero-slider">
       <nav class="site-nav" aria-label="Primary navigation">
         <a class="brand" href="#hero" aria-label="TailSkills home">TailSkills</a>
         <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-links">
@@ -39,9 +39,55 @@
     <main id="main">
       <section class="page-section hero-section" id="hero" aria-labelledby="hero-title">
         <div class="section-inner">
-          <p class="section-kicker">EMNLP 2026</p>
-          <h1 id="hero-title">Focused but Fragile</h1>
-          <p class="section-placeholder">Hero title, author block, action links, and compression slider will be implemented in Commit 3.</p>
+          <div class="hero-grid">
+            <div class="hero-copy">
+              <p class="paper-badge">EMNLP 2026</p>
+              <h1 id="hero-title" class="hero-title">
+                <span class="knowledge-common">Focused</span>
+                <span class="knowledge-tail">but Fragile</span>
+              </h1>
+              <p class="hero-subtitle">
+                <span class="knowledge-tail">Tail</span> Knowledge
+                <span class="knowledge-tail">Collapse</span> in
+                <span class="knowledge-common">Recursive</span>
+                <span class="knowledge-common">Agent Skill</span> Distillation
+              </p>
+              <p class="hero-authors">Anonymous Authors</p>
+              <div class="hero-actions" aria-label="Project links">
+                <a class="button-link" href="#bibtex">Paper</a>
+                <a class="button-link button-link--secondary" href="https://github.com/tailskill-bench/tailskill">GitHub</a>
+              </div>
+            </div>
+
+            <div class="compression-panel" aria-label="Skill compression simulator">
+              <div class="compression-header">
+                <span class="section-kicker">Compression Depth</span>
+                <output class="retention-output" id="retention-output" for="compression-slider">100.0%</output>
+              </div>
+              <label class="sr-only" for="compression-slider">Skill generation depth</label>
+              <input class="compression-slider" id="compression-slider" type="range" min="0" max="3" step="1" value="0" aria-describedby="compression-caption">
+              <div class="compression-scale" aria-hidden="true">
+                <span>S1 (8K)</span>
+                <span>S2 (5.6K)</span>
+                <span>S3 (3.9K)</span>
+                <span>S4 (2.7K)</span>
+              </div>
+              <div class="retention-track" aria-hidden="true">
+                <span class="retention-track__common"></span>
+                <span class="retention-track__tail"></span>
+              </div>
+              <p class="compression-caption" id="compression-caption">
+                Tail knowledge retained: <strong data-retention-value>100.0%</strong>
+                <span data-depth-label>S1 baseline skill</span>
+              </p>
+              <div class="depth-buttons" aria-label="Select compression depth">
+                <button type="button" class="depth-button is-active" data-depth="0">S1</button>
+                <button type="button" class="depth-button" data-depth="1">S2</button>
+                <button type="button" class="depth-button" data-depth="2">S3</button>
+                <button type="button" class="depth-button" data-depth="3">S4</button>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
