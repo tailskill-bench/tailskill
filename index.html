@@ -14,7 +14,7 @@
   <body>
     <a class="skip-link" href="#main">Skip to content</a>
 
-    <header class="site-header" data-commit-marker="commit-4-abstract-introduction">
+    <header class="site-header" data-commit-marker="commit-5-benchmark-taxonomy">
       <nav class="site-nav" aria-label="Primary navigation">
         <a class="brand" href="#hero" aria-label="TailSkills home">TailSkills</a>
         <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-links">
@@ -154,7 +154,103 @@
         <div class="section-inner">
           <p class="section-kicker">TailSkills Benchmark</p>
           <h2 id="benchmark-title">Benchmark Overview</h2>
-          <p class="section-placeholder">Construction pipeline and taxonomy cards will be added in Commit 5.</p>
+          <figure class="image-figure pipeline-figure">
+            <div class="image-frame">
+              <img src="static/images/benchmark-pipeline.png" alt="TailSkills construction pipeline with planning, construction, oracle generation, and sandbox verification stages." width="4622" height="2692" loading="lazy">
+            </div>
+            <figcaption>
+              TailSkills builds exception-heavy variants through planning, construction, oracle generation, and deterministic sandbox verification.
+            </figcaption>
+          </figure>
+
+          <div class="pipeline-steps" aria-label="Benchmark construction stages">
+            <span>Planning</span>
+            <span>Construction</span>
+            <span>Oracle Generation</span>
+            <span>Sandbox Verification</span>
+          </div>
+
+          <div class="taxonomy-grid" aria-label="TailSkills variant taxonomy">
+            <article class="taxonomy-card taxonomy-card--a">
+              <button type="button" class="taxonomy-trigger" aria-expanded="false" aria-controls="taxonomy-a">
+                <span class="taxonomy-code">A</span>
+                <span class="taxonomy-title">Data Encoding</span>
+                <span class="taxonomy-meta">49 variants</span>
+                <span class="fragility-badge fragility-badge--med">Med Fragility</span>
+              </button>
+              <div class="taxonomy-detail" id="taxonomy-a" hidden>
+                <p><strong>A1: BOM injection</strong><span>23 tasks</span><em>Med</em></p>
+                <p><strong>A2: Zero-width characters</strong><span>26 tasks</span><em>Med-High</em></p>
+              </div>
+            </article>
+
+            <article class="taxonomy-card taxonomy-card--b">
+              <button type="button" class="taxonomy-trigger" aria-expanded="false" aria-controls="taxonomy-b">
+                <span class="taxonomy-code">B</span>
+                <span class="taxonomy-title">File System</span>
+                <span class="taxonomy-meta">60 variants</span>
+                <span class="fragility-badge fragility-badge--med">Med Fragility</span>
+              </button>
+              <div class="taxonomy-detail" id="taxonomy-b" hidden>
+                <p><strong>B1: Read-only output dir</strong><span>50 tasks</span><em>Med</em></p>
+                <p><strong>B2: Output contamination</strong><span>10 tasks</span><em>Med</em></p>
+              </div>
+            </article>
+
+            <article class="taxonomy-card taxonomy-card--c">
+              <button type="button" class="taxonomy-trigger" aria-expanded="false" aria-controls="taxonomy-c">
+                <span class="taxonomy-code">C</span>
+                <span class="taxonomy-title">Data Quality</span>
+                <span class="taxonomy-meta">39 variants</span>
+                <span class="fragility-badge fragility-badge--high">High Fragility</span>
+              </button>
+              <div class="taxonomy-detail" id="taxonomy-c" hidden>
+                <p><strong>C1: NaN/Inf poisoning</strong><span>13 tasks</span><em>High</em></p>
+                <p><strong>C2: Duplicate primary keys</strong><span>3 tasks</span><em>Low</em></p>
+                <p><strong>C3: Extreme values</strong><span>13 tasks</span><em>High</em></p>
+                <p><strong>C4: Type confusion</strong><span>10 tasks</span><em>High</em></p>
+              </div>
+            </article>
+
+            <article class="taxonomy-card taxonomy-card--d">
+              <button type="button" class="taxonomy-trigger" aria-expanded="false" aria-controls="taxonomy-d">
+                <span class="taxonomy-code">D</span>
+                <span class="taxonomy-title">Network / Service</span>
+                <span class="taxonomy-meta">35 variants</span>
+                <span class="fragility-badge fragility-badge--med-high">Med-High Fragility</span>
+              </button>
+              <div class="taxonomy-detail" id="taxonomy-d" hidden>
+                <p><strong>D1: DNS jitter (50% loss)</strong><span>19 tasks</span><em>Med-High</em></p>
+                <p><strong>D2: HTTPS connection throttling</strong><span>16 tasks</span><em>Med-High</em></p>
+              </div>
+            </article>
+
+            <article class="taxonomy-card taxonomy-card--e">
+              <button type="button" class="taxonomy-trigger" aria-expanded="false" aria-controls="taxonomy-e">
+                <span class="taxonomy-code">E</span>
+                <span class="taxonomy-title">Dependency</span>
+                <span class="taxonomy-meta">22 variants</span>
+                <span class="fragility-badge fragility-badge--med">Med Fragility</span>
+              </button>
+              <div class="taxonomy-detail" id="taxonomy-e" hidden>
+                <p><strong>E1: Missing optional dep</strong><span>20 tasks</span><em>Med</em></p>
+                <p><strong>E2: Library version drift</strong><span>2 tasks</span><em>High</em></p>
+              </div>
+            </article>
+
+            <article class="taxonomy-card taxonomy-card--g">
+              <button type="button" class="taxonomy-trigger" aria-expanded="false" aria-controls="taxonomy-g">
+                <span class="taxonomy-code">G</span>
+                <span class="taxonomy-title">Security</span>
+                <span class="taxonomy-meta">3 variants</span>
+                <span class="fragility-badge fragility-badge--high">High Fragility</span>
+              </button>
+              <div class="taxonomy-detail" id="taxonomy-g" hidden>
+                <p><strong>G1: Multi-vector attack</strong><span>2 tasks</span><em>High</em></p>
+                <p><strong>G2: Security fallback</strong><span>1 task</span><em>High</em></p>
+              </div>
+            </article>
+          </div>
         </div>
       </section>
 

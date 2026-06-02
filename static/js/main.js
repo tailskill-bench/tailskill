@@ -10,6 +10,7 @@
   var retentionValue = document.querySelector("[data-retention-value]");
   var depthLabel = document.querySelector("[data-depth-label]");
   var depthButtons = document.querySelectorAll("[data-depth]");
+  var taxonomyTriggers = document.querySelectorAll(".taxonomy-trigger");
 
   function getCssVar(name) {
     return getComputedStyle(root).getPropertyValue(name).trim();
@@ -150,4 +151,15 @@
   });
 
   updateCompression(0);
+
+  taxonomyTriggers.forEach(function (trigger) {
+    trigger.addEventListener("click", function () {
+      var detail = document.getElementById(trigger.getAttribute("aria-controls"));
+      var isOpen = trigger.getAttribute("aria-expanded") === "true";
+      trigger.setAttribute("aria-expanded", String(!isOpen));
+      if (detail) {
+        detail.hidden = isOpen;
+      }
+    });
+  });
 })();
