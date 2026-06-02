@@ -15,6 +15,9 @@
   var filterButtons = document.querySelectorAll("[data-filter]");
   var taskGrid = document.querySelector("#task-grid");
   var galleryCount = document.querySelector("#gallery-count");
+  var copyButton = document.querySelector("[data-copy-bibtex]");
+  var copyStatus = document.querySelector("[data-copy-status]");
+  var bibtexCode = document.querySelector("#bibtex-code");
   var chartInstances = [];
   var taskState = {
     tasks: [],
@@ -463,4 +466,34 @@
   });
 
   loadTasks();
+
+  function copyText(text) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      return navigator.clipboard.writeText(text);
+    }
+    var textarea = document.createElement("textarea");
+    textarea.value = text;
+    textarea.setAttribute("readonly", "");
+    textarea.style.position = "fixed";
+    textarea.style.top = "-1000px";
+    document.body.appendChild(textarea);
+    textarea.select();
+    var copied = document.execCommand("copy");
+    document.body.removeChild(textarea);
+    return copied ? Promise.resolve() : Promise.reject(new Error("Copy failed"));
+  }
+
+  if (copyButton && bibtexCode) {
+    copyButton.addEventListener("click", function () {
+      copyText(bibtexCode.textContent).then(function () {
+        if (copyStatus) {
+          copyStatus.textContent = "Copied BibTeX to clipboard.";
+        }
+      }).catch(function () {
+        if (copyStatus) {
+          copyStatus.textContent = "Copy failed. Select the BibTeX text manually.";
+        }
+      });
+    });
+  }
 })();

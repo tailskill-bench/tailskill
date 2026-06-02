@@ -14,7 +14,7 @@
   <body>
     <a class="skip-link" href="#main">Skip to content</a>
 
-    <header class="site-header" data-commit-marker="commit-9-task-gallery">
+    <header class="site-header" data-commit-marker="commit-10-bibtex-footer">
       <nav class="site-nav" aria-label="Primary navigation">
         <a class="brand" href="#hero" aria-label="TailSkills home">TailSkills</a>
         <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-links">
@@ -536,7 +536,25 @@
         <div class="section-inner">
           <p class="section-kicker">Citation</p>
           <h2 id="bibtex-title">BibTeX</h2>
-          <p class="section-placeholder">Citation block and footer will be added in Commit 10.</p>
+          <div class="bibtex-panel">
+            <div class="bibtex-toolbar">
+              <h3>Cite TailSkills</h3>
+              <button class="copy-button" type="button" data-copy-bibtex>Copy</button>
+            </div>
+            <pre><code id="bibtex-code">@inproceedings{tailskills2026,
+  title     = {Focused but Fragile: Tail Knowledge Collapse in Recursive Agent Skill Distillation},
+  author    = {Anonymous},
+  booktitle = {Proceedings of the 2026 Conference on Empirical Methods in Natural Language Processing (EMNLP)},
+  year      = {2026}
+}</code></pre>
+            <p class="copy-status" data-copy-status aria-live="polite"></p>
+          </div>
+
+          <footer class="site-footer">
+            <a href="https://github.com/tailskill-bench/tailskill">GitHub Repository</a>
+            <span>EMNLP 2026</span>
+            <span>TailSkills Benchmark</span>
+          </footer>
         </div>
       </section>
     </main>
