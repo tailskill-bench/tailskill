@@ -14,7 +14,7 @@
   <body>
     <a class="skip-link" href="#main">Skip to content</a>
 
-    <header class="site-header" data-commit-marker="commit-3-hero-slider">
+    <header class="site-header" data-commit-marker="commit-4-abstract-introduction">
       <nav class="site-nav" aria-label="Primary navigation">
         <a class="brand" href="#hero" aria-label="TailSkills home">TailSkills</a>
         <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-links">
@@ -92,10 +92,29 @@
       </section>
 
       <section class="page-section" id="abstract" aria-labelledby="abstract-title">
-        <div class="section-inner">
+        <div class="section-inner is-narrow">
           <p class="section-kicker">Paper Abstract</p>
           <h2 id="abstract-title">Abstract</h2>
-          <p class="section-placeholder">Full paper abstract will be added in Commit 4.</p>
+          <div class="abstract-card">
+            <p>
+              Agent skills package procedural knowledge into reusable artifacts that can improve LLM agents at inference time.
+              Existing work shows that curated skills can materially raise average pass rates and that transferable skills can
+              be distilled from execution traces. However, current evaluations emphasize average-case performance and
+              systematically under-measure rare exceptions.
+            </p>
+            <p>
+              This paper studies tail-knowledge collapse: under recursive rewriting of a robust skill artifact into shorter or
+              more standardized variants, common-case utility may remain stable while rare exception handling degrades. To
+              investigate this, we introduce the TailSkills benchmark, a tail-focused evaluation suite featuring 14 variant
+              types across six categories, 208 oracle-verified exception-heavy task variants with deterministic verifiers, and
+              an expert-guided agentic construction pipeline.
+            </p>
+            <p>
+              We show that recursive distillation can preserve common-case utility while degrading tail-case performance, and
+              that this degradation is accompanied by the preferential removal of short, local tail-handling instructions
+              relative to regular workflow content.
+            </p>
+          </div>
         </div>
       </section>
 
@@ -103,7 +122,31 @@
         <div class="section-inner">
           <p class="section-kicker">Skill Distillation Visual</p>
           <h2 id="introduction-title">Introduction</h2>
-          <p class="section-placeholder">Infographic and retention stat cards will be added in Commit 4.</p>
+          <figure class="image-figure intro-figure">
+            <div class="image-frame">
+              <img src="static/images/introduction-infographic.png" alt="TailSkills infographic showing recursive skill distillation from S1 to S4 and contrasting ideal sandbox success with real-world tail failure." width="2059" height="2644" loading="lazy">
+            </div>
+            <figcaption>
+              Recursive skill distillation compresses a robust skill while disproportionately eroding rare exception handling.
+            </figcaption>
+          </figure>
+          <div class="stat-grid" aria-label="Distillation summary statistics">
+            <article class="stat-card stat-card--common">
+              <span class="stat-card__label">Common-case retention</span>
+              <strong>~100%</strong>
+              <span>across S1 to S4</span>
+            </article>
+            <article class="stat-card stat-card--tail">
+              <span class="stat-card__label">Tail-logic retention</span>
+              <strong>100% to 15.7%</strong>
+              <span>after recursive compression</span>
+            </article>
+            <article class="stat-card">
+              <span class="stat-card__label">Total skill size</span>
+              <strong>8K to 2.7K</strong>
+              <span>characters from S1 to S4</span>
+            </article>
+          </div>
         </div>
       </section>
 
