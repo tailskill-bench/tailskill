@@ -528,6 +528,54 @@ h3 {
   --tail-opacity: 1;
   --tail-blur: 0px;
   --tail-strikethrough-opacity: 0;
+  transition: background-color 0.18s linear;
+}
+
+.autopsy-progress-bar {
+  position: sticky;
+  top: var(--nav-height);
+  z-index: 20;
+  height: 3px;
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border);
+}
+
+.autopsy-progress-bar__fill {
+  width: 0%;
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent-common), var(--accent-tail));
+  transition: width 0.1s linear;
+}
+
+.autopsy-intro-overlay {
+  position: sticky;
+  top: calc(var(--nav-height) + 0.65rem);
+  z-index: 15;
+  padding: 1.25rem 1rem;
+  color: var(--accent-tail);
+  font-family: var(--font-code);
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-align: center;
+  pointer-events: none;
+  opacity: 1;
+  transition: opacity 0.45s ease, transform 0.45s ease;
+}
+
+.autopsy-intro-overlay p {
+  display: inline-flex;
+  max-width: min(100%, 34rem);
+  margin: 0;
+  padding: 0.6rem 0.85rem;
+  background: color-mix(in srgb, var(--bg-primary) 86%, transparent);
+  border: 1px solid color-mix(in srgb, var(--accent-tail) 32%, var(--border));
+  border-radius: var(--radius);
+  box-shadow: 0 18px 48px var(--shadow-color);
+}
+
+.autopsy-intro-overlay.is-hidden {
+  opacity: 0;
+  transform: translateY(-0.35rem);
 }
 
 .autopsy-sticky {
@@ -582,18 +630,27 @@ h3 {
   border-color: var(--accent-highlight);
 }
 
+.autopsy-stats {
+  text-align: center;
+}
+
 .autopsy-retention-wrap {
-  margin-top: 0.75rem;
+  margin: 0;
   color: var(--text-secondary);
   font-family: var(--font-code);
   font-size: 0.78rem;
+  text-transform: uppercase;
 }
 
 .autopsy-retention {
   display: block;
   color: var(--accent-tail);
-  font-size: 1.35rem;
+  font-family: var(--font-display);
+  font-size: 3rem;
   font-weight: 700;
+  line-height: 1.1;
+  text-transform: none;
+  transition: opacity 0.16s ease;
 }
 
 .skill-document {
@@ -1946,6 +2003,15 @@ h3 {
     position: static;
   }
 
+  .autopsy-progress-bar,
+  .autopsy-intro-overlay {
+    display: none;
+  }
+
+  .autopsy-retention {
+    font-size: 2rem;
+  }
+
   .skill-document pre {
     white-space: pre-wrap;
   }
@@ -1997,6 +2063,11 @@ h3 {
 
   .autopsy-sticky {
     position: static;
+  }
+
+  .autopsy-progress-bar,
+  .autopsy-intro-overlay {
+    display: none;
   }
 
   .tail-text {

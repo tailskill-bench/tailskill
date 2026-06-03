@@ -10,6 +10,8 @@
   var bibtexCode = document.querySelector("#bibtex-code");
   var counters = document.querySelectorAll("[data-counter]");
   var autopsyContainer = document.querySelector(".autopsy-scroll-container");
+  var autopsyProgressFill = document.querySelector(".autopsy-progress-bar__fill");
+  var autopsyIntroOverlay = document.querySelector(".autopsy-intro-overlay");
   var tailTexts = document.querySelectorAll(".tail-text");
   var depthIndicators = document.querySelectorAll(".depth-indicator");
   var retentionLabel = document.querySelector(".autopsy-retention");
@@ -140,10 +142,22 @@
     var containerHeight = autopsyContainer.offsetHeight - window.innerHeight;
     var scrolled = -rect.top;
     var progress = Math.max(0, Math.min(1, scrolled / Math.max(1, containerHeight)));
+    var isDark = document.documentElement.getAttribute("data-theme") === "dark";
+    var bgR = isDark ? Math.round(26 + progress * 6) : Math.round(250 - progress * 10);
+    var bgG = isDark ? Math.round(26 + progress * 6) : Math.round(250 - progress * 10);
+    var bgB = isDark ? Math.round(35 + progress * 6) : Math.round(248 - progress * 10);
     var opacity;
     var blur;
     var strikethrough;
     var retention;
+
+    autopsyContainer.style.backgroundColor = "rgb(" + bgR + "," + bgG + "," + bgB + ")";
+    if (autopsyProgressFill) {
+      autopsyProgressFill.style.width = (progress * 100).toFixed(1) + "%";
+    }
+    if (autopsyIntroOverlay) {
+      autopsyIntroOverlay.classList.toggle("is-hidden", progress > 0.05);
+    }
 
     if (progress < 0.25) {
       opacity = 1;
@@ -188,6 +202,13 @@
       autopsyContainer.style.setProperty("--tail-opacity", "1");
       autopsyContainer.style.setProperty("--tail-blur", "0px");
       autopsyContainer.style.setProperty("--autopsy-tail-strike", "transparent");
+      autopsyContainer.style.backgroundColor = "";
+      if (autopsyProgressFill) {
+        autopsyProgressFill.style.width = "0%";
+      }
+      if (autopsyIntroOverlay) {
+        autopsyIntroOverlay.classList.remove("is-hidden");
+      }
       if (retentionLabel) {
         retentionLabel.textContent = "100.0%";
       }
@@ -197,6 +218,12 @@
     updateAutopsy();
     window.addEventListener("scroll", updateAutopsy, { passive: true });
     window.addEventListener("resize", updateAutopsy);
+    if ("MutationObserver" in window) {
+      new MutationObserver(updateAutopsy).observe(document.documentElement, {
+        attributes: true,
+        attributeFilter: ["data-theme"]
+      });
+    }
   }
 
   setupCounters();
