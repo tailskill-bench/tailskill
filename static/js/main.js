@@ -41,16 +41,12 @@
     return copied ? Promise.resolve() : Promise.reject(new Error("Copy failed"));
   }
 
-  function systemPrefersDark() {
-    return window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
-  }
-
   function preferredTheme() {
     var saved = window.localStorage.getItem(storageKey);
     if (saved === "light" || saved === "dark") {
       return saved;
     }
-    return systemPrefersDark() ? "dark" : "light";
+    return "light";
   }
 
   function applyTheme(theme) {

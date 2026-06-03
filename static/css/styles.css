@@ -61,10 +61,7 @@ body {
   min-height: 100vh;
   margin: 0;
   color: var(--text-primary);
-  background:
-    radial-gradient(circle at 12% 8%, color-mix(in srgb, var(--accent-common) 24%, transparent), transparent 28rem),
-    radial-gradient(circle at 82% 16%, color-mix(in srgb, var(--accent-tail) 20%, transparent), transparent 30rem),
-    var(--bg-primary);
+  background: var(--bg-primary);
   font-family: var(--font-body);
   font-size: 1rem;
   line-height: 1.65;
