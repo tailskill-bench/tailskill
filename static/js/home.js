@@ -9,6 +9,7 @@
   var copyStatus = document.querySelector("[data-copy-status]");
   var bibtexCode = document.querySelector("#bibtex-code");
   var counters = document.querySelectorAll("[data-counter]");
+  var sectionIndicatorDots = document.querySelectorAll(".section-indicator__dot");
   var autopsyContainer = document.querySelector(".autopsy-scroll-container");
   var autopsyProgressFill = document.querySelector(".autopsy-progress-bar__fill");
   var autopsyIntroOverlay = document.querySelector(".autopsy-intro-overlay");
@@ -83,6 +84,16 @@
     });
   }
 
+  function setCounterText(element, value, decimals) {
+    var formatted = value.toFixed(decimals);
+    var parts = formatted.split(".");
+    if (decimals > 0 && parts.length === 2) {
+      element.innerHTML = parts[0] + "<span class=\"counter-decimals\">." + parts[1] + "</span>";
+    } else {
+      element.textContent = formatted;
+    }
+  }
+
   function animateCounter(element, target, duration, decimals) {
     var start = 0;
     var startTime = null;
@@ -93,7 +104,7 @@
       var progress = Math.min((timestamp - startTime) / duration, 1);
       var eased = 1 - Math.pow(1 - progress, 3);
       var current = start + (target - start) * eased;
-      element.textContent = current.toFixed(decimals);
+      setCounterText(element, current, decimals);
       if (progress < 1) {
         requestAnimationFrame(step);
       }
@@ -110,10 +121,10 @@
       var decimals = Number(counter.getAttribute("data-decimals")) || 0;
       var duration = Number(counter.getAttribute("data-duration")) || 500;
       if (prefersReducedMotion || !("IntersectionObserver" in window)) {
-        counter.textContent = target.toFixed(decimals);
+        setCounterText(counter, target, decimals);
         counter.setAttribute("data-counted", "true");
       } else {
-        counter.textContent = (0).toFixed(decimals);
+        setCounterText(counter, 0, decimals);
         var observer = new IntersectionObserver(function (entries) {
           entries.forEach(function (entry) {
             if (entry.isIntersecting && counter.getAttribute("data-counted") !== "true") {
@@ -125,6 +136,53 @@
         }, { threshold: 0.5 });
         observer.observe(counter);
       }
+    });
+  }
+
+  function setActiveSectionIndicator(sectionId) {
+    sectionIndicatorDots.forEach(function (dot) {
+      var isActive = dot.getAttribute("href") === "#" + sectionId;
+      dot.classList.toggle("is-active", isActive);
+      if (isActive) {
+        dot.setAttribute("aria-current", "true");
+      } else {
+        dot.removeAttribute("aria-current");
+      }
+    });
+  }
+
+  function setupSectionIndicator() {
+    if (!sectionIndicatorDots.length || !("IntersectionObserver" in window)) {
+      return;
+    }
+    var sections = [];
+    sectionIndicatorDots.forEach(function (dot) {
+      var id = dot.getAttribute("href");
+      if (id && id.charAt(0) === "#") {
+        var section = document.querySelector(id);
+        if (section) {
+          sections.push(section);
+        }
+      }
+    });
+    if (!sections.length) {
+      return;
+    }
+    var observer = new IntersectionObserver(function (entries) {
+      var visible = Array.prototype.slice.call(entries).filter(function (entry) {
+        return entry.isIntersecting;
+      }).sort(function (a, b) {
+        return b.intersectionRatio - a.intersectionRatio;
+      })[0];
+      if (visible && visible.target.id) {
+        setActiveSectionIndicator(visible.target.id);
+      }
+    }, {
+      rootMargin: "-45% 0px -45% 0px",
+      threshold: [0, 0.25, 0.5]
+    });
+    sections.forEach(function (section) {
+      observer.observe(section);
     });
   }
 
@@ -227,5 +285,6 @@
   }
 
   setupCounters();
+  setupSectionIndicator();
   setupAutopsy();
 })();

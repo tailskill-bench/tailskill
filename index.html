@@ -95,17 +95,17 @@
             Recursive skill rewriting keeps much of the common workflow intact, while short local exception-handling instructions disappear early.
           </p>
           <div class="finding-stat-grid">
-            <article class="finding-stat-card">
+            <article class="finding-stat-card" tabindex="0">
               <span class="counter-value"><span data-counter data-target="27.4" data-decimals="1" data-duration="600">0.0</span><span class="counter-affix">pp</span></span>
               <span class="counter-label">Drop</span>
               <p>Tail pass rate falls from 50.5% to 23.1% by S4, a 54% relative degradation.</p>
             </article>
-            <article class="finding-stat-card">
+            <article class="finding-stat-card" tabindex="0">
               <span class="counter-value"><span class="counter-affix">CI =</span><span data-counter data-target="0.65" data-decimals="2" data-duration="500">0.00</span></span>
               <span class="counter-label">Index</span>
               <p>Tail-specific instructions degrade about twice as fast as regular workflow content.</p>
             </article>
-            <article class="finding-stat-card">
+            <article class="finding-stat-card" tabindex="0">
               <span class="counter-value"><span data-counter data-target="0.3" data-decimals="1" data-duration="400">0.0</span><span class="counter-affix">% Gap</span></span>
               <span class="counter-label">Baseline</span>
               <p>The S1 common-case and tail-case starting point is nearly matched before distillation.</p>
@@ -252,6 +252,14 @@ Use prob.solve(solver=cp.CLARABEL)</code></pre>
         </div>
       </section>
     </main>
+
+    <nav class="section-indicator" aria-label="Page sections">
+      <a class="section-indicator__dot is-active" href="#hero" aria-label="Hero section" aria-current="true"></a>
+      <a class="section-indicator__dot" href="#core-findings" aria-label="Core findings section"></a>
+      <a class="section-indicator__dot" href="#figure-gallery" aria-label="Paper figures section"></a>
+      <a class="section-indicator__dot" href="#skill-autopsy" aria-label="Skill autopsy section"></a>
+      <a class="section-indicator__dot" href="#explore" aria-label="Explore section"></a>
+    </nav>
 
     <script src="static/js/main.js" defer></script>
     <script src="static/js/home.js" defer></script>
