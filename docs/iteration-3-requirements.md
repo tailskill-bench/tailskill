@@ -1,550 +1,736 @@
 # TailSkills 网页优化 — 第三轮迭代需求 (v3)
 
-> 本文档是 Codex 第三轮迭代的完整需求。请先完整阅读本文档，再阅读现有代码。
+> 读取此文件后严格按照要求执行。每完成一个阶段 commit + push。
+> 分支: gh-pages | 项目: D:\codes\tailskill
+> 线上验证: https://tailskill-bench.github.io/tailskill/
 
-## 0. 项目信息
+---
 
-- **项目路径**: `D:\codes\tailskill\`
-- **分支**: `gh-pages`（不要切换分支）
-- **线上**: https://tailskill-bench.github.io/tailskill/
-- **技术栈**: 纯 HTML5 + CSS3 + vanilla JavaScript，无框架无 npm
-- **字体**: Instrument Serif + DM Sans + JetBrains Mono（已加载）
-- **Chart.js**: 4.4.6 CDN（仅在 experiments.html 加载）
-- **颜色**: `--accent-tail: #e2abb8` (tailpink), `--accent-common: #b2d9b3` (commongreen)
+## 0. 当前状态（已验证，不要假设）
 
-## 1. 本轮核心目标
+**三页已完成：** index.html, tasks.html, experiments.html
+**JS 已拆分：** main.js, home.js, tasks.js, experiments.js
+**tasks.json 已有 54 个任务 / 208 个变体** — 不需要重新生成！
+**桌面导航 900px+ 已可见** — 不需要重复添加 CSS
+**`.is-current` 导航高亮已实现** — styles.css:322 + main.js:104-123
 
-修复 v2 的 6 个问题：
+**已知 bug（必须修复）：**
+- `tasks.js:80` — `total` 变量未定义，导致 gallery 显示 "Showing N of undefined task variants"
+- `tasks.js:28-31` — `resultLabel()` 没有处理 null 值
 
-1. **首页无任何论文图片** → 添加 3 张论文图预览，点击跳转详情页
-2. **Skill Autopsy 滚动不动声色** → 3 层视觉强化（入口 overlay + 顶部进度条 + 内容层增强）
-3. **Explore 导航卡片被埋在底部** → 添加数量 badge 和 mini 预览
-4. **benchmark-pipeline.png 未使用** → 放到首页 Figure Preview Gallery
-5. **首页与子页面无内容衔接** → 首页添加 mini collapse chart + figure gallery
-6. ~~Tasks 只有 8 个 placeholder~~ → **已完成**: 208 个真实任务已填入 tasks.json，gallery counter 已更新。Codex 不需要改这块。
+**未使用的图片：**
+- `benchmark-pipeline.png` (758KB) — 论文核心流程图，目前没有任何页面引用
+- `category-collapse-curves.jpg` (140KB) — 被 Chart.js 替代，可以不用
 
-## 2. 首页重构（index.html）
+---
 
-### 2.1 首页 5 屏布局
+## 1. 本轮要解决的 7 个问题
 
-首页应该是论文的 **movie trailer**——每屏一个钩子，让访客产生"想看更多"的欲望。
+| # | 问题 | 严重程度 |
+|---|------|----------|
+| P1 | 用户滚动到 Autopsy (300vh) 时以为到底了，不知道还有 Tasks/Experiments 页面 | 🔴 HIGH |
+| P2 | 首页内容太空泛，只有数字和文字动画，没有论文实际内容的展示 | 🔴 HIGH |
+| P3 | Tasks 页面的 `total` 变量 bug 导致显示异常 | 🔴 HIGH (bug) |
+| P4 | Skill Autopsy 滚动效果太不明显，用户感知不到变化 | 🟡 MEDIUM |
+| P5 | 首页应该有论文图表的缩略预览，点击跳转到 experiments 详情页 | 🟡 MEDIUM |
+| P6 | benchmark-pipeline.png 未被使用，这是论文核心流程图 | 🟡 MEDIUM |
+| P7 | 缺少创意交互动效，页面不够有吸引力 | 🟢 LOW |
+
+---
+
+## 2. 设计哲学
+
+论文核心是**"消失"**——tail 知识在压缩中逐渐丢失。所有新增交互都应强化这个主题。
+
+**首页叙事节奏（调整后 5 屏）：**
 
 ```
-Screen 1: HERO (保留，不改)
-  └─ 压缩滑块 + "but Fragile" 淡出 → 已有
-
-Screen 2: CORE FINDINGS (增强)
-  └─ 3 个 stat cards (保留)
-  └─ 新增: mini collapse chart 预览
-  └─ 新增: "View full results →" 链接到 experiments.html
-
-Screen 3: FIGURE PREVIEW GALLERY (全新 section)
-  └─ 3 张论文图并排展示
-  └─ 点击跳转到 experiments.html 对应锚点
-
-Screen 4: SKILL AUTOPSY (增强，详见 2.2)
-  └─ 保留 300vh sticky scroll
-  └─ 3 层视觉强化
-
-Screen 5: EXPLORE + BIBTEX (增强)
-  └─ 3 张导航卡片 (增强 badge)
-  └─ BibTeX (保留)
+吸引（Hero + 压缩滑块）→ 震撼（数字 + mini chart）→ 预览（论文图表缩略图）→ 体验（Autopsy 增强）→ 引导（Explore 卡片 + BibTeX）
 ```
 
-### 2.2 Screen 2: Core Findings 增强
+**关键原则：**
+1. **Trailer 不等于 Movie** — 首页是预告片，不是正片。展示小图预览，点击跳转看大图。
+2. **渐进式加载** — 图片用 `loading="lazy"`，大图缩略图用 `width`/`height` 防 CLS。
+3. **零依赖首页** — 首页不加载 Chart.js。用 inline SVG 做迷你图表预览（~2KB vs 210KB）。
+4. **一次只做一件事** — Autopsy 增强只做 4 项（5a-5d），不做粒子特效。
+5. **可访问性不可妥协** — 所有动画尊重 `prefers-reduced-motion`。
 
-在现有 `#core-findings` section 的 `finding-stat-grid` 之后，添加一个 **mini collapse chart**：
+---
 
-```html
-<!-- Mini chart preview -->
-<div class="mini-chart-preview">
-  <div class="chart-wrap" style="height: 12rem;">
-    <canvas id="mini-collapse-chart" aria-label="Preview: tail-case pass rate collapse curve" role="img"></canvas>
-  </div>
-  <a class="chart-link" href="experiments.html#main-results">
-    View full interactive results <span aria-hidden="true">&rarr;</span>
-  </a>
-</div>
-```
+## 3. 具体实施步骤
 
-**CSS 规格**:
-```css
-.mini-chart-preview {
-  max-width: 560px;
-  margin: 2rem auto 0;
-  padding: 1rem;
-  background: var(--bg-secondary);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-}
+### Step 1: 修复已知 bug + 首页结构重组
 
-.chart-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-  margin-top: 0.75rem;
-  font-family: var(--font-code);
-  font-size: 0.88rem;
-  font-weight: 600;
-  color: var(--accent-highlight);
-  text-decoration: none;
-  transition: gap 0.2s ease;
-}
+**1a. 修复 tasks.js bug（P3）**
 
-.chart-link:hover {
-  gap: 0.65rem;
-}
-```
-
-**JS (home.js)**:
-- 只在首页加载 Chart.js（动态 import，懒加载）
-- 画一个简单的 2-dataset 折线图（common-case 和 tail-case）
-- 数据和 experiments.js 中 `overall-chart` 完全一致
-- 不需要交互式 tooltip（mini chart 是静态预览）
-- 如果加载 Chart.js 失败（CDN 问题），静默隐藏 mini chart 区域
+在 `tasks.js` 的 IIFE 内部，`renderGallery()` 函数之前，添加：
 
 ```javascript
-// home.js 中添加（在现有 setupCounters 之后）
-function setupMiniChart() {
-  var canvas = document.getElementById("mini-collapse-chart");
-  if (!canvas) return;
-
-  var script = document.createElement("script");
-  script.src = "https://cdn.jsdelivr.net/npm/chart.js@4.4.6/dist/chart.umd.min.js";
-  script.onload = function () {
-    var colors = {
-      tail: window.TailSkills.getCssVar("--accent-tail"),
-      common: window.TailSkills.getCssVar("--accent-common"),
-      text: window.TailSkills.getCssVar("--text-secondary"),
-      grid: window.TailSkills.getCssVar("--border")
-    };
-    new Chart(canvas, {
-      type: "line",
-      data: {
-        labels: ["S1 (8K)", "S2 (5.6K)", "S3 (3.9K)", "S4 (2.7K)"],
-        datasets: [
-          {
-            label: "Common-case",
-            data: [50.8, 52.5, 49.2, 49.2],
-            borderColor: colors.common,
-            backgroundColor: "transparent",
-            borderWidth: 2.5,
-            tension: 0.3,
-            pointRadius: 3,
-            pointBackgroundColor: colors.common
-          },
-          {
-            label: "Tail-case",
-            data: [50.5, 35.4, 23.4, 23.1],
-            borderColor: colors.tail,
-            backgroundColor: "transparent",
-            borderWidth: 2.5,
-            tension: 0.3,
-            pointRadius: 3,
-            pointBackgroundColor: colors.tail
-          }
-        ]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          legend: {
-            labels: { color: colors.text, usePointStyle: true, boxWidth: 6, font: { size: 11 } }
-          },
-          tooltip: { enabled: false }
-        },
-        scales: {
-          x: {
-            grid: { display: false },
-            ticks: { color: colors.text, font: { size: 10 } }
-          },
-          y: {
-            min: 0,
-            max: 70,
-            grid: { color: colors.grid + "44" },
-            ticks: {
-              color: colors.text,
-              font: { size: 10 },
-              callback: function(v) { return v + "%"; }
-            }
-          }
-        }
-      }
-    });
-  };
-  document.head.appendChild(script);
-}
-setupMiniChart();
+// 在 fetch 回调内，taskState.tasks = data.tasks 之后添加:
+var total = taskState.tasks.reduce(function (sum, t) {
+  return sum + t.variants.length;
+}, 0);
 ```
 
-### 2.3 Screen 3: Figure Preview Gallery（全新 section）
+修改 `resultLabel()` 添加 null 处理：
 
-在 `#core-findings` 和 `#skill-autopsy` 之间插入新 section：
+```javascript
+function resultLabel(value) {
+  if (value === null || value === undefined) {
+    return '<span class="result-pill result-null">—</span>';
+  }
+  if (value >= 1) {
+    return '<span class="result-pill result-pass">PASS</span>';
+  }
+  return '<span class="result-pill result-fail">FAIL</span>';
+}
+```
+
+添加 `.result-null` 的 CSS：
+
+```css
+.result-null {
+  background: var(--bg-secondary);
+  color: var(--text-tertiary);
+}
+```
+
+**1b. 首页结构重组（P1, P2）**
+
+当前首页结构：Hero → Findings → Autopsy(300vh) → Explore → BibTeX
+
+新首页结构：
 
 ```html
-<section class="page-section" id="figure-preview" aria-labelledby="preview-title">
-  <div class="section-inner">
-    <p class="section-kicker">Paper Figures</p>
-    <h2 id="preview-title">Key visuals at a glance</h2>
-    <p class="page-subtitle">Click any figure to view the full version with interactive analysis.</p>
-    <div class="preview-grid">
-      <a class="preview-card" href="experiments.html#introduction">
-        <div class="preview-frame">
-          <img src="static/images/introduction-infographic.png"
-               alt="Skill distillation conveyor belt infographic"
-               width="500" height="642" loading="lazy" decoding="async">
-        </div>
-        <span class="preview-label">Skill Distillation Pipeline</span>
-      </a>
-      <a class="preview-card" href="experiments.html#main-results">
-        <div class="preview-frame">
-          <img src="static/images/benchmark-pipeline.png"
-               alt="TailSkills benchmark construction pipeline"
-               width="500" height="400" loading="lazy" decoding="async">
-        </div>
-        <span class="preview-label">Benchmark Construction</span>
-      </a>
-      <a class="preview-card" href="experiments.html#distillation-example">
-        <div class="preview-frame">
-          <img src="static/images/distillation-example.png"
-               alt="S1 to S4 skill text with tail knowledge disappearing"
-               width="500" height="224" loading="lazy" decoding="async">
-        </div>
-        <span class="preview-label">What Gets Erased</span>
+<main id="main" class="page-transition">
+  <!-- Screen 1: Hero（保持不变，已有压缩滑块） -->
+  <section id="hero" ...> ... </section>
+
+  <!-- Screen 2: Core Findings + Mini Chart（新增 mini chart） -->
+  <section id="core-findings" ...>
+    <!-- 保持 3 个 stat cards -->
+    <!-- 新增：inline SVG 迷你图表 -->
+    <div class="mini-chart-preview">
+      <svg class="mini-collapse-chart" viewBox="0 0 200 120">
+        <!-- Common-case line: 50.8, 52.5, 49.2, 49.2 -->
+        <polyline points="25,60 75,55 125,62 175,62"
+                  fill="none" stroke="var(--accent-common)" stroke-width="2"/>
+        <!-- Tail-case line: 50.5, 35.4, 23.4, 23.1 -->
+        <polyline points="25,61 75,85 125,100 175,100"
+                  fill="none" stroke="var(--accent-tail)" stroke-width="2"/>
+        <!-- X axis labels -->
+        <text x="25" y="115" font-size="8" fill="var(--text-secondary)" text-anchor="middle">S1</text>
+        <text x="75" y="115" font-size="8" fill="var(--text-secondary)" text-anchor="middle">S2</text>
+        <text x="125" y="115" font-size="8" fill="var(--text-secondary)" text-anchor="middle">S3</text>
+        <text x="175" y="115" font-size="8" fill="var(--text-secondary)" text-anchor="middle">S4</text>
+      </svg>
+      <a href="experiments.html#main-results" class="chart-expand-link">
+        View full interactive chart →
       </a>
     </div>
-  </div>
-</section>
+  </section>
+
+  <!-- Screen 3: Figure Preview Gallery（新增，P2, P5, P6） -->
+  <section id="figure-gallery" ...>
+    <p class="section-kicker">Paper Figures</p>
+    <h2>At a glance</h2>
+    <div class="figure-grid">
+      <a class="figure-card" href="experiments.html#introduction">
+        <img src="static/images/benchmark-pipeline.png"
+             alt="TailSkills benchmark pipeline"
+             loading="lazy" width="300" height="200"/>
+        <span class="figure-label">Benchmark Pipeline</span>
+      </a>
+      <a class="figure-card" href="experiments.html#introduction">
+        <img src="static/images/introduction-infographic.png"
+             alt="Skill distillation process"
+             loading="lazy" width="300" height="200"/>
+        <span class="figure-label">Distillation Process</span>
+      </a>
+      <a class="figure-card" href="experiments.html#distillation-example">
+        <img src="static/images/distillation-example.png"
+             alt="S1-S4 skill cards comparison"
+             loading="lazy" width="300" height="134"/>
+        <span class="figure-label">Skill Cards S1→S4</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- Screen 4: Skill Autopsy（增强，P4） -->
+  <section id="skill-autopsy" ...> ... </section>
+
+  <!-- Screen 5: Explore + BibTeX（保持不变） -->
+  <section id="explore" ...> ... </section>
+  <section id="bibtex" ...> ... </section>
+</main>
 ```
 
-**CSS 规格**:
+**关键：Figure Preview Gallery 放在 Autopsy 之前。** 这样用户在到达 300vh 的 Autopsy 之前就看到了真实的论文内容。Figure cards 全部链接到 experiments.html 的对应锚点。
+
+**1c. Section indicator dots（P1 辅助方案）**
+
+在首页右侧添加 section 导航圆点，帮助用户了解当前位置：
+
 ```css
-.preview-grid {
-  display: grid;
-  gap: 1rem;
-  margin-top: 2rem;
-}
-
-.preview-card {
-  display: grid;
-  gap: 0.65rem;
-  padding: 0.75rem;
-  color: var(--text-primary);
-  text-decoration: none;
-  background: var(--bg-secondary);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  box-shadow: 0 12px 32px var(--shadow-color);
-  transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
-}
-
-.preview-card:hover,
-.preview-card:focus-visible {
-  transform: translateY(-4px);
-  border-color: var(--accent-highlight);
-  box-shadow: 0 20px 50px var(--shadow-color);
-}
-
-.preview-frame {
-  overflow: hidden;
-  border-radius: calc(var(--radius) - 2px);
-  background: var(--bg-tertiary);
-}
-
-.preview-frame img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  aspect-ratio: 5 / 3;
-  transition: transform 0.4s ease;
-}
-
-.preview-card:hover .preview-frame img {
-  transform: scale(1.04);
-}
-
-.preview-label {
-  padding: 0 0.25rem;
-  font-family: var(--font-code);
-  font-size: 0.84rem;
-  font-weight: 600;
-  color: var(--text-secondary);
-}
-
-.preview-card:hover .preview-label {
-  color: var(--accent-highlight);
-}
-
-@media (min-width: 900px) {
-  .preview-grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-}
-```
-
-### 2.4 Screen 4: Skill Autopsy 滚动增强
-
-#### 2.4.1 入口 Overlay
-
-在 autopsy-scroll-container 的开头（`.autopsy-sticky` 之前）添加一个 intro overlay：
-
-```html
-<div class="autopsy-intro" aria-hidden="true">
-  <p class="autopsy-intro__title">Scroll to observe knowledge loss</p>
-  <div class="autopsy-intro__arrow"></div>
-</div>
-```
-
-**CSS**:
-```css
-.autopsy-intro {
-  position: sticky;
-  top: 0;
+.section-indicator {
+  position: fixed;
+  right: 1.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 50;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 50vh;
-  text-align: center;
-  pointer-events: none;
-  z-index: 2;
-  opacity: var(--autopsy-intro-opacity, 1);
-  transition: opacity 0.1s linear;
+  gap: 0.75rem;
 }
 
-.autopsy-intro__title {
-  font-family: var(--font-display);
-  font-size: clamp(1.5rem, 4vw, 2.5rem);
-  color: var(--accent-tail);
-  max-width: 20ch;
+.section-indicator__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--border-primary);
+  transition: all 0.3s ease;
+  cursor: pointer;
 }
 
-.autopsy-intro__arrow {
-  margin-top: 1.5rem;
-  width: 2rem;
-  height: 2rem;
-  border-right: 2px solid var(--accent-tail);
-  border-bottom: 2px solid var(--accent-tail);
-  transform: rotate(45deg);
-  animation: bounce-down 2s ease infinite;
+.section-indicator__dot.is-active {
+  background: var(--accent-tail);
+  transform: scale(1.4);
 }
 ```
 
-#### 2.4.2 顶部进度条
-
-在 body 中（或 autopsy-scroll-container 内）添加一个 fixed 进度条：
+用 IntersectionObserver 高亮当前 section 对应的圆点。仅在首页显示，仅在桌面端显示（900px+）。
 
 ```html
-<div class="scroll-progress-bar" id="scroll-progress-bar" aria-hidden="true">
-  <div class="scroll-progress-bar__fill" id="scroll-progress-fill"></div>
-</div>
+<!-- 在 index.html 的 </main> 之后添加 -->
+<nav class="section-indicator" aria-label="Page sections">
+  <a class="section-indicator__dot is-active" href="#hero" aria-label="Hero"></a>
+  <a class="section-indicator__dot" href="#core-findings" aria-label="Findings"></a>
+  <a class="section-indicator__dot" href="#figure-gallery" aria-label="Figures"></a>
+  <a class="section-indicator__dot" href="#skill-autopsy" aria-label="Autopsy"></a>
+  <a class="section-indicator__dot" href="#explore" aria-label="Explore"></a>
+</nav>
 ```
 
-**CSS**:
+在 home.js 中添加 IntersectionObserver 逻辑，检测哪个 section 在视口中。
+
+---
+
+### Step 2: Figure Preview Gallery 样式
+
 ```css
-.scroll-progress-bar {
-  position: fixed;
+/* Figure Preview Gallery */
+.figure-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  max-width: 720px;
+  margin: 2rem auto 0;
+}
+
+@media (max-width: 700px) {
+  .figure-grid {
+    grid-template-columns: 1fr;
+    max-width: 320px;
+  }
+}
+
+.figure-card {
+  display: block;
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-primary);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  text-decoration: none;
+}
+
+.figure-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+}
+
+.figure-card img {
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+  display: block;
+  transition: opacity 0.3s ease;
+}
+
+.figure-card:hover img {
+  opacity: 0.9;
+}
+
+.figure-label {
+  display: block;
+  padding: 0.6rem 0.8rem;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  font-family: "JetBrains Mono", monospace;
+}
+
+/* Tail dissolve hover effect on figure cards */
+.figure-card::after {
+  content: "";
+  position: absolute;
   top: 0;
   left: 0;
   right: 0;
-  height: 4px;
-  z-index: 60;
-  background: var(--bg-tertiary);
+  bottom: 0;
+  background: linear-gradient(
+    135deg,
+    transparent 60%,
+    var(--accent-tail) 100%
+  );
   opacity: 0;
-  transition: opacity 0.3s ease;
+  transition: opacity 0.4s ease;
   pointer-events: none;
 }
 
-.scroll-progress-bar.is-active {
-  opacity: 1;
+.figure-card {
+  position: relative;
 }
 
-.scroll-progress-bar__fill {
+.figure-card:hover::after {
+  opacity: 0.15;
+}
+```
+
+---
+
+### Step 3: Mini Chart 样式
+
+```css
+.mini-chart-preview {
+  max-width: 320px;
+  margin: 2rem auto 0;
+  text-align: center;
+}
+
+.mini-collapse-chart {
+  width: 100%;
+  height: auto;
+  border-radius: 6px;
+  background: var(--bg-secondary);
+  padding: 0.5rem;
+}
+
+.mini-chart-legend {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  margin-top: 0.5rem;
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+.mini-chart-legend span::before {
+  content: "";
+  display: inline-block;
+  width: 12px;
+  height: 3px;
+  margin-right: 0.4rem;
+  vertical-align: middle;
+}
+
+.mini-chart-legend .legend-common::before {
+  background: var(--accent-common);
+}
+
+.mini-chart-legend .legend-tail::before {
+  background: var(--accent-tail);
+}
+
+.chart-expand-link {
+  display: inline-block;
+  margin-top: 0.75rem;
+  font-size: 0.8rem;
+  color: var(--accent-tail);
+  text-decoration: none;
+  transition: opacity 0.2s;
+}
+
+.chart-expand-link:hover {
+  opacity: 0.7;
+}
+```
+
+---
+
+### Step 4: 增强 Skill Autopsy 滚动效果（P4）
+
+只做 4 项增强（5a-5d）。**不做粒子特效、不做脉冲点、不做额外 scroll hint。**
+
+**4a. 添加 Autopsy 介绍覆盖层**
+
+在 autopsy 容器顶部添加一个半透明覆盖层，说明这个交互的作用：
+
+```html
+<div class="autopsy-intro-overlay" aria-hidden="true">
+  <p>↓ Scroll slowly to watch tail knowledge disappear</p>
+</div>
+```
+
+当用户滚动超过 5% 时淡出这个覆盖层：
+
+```css
+.autopsy-intro-overlay {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  text-align: center;
+  padding: 2rem 1rem;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.85rem;
+  color: var(--accent-tail);
+  opacity: 1;
+  transition: opacity 0.5s ease;
+  pointer-events: none;
+}
+
+.autopsy-intro-overlay.is-hidden {
+  opacity: 0;
+}
+```
+
+**4b. 固定进度条**
+
+在 Autopsy section 顶部添加一个水平进度条：
+
+```css
+.autopsy-progress-bar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  height: 3px;
+  background: var(--bg-secondary);
+}
+
+.autopsy-progress-bar__fill {
   height: 100%;
   width: 0%;
-  background: linear-gradient(90deg, var(--accent-tail), var(--accent-highlight));
+  background: linear-gradient(90deg, var(--accent-common), var(--accent-tail));
   transition: width 0.1s linear;
 }
 ```
 
-#### 2.4.3 Retention 数字放大
+```html
+<!-- 在 autopsy-scroll-container 内部最顶部 -->
+<div class="autopsy-progress-bar" aria-hidden="true">
+  <div class="autopsy-progress-bar__fill"></div>
+</div>
+```
 
-现有 `.autopsy-retention` 的 `font-size: 1.35rem` 太小。改为：
+在 home.js 的 `updateAutopsy()` 函数中更新进度条宽度：
+```javascript
+progressBar.style.width = (progress * 100) + "%";
+```
+
+**4c. 背景色渐变（最关键的增强！）**
+
+滚动时背景色从暖白变为冷灰，这是**最明显的视觉变化**：
+
+在 home.js 的 `updateAutopsy()` 中添加背景色计算：
+
+```javascript
+// 在 updateAutopsy() 函数中，progress 计算之后
+// 背景色：从暖白 #fafaf8 到冷灰 #f0f0ee
+var bgR = Math.round(250 - progress * 10);   // 250 → 240
+var bgG = Math.round(250 - progress * 10);   // 250 → 240
+var bgB = Math.round(248 - progress * 10);   // 248 → 238
+container.style.backgroundColor = "rgb(" + bgR + "," + bgG + "," + bgB + ")";
+```
+
+暗色模式下反过来 — 从暗色到更深：
+```javascript
+if (document.documentElement.getAttribute("data-theme") === "dark") {
+  bgR = Math.round(26 + progress * 6);   // 26 → 32
+  bgG = Math.round(26 + progress * 6);
+  bgB = Math.round(35 + progress * 6);
+}
+```
+
+**4d. 放大 Retention 计数器**
+
+当前 retention 数字太小（跟随 depth-rail 布局）。改为大号居中显示：
 
 ```css
 .autopsy-retention {
   display: block;
+  font-size: 3rem;
+  font-weight: 700;
+  font-family: "Instrument Serif", serif;
   color: var(--accent-tail);
-  font-family: var(--font-display);
-  font-size: clamp(2.5rem, 6vw, 4rem);
-  font-weight: 400;
-  line-height: 1;
+  transition: opacity 0.16s ease;
+  line-height: 1.1;
+}
+
+@media (max-width: 640px) {
+  .autopsy-retention {
+    font-size: 2rem;
+  }
 }
 ```
 
-#### 2.4.4 JS 更新 (home.js)
-
-在 `updateAutopsy()` 函数中添加：
-
-```javascript
-// 进度条
-var progressBar = document.getElementById("scroll-progress-bar");
-var progressFill = document.getElementById("scroll-progress-fill");
-var autopsyContainer = document.querySelector(".autopsy-scroll-container");
-var autopsyIntro = document.querySelector(".autopsy-intro");
-
-// 在 updateAutopsy() 末尾添加:
-if (progressBar && progressFill) {
-  var isInAutopsy = progress > 0 && progress < 1;
-  progressBar.classList.toggle("is-active", isInAutopsy);
-  progressFill.style.width = (progress * 100).toFixed(1) + "%";
-}
-
-// Intro overlay 淡出
-if (autopsyIntro) {
-  var introOpacity = Math.max(0, 1 - progress * 4); // 前 25% 滚动内淡出
-  autopsyIntro.style.setProperty("--autopsy-intro-opacity", String(introOpacity));
-  autopsyIntro.style.display = introOpacity < 0.01 ? "none" : "";
-}
-```
-
-### 2.5 Screen 5: Explore 卡片增强
-
-给 3 张 explore-card 添加 badge：
+将 retention 数值从 depth-rail 的侧面位置移到 autopsy 布局的顶部居中：
 
 ```html
-<a class="explore-card" href="tasks.html">
-  <h3>Explore the Benchmark</h3>
-  <span class="explore-badge">208 tasks &middot; 6 categories</span>
-  <p>Browse all oracle-verified exception-heavy variants with deterministic verifiers.</p>
-  <span class="arrow" aria-hidden="true">&rarr;</span>
-</a>
-
-<a class="explore-card" href="experiments.html">
-  <h3>View Full Experiments</h3>
-  <span class="explore-badge">6 interactive charts</span>
-  <p>Collapse curves, retention analysis, ablation studies, and case comparisons.</p>
-  <span class="arrow" aria-hidden="true">&rarr;</span>
-</a>
-
-<a class="explore-card" href="#bibtex">
-  <h3>Read Paper</h3>
-  <span class="explore-badge">EMNLP 2026</span>
-  <p>Cite with BibTeX. arXiv preprint coming soon.</p>
-  <span class="arrow" aria-hidden="true">&rarr;</span>
-</a>
+<!-- autopsy-sticky 内部，h2 之后 -->
+<div class="autopsy-stats">
+  <p class="autopsy-retention-wrap">
+    Tail knowledge retained:
+    <span class="autopsy-retention">100.0%</span>
+  </p>
+</div>
 ```
 
-**CSS**:
+---
+
+### Step 5: 创意交互（P7，轻量级）
+
+**5a. Stat card hover 展开额外信息**
+
+当鼠标悬停在 stat card 上时，显示额外的上下文文字：
+
 ```css
-.explore-badge {
-  display: inline-block;
-  padding: 0.15rem 0.5rem;
-  color: var(--accent-highlight);
-  font-family: var(--font-code);
-  font-size: 0.78rem;
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  background: color-mix(in srgb, var(--accent-highlight) 12%, transparent);
-  border: 1px solid color-mix(in srgb, var(--accent-highlight) 40%, var(--border));
-  border-radius: 999px;
+.finding-stat-card p {
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: max-height 0.4s ease, opacity 0.3s ease, margin 0.3s ease;
+  margin-top: 0;
+}
+
+.finding-stat-card:hover p,
+.finding-stat-card:focus-within p {
+  max-height: 100px;
+  opacity: 1;
+  margin-top: 0.5rem;
+}
+
+@media (max-width: 640px) {
+  /* 移动端始终显示 */
+  .finding-stat-card p {
+    max-height: 100px;
+    opacity: 1;
+    margin-top: 0.5rem;
+  }
 }
 ```
 
-## 3. Tasks 页（tasks.html）
+**5b. Explore 卡片增强**
 
-**已由人工完成**: 208 个真实任务数据已填入 `data/tasks.json`，gallery counter 已更新为 `"Showing N of 208 task variants"`。
+在 Explore 卡片上添加微妙的上移 + 阴影效果（已有部分，增强）：
 
-Codex 不需要修改 tasks.html 或 tasks.js。
+```css
+.explore-card {
+  position: relative;
+  overflow: hidden;
+}
 
-## 4. Experiments 页增强（experiments.html）
+/* 左侧彩色条 */
+.explore-card::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: var(--accent-tail);
+  transform: scaleY(0);
+  transition: transform 0.3s ease;
+  transform-origin: top;
+}
 
-### 4.1 添加锚点 ID 确保跳转正确
+.explore-card:hover::before {
+  transform: scaleY(1);
+}
+```
 
-确保 experiments.html 中各 section 的 id 与首页链接的锚点匹配：
-- `#introduction` → 已有
-- `#main-results` → 已有
-- `#distillation-example` → 已有
+**5c. 数字计数动画增加小数点后位数滚动**
 
-### 4.2 benchmark-pipeline.png 展示
+当前计数动画从 0 滚动到目标值。为 `data-decimals="1"` 的计数器添加小数点分隔的视觉强调 — 小数部分用 `opacity: 0.6` 和更小字号：
 
-在 experiments.html 的 `#introduction` section 中，introduction-infographic.png 之后，添加 benchmark-pipeline.png：
+```css
+.counter-decimals {
+  font-size: 0.75em;
+  opacity: 0.6;
+}
+```
+
+这个只需要在 home.js 的计数动画中，将结果分为整数和小数部分分别用 span 包裹即可。
+
+---
+
+### Step 6: Experiments 页面补充
+
+**6a. 添加 benchmark-pipeline.png（P6）**
+
+在 experiments.html 的 Introduction section 中，将 `introduction-infographic.png` 替换为 `benchmark-pipeline.png`，或者在 introduction section 中**同时展示两张图**：
 
 ```html
-<figure class="image-figure pipeline-figure">
-  <div class="image-frame">
-    <img src="static/images/benchmark-pipeline.png"
-         alt="TailSkills benchmark construction pipeline showing task selection, variant injection, and oracle verification."
-         width="1000" height="800" loading="lazy" decoding="async">
+<section id="introduction" ...>
+  <div class="section-inner">
+    <div class="figure-pair">
+      <figure>
+        <img src="static/images/benchmark-pipeline.png"
+             alt="TailSkills benchmark construction pipeline"
+             loading="lazy"/>
+        <figcaption>Benchmark Construction Pipeline</figcaption>
+      </figure>
+      <figure>
+        <img src="static/images/introduction-infographic.png"
+             alt="Skill distillation process overview"
+             loading="lazy"/>
+        <figcaption>Skill Distillation Process</figcaption>
+      </figure>
+    </div>
+    <!-- 保留现有 stat cards -->
   </div>
-  <figcaption>
-    Benchmark construction pipeline: 26 base tasks, 14 variant types, 208 oracle-verified variants.
-  </figcaption>
-</figure>
+</section>
 ```
 
-## 5. 图片尺寸优化
+```css
+.figure-pair {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  max-width: 720px;
+  margin: 0 auto 2rem;
+}
 
-`distillation-example.png` 是 3.2MB（7648x3419），太大了。在引用之前，添加 `loading="lazy"` 并限制显示尺寸（CSS max-width 已控制）。Codex 不需要压缩图片，但需要确保 `loading="lazy"` 在所有 `<img>` 上都有。
+@media (max-width: 700px) {
+  .figure-pair {
+    grid-template-columns: 1fr;
+  }
+}
 
-## 6. Commit 策略（6 步）
-
-```
-Commit 1: feat: add figure preview gallery section to homepage
-  - 新增 #figure-preview section HTML
-  - 新增 .preview-grid / .preview-card / .preview-frame CSS
-  - 引入 benchmark-pipeline.png（之前未使用）
-
-Commit 2: feat: enhance skill autopsy with scroll progress and intro overlay
-  - 新增 .autopsy-intro overlay HTML + CSS
-  - 新增 .scroll-progress-bar HTML + CSS
-  - 放大 .autopsy-retention 字号
-  - 更新 home.js updateAutopsy() 添加进度条和 overlay 控制
-
-Commit 3: feat: add mini collapse chart preview on homepage
-  - 新增 #mini-collapse-chart canvas HTML
-  - 新增 .mini-chart-preview / .chart-link CSS
-  - 更新 home.js 添加 setupMiniChart() 函数
-  - 首页动态加载 Chart.js
-
-Commit 4: feat: enhance explore cards with badges and improve nav discoverability
-  - 3 张 explore-card 添加 .explore-badge
-  - 新增 .explore-badge CSS
-  - 更新 explore-card 文案
-
-Commit 5: fix: final QA - check all links, alt text, lazy loading, responsive
-  - 验证所有内部链接可跳转
-  - 验证所有图片有 loading="lazy"
-  - 验证移动端布局
-  - 验证暗色模式
-  - push 到 origin gh-pages
+.figure-pair figcaption {
+  text-align: center;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  margin-top: 0.5rem;
+  font-family: "JetBrains Mono", monospace;
+}
 ```
 
-## 7. Git 操作
+---
 
-每次 commit 后:
-```bash
-cd D:\codes\tailskill
-git add -A
-git commit -m "<message>"
-git push origin gh-pages
+## 4. Git Commit 策略（5 步）
+
+### Commit 1: Bug fixes + structure
+```
+fix: tasks.js undefined variable bug + restructure homepage sections
+
+- Fix undefined 'total' variable in tasks.js:80
+- Add null handling to resultLabel() in tasks.js:28
+- Add figure-gallery section placeholder to index.html
+- Add mini chart SVG preview to core-findings section
+```
+Files: `tasks.js`, `index.html`
+
+### Commit 2: Figure preview gallery + mini chart styles
+```
+feat: add figure preview gallery and inline SVG mini chart to homepage
+
+- Add figure-grid with 3 paper figure thumbnails (links to experiments.html)
+- Add inline SVG collapse curve chart (replaces Chart.js, ~2KB vs 210KB)
+- Add chart-expand-link to experiments page
+- All images use loading="lazy" with explicit width/height
+```
+Files: `index.html`, `styles.css`
+
+### Commit 3: Enhanced autopsy scroll effects
+```
+feat: dramatically enhance skill autopsy scroll visibility
+
+- Add intro overlay text that fades on scroll start
+- Add sticky progress bar at top of autopsy section
+- Add background color shift (warm white → cool gray) on scroll
+- Enlarge retention counter (3rem, centered)
+- These 4 changes make the scroll effect unmistakably visible
+```
+Files: `index.html`, `styles.css`, `home.js`
+
+### Commit 4: Creative interactions + section indicator
+```
+feat: add creative interactions and section navigation dots
+
+- Add stat card hover expand (hidden text reveals on hover)
+- Add explore card left-border accent animation
+- Add section indicator dots on homepage (fixed right edge)
+- Add IntersectionObserver for dot highlighting
+- Mobile: stat card text always visible, dots hidden
+```
+Files: `index.html`, `styles.css`, `home.js`
+
+### Commit 5: Experiments page + final QA
+```
+feat: add benchmark-pipeline figure to experiments page + QA
+
+- Show both pipeline and infographic in experiments introduction
+- Add figure-pair responsive grid layout
+- Verify all links between pages work
+- Verify all data matches paper
+- Verify dark mode on all new components
+- Verify mobile responsive
+- Test with prefers-reduced-motion
+```
+Files: `experiments.html`, `styles.css`
+
+---
+
+## 5. 验证清单
+
+每完成一个 commit，在浏览器中验证：
+
+- [ ] 首页 Figure Gallery 3 张图都显示，点击都跳转到 experiments.html 正确锚点
+- [ ] 首页 Mini Chart 显示两条线（绿色 common、粉色 tail），"View full chart" 链接有效
+- [ ] 首页 Autopsy 滚动时：进度条在顶部增长、背景色变化明显、retention 数字大且清晰
+- [ ] 首页右侧 section indicator dots 正确高亮当前 section
+- [ ] Stat cards hover 时显示描述文字，移动端始终显示
+- [ ] Explore 卡片 hover 时左侧出现粉色竖条
+- [ ] Tasks 页面 gallery 计数显示正确的总数（"Showing N of 208 task variants"）
+- [ ] Experiments 页显示 benchmark-pipeline.png
+- [ ] 所有新组件在暗色模式下正确显示
+- [ ] 移动端（375px）布局正常
+- [ ] `prefers-reduced-motion` 下所有动画禁用
+- [ ] 图片使用 `loading="lazy"`
+- [ ] 所有链接可访问（键盘导航 + aria-labels）
+
+---
+
+## 6. 不要做的事
+
+- ❌ 不要在首页加载 Chart.js（用 inline SVG）
+- ❌ 不要重新生成 tasks.json（已有 54 tasks / 208 variants）
+- ❌ 不要添加粒子/溶解特效（太复杂，可能影响可读性）
+- ❌ 不要添加脉冲点动画（不需要）
+- ❌ 不要添加额外的 scroll-hint（intro overlay 已足够）
+- ❌ 不要使用 emoji 做图标
+- ❌ 不要添加 npm/框架
+- ❌ 不要修改 main.js 中的导航高亮逻辑（已正确实现）
+- ❌ 不要添加 .is-current 的 CSS（已存在于 styles.css:322）
+
+---
+
+## 7. 图片文件参考
+
+```
+D:\codes\tailskill\static\images\
+├── benchmark-pipeline.png         (758KB) ← 🔴 本轮必须使用（experiments + homepage preview）
+├── introduction-infographic.png   (894KB) ← ✅ 已用（experiments），本轮也放 homepage preview
+├── distillation-example.png       (3.19MB) ← ✅ 已用（experiments），本轮也放 homepage preview
+│                                            ⚠️ 首页缩略图必须用 object-fit:cover 裁剪，
+│                                               不要加载 7648px 原图到 300px 容器
+├── case-study-comparison.jpg      (132KB) ← ✅ 已用（experiments），不改动
+└── category-collapse-curves.jpg   (140KB) ← 不需要使用（被 Chart.js/inline SVG 替代）
 ```
 
-## 8. 约束（不要违反）
-
-1. **纯 HTML/CSS/JS** — 无框架、无 npm、无构建工具
-2. **不修改 experiments.html 中已有的 Chart.js 数据** — 数据已验证正确
-3. **不修改 tasks.html 的 taxonomy cards** — 数据已验证正确
-4. **保留现有 CSS 变量系统和主题切换**
-5. **不用 emoji 做图标**
-6. **图片全部 `loading="lazy"` + `decoding="async"`**
-7. **保留无障碍**: skip link, aria-labels, prefers-reduced-motion
-8. **Chart.js 在首页用动态加载（document.createElement('script')），不要在 index.html 加 `<script src="chart.js">`**
-
-## 9. 立即开始
-
-1. 先 `cat docs/iteration-3-requirements.md` 完整阅读本文档
-2. 再 `cat index.html static/css/styles.css static/js/home.js` 了解现有代码
-3. 按第 6 节的 6 步 commit 策略逐步执行
-4. 每次 push 后等 1-2 分钟验证 https://tailskill-bench.github.io/tailskill/
+**⚠️ distillation-example.png 注意事项：**
+原图 7648x3419px / 3.19MB。首页 figure-card 中使用时：
+- `width="300" height="134"` — 明确指定缩略图尺寸
+- `loading="lazy"` — 延迟加载
+- `object-fit: cover` — CSS 裁剪显示
+- 浏览器会自动缩放，但如果 Lighthouse 分数受影响，后续需要创建专用缩略图
