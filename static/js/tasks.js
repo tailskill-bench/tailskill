@@ -77,7 +77,7 @@
       return;
     }
     var visible = taskState.tasks.filter(taskMatches);
-    galleryCount.textContent = "Showing " + visible.length + " sample tasks from placeholder data. Full 208-task data will be added.";
+    galleryCount.textContent = "Showing " + visible.length + " of " + total + " task variants";
     taskGrid.innerHTML = visible.map(renderTask).join("");
     taskGrid.querySelectorAll(".task-card__button").forEach(function (button) {
       button.addEventListener("click", function () {

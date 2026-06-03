@@ -1,6 +1,379 @@
 {
   "tasks": [
     {
+      "id": "adaptive-cruise-control",
+      "domain": "Control Systems",
+      "variants": [
+        {
+          "type": "A1_bom",
+          "category": "A",
+          "category_name": "Data Encoding",
+          "variant_name": "BOM Injection",
+          "fragility": "Med",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "A3_zero_width",
+          "category": "A",
+          "category_name": "Data Encoding",
+          "variant_name": "Zero-width Characters",
+          "fragility": "Med-High",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "B1_readonly_output",
+          "category": "B",
+          "category_name": "File System",
+          "variant_name": "Read-only Output Dir",
+          "fragility": "Med",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "B3_dirty_output",
+          "category": "B",
+          "category_name": "File System",
+          "variant_name": "Output Contamination",
+          "fragility": "Med",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        }
+      ]
+    },
+    {
+      "id": "azure-bgp-oscillation-route-leak",
+      "domain": "Bgp Route",
+      "variants": [
+        {
+          "type": "B1_readonly_output",
+          "category": "B",
+          "category_name": "File System",
+          "variant_name": "Read-only Output Dir",
+          "fragility": "Med",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "D1_dns_jitter",
+          "category": "D",
+          "category_name": "Network / Service",
+          "variant_name": "DNS Jitter (50% Loss)",
+          "fragility": "Med-High",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "D2_rate_limit",
+          "category": "D",
+          "category_name": "Network / Service",
+          "variant_name": "HTTPS Throttling",
+          "fragility": "Med-High",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        }
+      ]
+    },
+    {
+      "id": "citation-check",
+      "domain": "Research",
+      "variants": [
+        {
+          "type": "A1_bom",
+          "category": "A",
+          "category_name": "Data Encoding",
+          "variant_name": "BOM Injection",
+          "fragility": "Med",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "A3_zero_width",
+          "category": "A",
+          "category_name": "Data Encoding",
+          "variant_name": "Zero-width Characters",
+          "fragility": "Med-High",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "B1_readonly_output",
+          "category": "B",
+          "category_name": "File System",
+          "variant_name": "Read-only Output Dir",
+          "fragility": "Med",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        }
+      ]
+    },
+    {
+      "id": "civ6-adjacency-optimizer",
+      "domain": "Games",
+      "variants": [
+        {
+          "type": "B1_readonly_output",
+          "category": "B",
+          "category_name": "File System",
+          "variant_name": "Read-only Output Dir",
+          "fragility": "Med",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "D1_dns_jitter",
+          "category": "D",
+          "category_name": "Network / Service",
+          "variant_name": "DNS Jitter (50% Loss)",
+          "fragility": "Med-High",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "D2_rate_limit",
+          "category": "D",
+          "category_name": "Network / Service",
+          "variant_name": "HTTPS Throttling",
+          "fragility": "Med-High",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        }
+      ]
+    },
+    {
+      "id": "court-form-filling",
+      "domain": "Document Processing",
+      "variants": [
+        {
+          "type": "B1_readonly_output",
+          "category": "B",
+          "category_name": "File System",
+          "variant_name": "Read-only Output Dir",
+          "fragility": "Med",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        }
+      ]
+    },
+    {
+      "id": "crystallographic-wyckoff-position-analysis",
+      "domain": "Materials_Science",
+      "variants": [
+        {
+          "type": "B1_readonly_output",
+          "category": "B",
+          "category_name": "File System",
+          "variant_name": "Read-only Output Dir",
+          "fragility": "Med",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "D1_dns_jitter",
+          "category": "D",
+          "category_name": "Network / Service",
+          "variant_name": "DNS Jitter (50% Loss)",
+          "fragility": "Med-High",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "D2_rate_limit",
+          "category": "D",
+          "category_name": "Network / Service",
+          "variant_name": "HTTPS Throttling",
+          "fragility": "Med-High",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "E1_missing_dep",
+          "category": "E",
+          "category_name": "Dependency",
+          "variant_name": "Missing Optional Dep",
+          "fragility": "Med",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        }
+      ]
+    },
+    {
+      "id": "dapt-intrusion-detection",
+      "domain": "Security",
+      "variants": [
+        {
+          "type": "A1_bom",
+          "category": "A",
+          "category_name": "Data Encoding",
+          "variant_name": "BOM Injection",
+          "fragility": "Med",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "A3_zero_width",
+          "category": "A",
+          "category_name": "Data Encoding",
+          "variant_name": "Zero-width Characters",
+          "fragility": "Med-High",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "B1_readonly_output",
+          "category": "B",
+          "category_name": "File System",
+          "variant_name": "Read-only Output Dir",
+          "fragility": "Med",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "E1_missing_dep",
+          "category": "E",
+          "category_name": "Dependency",
+          "variant_name": "Missing Optional Dep",
+          "fragility": "Med",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        }
+      ]
+    },
+    {
+      "id": "dialogue-parser",
+      "domain": "Game",
+      "variants": [
+        {
+          "type": "A1_bom",
+          "category": "A",
+          "category_name": "Data Encoding",
+          "variant_name": "BOM Injection",
+          "fragility": "Med",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "A3_zero_width",
+          "category": "A",
+          "category_name": "Data Encoding",
+          "variant_name": "Zero-width Characters",
+          "fragility": "Med-High",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "B1_readonly_output",
+          "category": "B",
+          "category_name": "File System",
+          "variant_name": "Read-only Output Dir",
+          "fragility": "Med",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        }
+      ]
+    },
+    {
       "id": "earthquake-phase-association",
       "domain": "Seismology",
       "variants": [
@@ -10,125 +383,559 @@
           "category_name": "Data Encoding",
           "variant_name": "BOM Injection",
           "fragility": "Med",
-          "results": { "s1": 1.0, "s2": 0.0, "s3": 0.0, "s4": 0.0 }
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
         },
         {
-          "type": "A2_zero_width",
+          "type": "A3_zero_width",
           "category": "A",
           "category_name": "Data Encoding",
           "variant_name": "Zero-width Characters",
           "fragility": "Med-High",
-          "results": { "s1": 1.0, "s2": 1.0, "s3": 0.0, "s4": 0.0 }
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "B1_readonly_output",
+          "category": "B",
+          "category_name": "File System",
+          "variant_name": "Read-only Output Dir",
+          "fragility": "Med",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "B3_dirty_output",
+          "category": "B",
+          "category_name": "File System",
+          "variant_name": "Output Contamination",
+          "fragility": "Med",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "C1_nan_poison",
+          "category": "C",
+          "category_name": "Data Quality",
+          "variant_name": "NaN/Inf Poisoning",
+          "fragility": "High",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "C3_duplicate_keys",
+          "category": "C",
+          "category_name": "Data Quality",
+          "variant_name": "Duplicate Primary Keys",
+          "fragility": "Low",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "C4_extremes",
+          "category": "C",
+          "category_name": "Data Quality",
+          "variant_name": "Extreme Values",
+          "fragility": "High",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        }
+      ]
+    },
+    {
+      "id": "earthquake-plate-calculation",
+      "domain": "Geophysics",
+      "variants": [
+        {
+          "type": "A3_zero_width",
+          "category": "A",
+          "category_name": "Data Encoding",
+          "variant_name": "Zero-width Characters",
+          "fragility": "Med-High",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "B1_readonly_output",
+          "category": "B",
+          "category_name": "File System",
+          "variant_name": "Read-only Output Dir",
+          "fragility": "Med",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "B3_dirty_output",
+          "category": "B",
+          "category_name": "File System",
+          "variant_name": "Output Contamination",
+          "fragility": "Med",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
         },
         {
           "type": "D1_dns_jitter",
           "category": "D",
           "category_name": "Network / Service",
-          "variant_name": "DNS Jitter",
+          "variant_name": "DNS Jitter (50% Loss)",
           "fragility": "Med-High",
-          "results": { "s1": 1.0, "s2": 0.0, "s3": 0.0, "s4": 1.0 }
-        }
-      ]
-    },
-    {
-      "id": "satellite-cloud-mask",
-      "domain": "Remote Sensing",
-      "variants": [
-        {
-          "type": "C3_extreme_values",
-          "category": "C",
-          "category_name": "Data Quality",
-          "variant_name": "Extreme Values",
-          "fragility": "High",
-          "results": { "s1": 1.0, "s2": 0.0, "s3": 0.0, "s4": 0.0 }
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
         },
         {
-          "type": "B2_output_contamination",
-          "category": "B",
-          "category_name": "File System",
-          "variant_name": "Output Contamination",
-          "fragility": "Med",
-          "results": { "s1": 1.0, "s2": 1.0, "s3": 1.0, "s4": 0.0 }
-        }
-      ]
-    },
-    {
-      "id": "clinical-lab-normalizer",
-      "domain": "Healthcare",
-      "variants": [
-        {
-          "type": "C1_nan_inf",
-          "category": "C",
-          "category_name": "Data Quality",
-          "variant_name": "NaN/Inf Poisoning",
-          "fragility": "High",
-          "results": { "s1": 1.0, "s2": 0.0, "s3": 0.0, "s4": 0.0 }
+          "type": "D2_rate_limit",
+          "category": "D",
+          "category_name": "Network / Service",
+          "variant_name": "HTTPS Throttling",
+          "fragility": "Med-High",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
         },
         {
-          "type": "E1_missing_optional_dep",
+          "type": "E1_missing_dep",
           "category": "E",
           "category_name": "Dependency",
           "variant_name": "Missing Optional Dep",
           "fragility": "Med",
-          "results": { "s1": 1.0, "s2": 1.0, "s3": 0.0, "s4": 0.0 }
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
         }
       ]
     },
     {
-      "id": "financial-ledger-reconciler",
-      "domain": "Finance",
+      "id": "econ-detrending-correlation",
+      "domain": "Economics",
       "variants": [
-        {
-          "type": "C2_duplicate_keys",
-          "category": "C",
-          "category_name": "Data Quality",
-          "variant_name": "Duplicate Primary Keys",
-          "fragility": "Low",
-          "results": { "s1": 1.0, "s2": 1.0, "s3": 1.0, "s4": 1.0 }
-        },
-        {
-          "type": "G1_multi_vector",
-          "category": "G",
-          "category_name": "Security",
-          "variant_name": "Multi-vector Attack",
-          "fragility": "High",
-          "results": { "s1": 1.0, "s2": 0.0, "s3": 1.0, "s4": 0.0 }
-        }
-      ]
-    },
-    {
-      "id": "genomics-fastq-qc",
-      "domain": "Bioinformatics",
-      "variants": [
-        {
-          "type": "B1_read_only_output",
-          "category": "B",
-          "category_name": "File System",
-          "variant_name": "Read-only Output Dir",
-          "fragility": "Med",
-          "results": { "s1": 1.0, "s2": 1.0, "s3": 0.0, "s4": 0.0 }
-        },
         {
           "type": "A1_bom",
           "category": "A",
           "category_name": "Data Encoding",
           "variant_name": "BOM Injection",
           "fragility": "Med",
-          "results": { "s1": 1.0, "s2": 0.0, "s3": 0.0, "s4": 0.0 }
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "A3_zero_width",
+          "category": "A",
+          "category_name": "Data Encoding",
+          "variant_name": "Zero-width Characters",
+          "fragility": "Med-High",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "B1_readonly_output",
+          "category": "B",
+          "category_name": "File System",
+          "variant_name": "Read-only Output Dir",
+          "fragility": "Med",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "E1_missing_dep",
+          "category": "E",
+          "category_name": "Dependency",
+          "variant_name": "Missing Optional Dep",
+          "fragility": "Med",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
         }
       ]
     },
     {
-      "id": "weather-api-gap-filler",
-      "domain": "Climate",
+      "id": "edit-pdf",
+      "domain": "Unknown",
       "variants": [
         {
-          "type": "D2_https_throttling",
+          "type": "B1_readonly_output",
+          "category": "B",
+          "category_name": "File System",
+          "variant_name": "Read-only Output Dir",
+          "fragility": "Med",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "D1_dns_jitter",
           "category": "D",
           "category_name": "Network / Service",
-          "variant_name": "HTTPS Connection Throttling",
+          "variant_name": "DNS Jitter (50% Loss)",
           "fragility": "Med-High",
-          "results": { "s1": 1.0, "s2": 0.0, "s3": 0.0, "s4": 1.0 }
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "D2_rate_limit",
+          "category": "D",
+          "category_name": "Network / Service",
+          "variant_name": "HTTPS Throttling",
+          "fragility": "Med-High",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "E1_missing_dep",
+          "category": "E",
+          "category_name": "Dependency",
+          "variant_name": "Missing Optional Dep",
+          "fragility": "Med",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        }
+      ]
+    },
+    {
+      "id": "energy-ac-optimal-power-flow",
+      "domain": "Energy",
+      "variants": [
+        {
+          "type": "B1_readonly_output",
+          "category": "B",
+          "category_name": "File System",
+          "variant_name": "Read-only Output Dir",
+          "fragility": "Med",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "E1_missing_dep",
+          "category": "E",
+          "category_name": "Dependency",
+          "variant_name": "Missing Optional Dep",
+          "fragility": "Med",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        }
+      ]
+    },
+    {
+      "id": "energy-market-pricing",
+      "domain": "Energy",
+      "variants": [
+        {
+          "type": "B1_readonly_output",
+          "category": "B",
+          "category_name": "File System",
+          "variant_name": "Read-only Output Dir",
+          "fragility": "Med",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "E1_missing_dep",
+          "category": "E",
+          "category_name": "Dependency",
+          "variant_name": "Missing Optional Dep",
+          "fragility": "Med",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        }
+      ]
+    },
+    {
+      "id": "enterprise-information-search",
+      "domain": "Information Retrieval",
+      "variants": [
+        {
+          "type": "A3_zero_width",
+          "category": "A",
+          "category_name": "Data Encoding",
+          "variant_name": "Zero-width Characters",
+          "fragility": "Med-High",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "B1_readonly_output",
+          "category": "B",
+          "category_name": "File System",
+          "variant_name": "Read-only Output Dir",
+          "fragility": "Med",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        }
+      ]
+    },
+    {
+      "id": "exceltable-in-ppt",
+      "domain": "Office Operation",
+      "variants": [
+        {
+          "type": "B1_readonly_output",
+          "category": "B",
+          "category_name": "File System",
+          "variant_name": "Read-only Output Dir",
+          "fragility": "Med",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "D1_dns_jitter",
+          "category": "D",
+          "category_name": "Network / Service",
+          "variant_name": "DNS Jitter (50% Loss)",
+          "fragility": "Med-High",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "D2_rate_limit",
+          "category": "D",
+          "category_name": "Network / Service",
+          "variant_name": "HTTPS Throttling",
+          "fragility": "Med-High",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "E1_missing_dep",
+          "category": "E",
+          "category_name": "Dependency",
+          "variant_name": "Missing Optional Dep",
+          "fragility": "Med",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        }
+      ]
+    },
+    {
+      "id": "exoplanet-detection-period",
+      "domain": "Scientific Computing",
+      "variants": [
+        {
+          "type": "E1_missing_dep",
+          "category": "E",
+          "category_name": "Dependency",
+          "variant_name": "Missing Optional Dep",
+          "fragility": "Med",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        }
+      ]
+    },
+    {
+      "id": "financial-modeling-qa",
+      "domain": "Financial Modeling",
+      "variants": [
+        {
+          "type": "A1_bom",
+          "category": "A",
+          "category_name": "Data Encoding",
+          "variant_name": "BOM Injection",
+          "fragility": "Med",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "A3_zero_width",
+          "category": "A",
+          "category_name": "Data Encoding",
+          "variant_name": "Zero-width Characters",
+          "fragility": "Med-High",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "B1_readonly_output",
+          "category": "B",
+          "category_name": "File System",
+          "variant_name": "Read-only Output Dir",
+          "fragility": "Med",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        }
+      ]
+    },
+    {
+      "id": "fix-druid-loophole-cve",
+      "domain": "Security",
+      "variants": [
+        {
+          "type": "G1_multi_vector",
+          "category": "G",
+          "category_name": "Security",
+          "variant_name": "Multi-vector Attack",
+          "fragility": "High",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "G2_fix_regression",
+          "category": "G",
+          "category_name": "Security",
+          "variant_name": "Security Fallback",
+          "fragility": "High",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        }
+      ]
+    },
+    {
+      "id": "fix-visual-stability",
+      "domain": "Web Performance",
+      "variants": [
+        {
+          "type": "E1_missing_dep",
+          "category": "E",
+          "category_name": "Dependency",
+          "variant_name": "Missing Optional Dep",
+          "fragility": "Med",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
         },
         {
           "type": "E2_version_drift",
@@ -136,51 +943,2088 @@
           "category_name": "Dependency",
           "variant_name": "Library Version Drift",
           "fragility": "High",
-          "results": { "s1": 1.0, "s2": 1.0, "s3": 0.0, "s4": 0.0 }
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
         }
       ]
     },
     {
-      "id": "warehouse-inventory-cleaner",
-      "domain": "Operations",
+      "id": "flink-query",
+      "domain": "Flink",
       "variants": [
         {
-          "type": "C4_type_confusion",
-          "category": "C",
-          "category_name": "Data Quality",
-          "variant_name": "Type Confusion",
-          "fragility": "High",
-          "results": { "s1": 1.0, "s2": 0.0, "s3": 0.0, "s4": 0.0 }
-        },
-        {
-          "type": "G2_security_fallback",
-          "category": "G",
-          "category_name": "Security",
-          "variant_name": "Security Fallback",
-          "fragility": "High",
-          "results": { "s1": 1.0, "s2": 0.0, "s3": 0.0, "s4": 0.0 }
-        }
-      ]
-    },
-    {
-      "id": "astronomy-transient-matcher",
-      "domain": "Astronomy",
-      "variants": [
-        {
-          "type": "A2_zero_width",
-          "category": "A",
-          "category_name": "Data Encoding",
-          "variant_name": "Zero-width Characters",
-          "fragility": "Med-High",
-          "results": { "s1": 1.0, "s2": 0.0, "s3": 0.0, "s4": 0.0 }
+          "type": "B1_readonly_output",
+          "category": "B",
+          "category_name": "File System",
+          "variant_name": "Read-only Output Dir",
+          "fragility": "Med",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
         },
         {
           "type": "D1_dns_jitter",
           "category": "D",
           "category_name": "Network / Service",
-          "variant_name": "DNS Jitter",
+          "variant_name": "DNS Jitter (50% Loss)",
           "fragility": "Med-High",
-          "results": { "s1": 1.0, "s2": 1.0, "s3": 0.0, "s4": 1.0 }
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "D2_rate_limit",
+          "category": "D",
+          "category_name": "Network / Service",
+          "variant_name": "HTTPS Throttling",
+          "fragility": "Med-High",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        }
+      ]
+    },
+    {
+      "id": "flood-risk-analysis",
+      "domain": "Data Processing",
+      "variants": [
+        {
+          "type": "A1_bom",
+          "category": "A",
+          "category_name": "Data Encoding",
+          "variant_name": "BOM Injection",
+          "fragility": "Med",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "A3_zero_width",
+          "category": "A",
+          "category_name": "Data Encoding",
+          "variant_name": "Zero-width Characters",
+          "fragility": "Med-High",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "B1_readonly_output",
+          "category": "B",
+          "category_name": "File System",
+          "variant_name": "Read-only Output Dir",
+          "fragility": "Med",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "D1_dns_jitter",
+          "category": "D",
+          "category_name": "Network / Service",
+          "variant_name": "DNS Jitter (50% Loss)",
+          "fragility": "Med-High",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "D2_rate_limit",
+          "category": "D",
+          "category_name": "Network / Service",
+          "variant_name": "HTTPS Throttling",
+          "fragility": "Med-High",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "E1_missing_dep",
+          "category": "E",
+          "category_name": "Dependency",
+          "variant_name": "Missing Optional Dep",
+          "fragility": "Med",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        }
+      ]
+    },
+    {
+      "id": "gh-repo-analytics",
+      "domain": "Devops Analytics",
+      "variants": [
+        {
+          "type": "B1_readonly_output",
+          "category": "B",
+          "category_name": "File System",
+          "variant_name": "Read-only Output Dir",
+          "fragility": "Med",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "D1_dns_jitter",
+          "category": "D",
+          "category_name": "Network / Service",
+          "variant_name": "DNS Jitter (50% Loss)",
+          "fragility": "Med-High",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "D2_rate_limit",
+          "category": "D",
+          "category_name": "Network / Service",
+          "variant_name": "HTTPS Throttling",
+          "fragility": "Med-High",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        }
+      ]
+    },
+    {
+      "id": "glm-lake-mendota",
+      "domain": "Environmental Modeling",
+      "variants": [
+        {
+          "type": "B1_readonly_output",
+          "category": "B",
+          "category_name": "File System",
+          "variant_name": "Read-only Output Dir",
+          "fragility": "Med",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "D1_dns_jitter",
+          "category": "D",
+          "category_name": "Network / Service",
+          "variant_name": "DNS Jitter (50% Loss)",
+          "fragility": "Med-High",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "D2_rate_limit",
+          "category": "D",
+          "category_name": "Network / Service",
+          "variant_name": "HTTPS Throttling",
+          "fragility": "Med-High",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        }
+      ]
+    },
+    {
+      "id": "grid-dispatch-operator",
+      "domain": "Energy",
+      "variants": [
+        {
+          "type": "B1_readonly_output",
+          "category": "B",
+          "category_name": "File System",
+          "variant_name": "Read-only Output Dir",
+          "fragility": "Med",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "D1_dns_jitter",
+          "category": "D",
+          "category_name": "Network / Service",
+          "variant_name": "DNS Jitter (50% Loss)",
+          "fragility": "Med-High",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "D2_rate_limit",
+          "category": "D",
+          "category_name": "Network / Service",
+          "variant_name": "HTTPS Throttling",
+          "fragility": "Med-High",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "E1_missing_dep",
+          "category": "E",
+          "category_name": "Dependency",
+          "variant_name": "Missing Optional Dep",
+          "fragility": "Med",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        }
+      ]
+    },
+    {
+      "id": "hvac-control",
+      "domain": "Control Systems",
+      "variants": [
+        {
+          "type": "B1_readonly_output",
+          "category": "B",
+          "category_name": "File System",
+          "variant_name": "Read-only Output Dir",
+          "fragility": "Med",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "E1_missing_dep",
+          "category": "E",
+          "category_name": "Dependency",
+          "variant_name": "Missing Optional Dep",
+          "fragility": "Med",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        }
+      ]
+    },
+    {
+      "id": "invoice-fraud-detection",
+      "domain": "Financial Modeling",
+      "variants": [
+        {
+          "type": "A1_bom",
+          "category": "A",
+          "category_name": "Data Encoding",
+          "variant_name": "BOM Injection",
+          "fragility": "Med",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "A3_zero_width",
+          "category": "A",
+          "category_name": "Data Encoding",
+          "variant_name": "Zero-width Characters",
+          "fragility": "Med-High",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "B1_readonly_output",
+          "category": "B",
+          "category_name": "File System",
+          "variant_name": "Read-only Output Dir",
+          "fragility": "Med",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        }
+      ]
+    },
+    {
+      "id": "lab-unit-harmonization",
+      "domain": "Healthcare",
+      "variants": [
+        {
+          "type": "A1_bom",
+          "category": "A",
+          "category_name": "Data Encoding",
+          "variant_name": "BOM Injection",
+          "fragility": "Med",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "A3_zero_width",
+          "category": "A",
+          "category_name": "Data Encoding",
+          "variant_name": "Zero-width Characters",
+          "fragility": "Med-High",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "B1_readonly_output",
+          "category": "B",
+          "category_name": "File System",
+          "variant_name": "Read-only Output Dir",
+          "fragility": "Med",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "C1_nan_poison",
+          "category": "C",
+          "category_name": "Data Quality",
+          "variant_name": "NaN/Inf Poisoning",
+          "fragility": "High",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "C4_extremes",
+          "category": "C",
+          "category_name": "Data Quality",
+          "variant_name": "Extreme Values",
+          "fragility": "High",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "C5_type_confusion",
+          "category": "C",
+          "category_name": "Data Quality",
+          "variant_name": "Type Confusion",
+          "fragility": "High",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        }
+      ]
+    },
+    {
+      "id": "lake-warming-attribution",
+      "domain": "Data Processing",
+      "variants": [
+        {
+          "type": "A1_bom",
+          "category": "A",
+          "category_name": "Data Encoding",
+          "variant_name": "BOM Injection",
+          "fragility": "Med",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "A3_zero_width",
+          "category": "A",
+          "category_name": "Data Encoding",
+          "variant_name": "Zero-width Characters",
+          "fragility": "Med-High",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "B1_readonly_output",
+          "category": "B",
+          "category_name": "File System",
+          "variant_name": "Read-only Output Dir",
+          "fragility": "Med",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "C1_nan_poison",
+          "category": "C",
+          "category_name": "Data Quality",
+          "variant_name": "NaN/Inf Poisoning",
+          "fragility": "High",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "C4_extremes",
+          "category": "C",
+          "category_name": "Data Quality",
+          "variant_name": "Extreme Values",
+          "fragility": "High",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "D1_dns_jitter",
+          "category": "D",
+          "category_name": "Network / Service",
+          "variant_name": "DNS Jitter (50% Loss)",
+          "fragility": "Med-High",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "D2_rate_limit",
+          "category": "D",
+          "category_name": "Network / Service",
+          "variant_name": "HTTPS Throttling",
+          "fragility": "Med-High",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        }
+      ]
+    },
+    {
+      "id": "manufacturing-codebook-normalization",
+      "domain": "Manufacturing",
+      "variants": [
+        {
+          "type": "A1_bom",
+          "category": "A",
+          "category_name": "Data Encoding",
+          "variant_name": "BOM Injection",
+          "fragility": "Med",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "A3_zero_width",
+          "category": "A",
+          "category_name": "Data Encoding",
+          "variant_name": "Zero-width Characters",
+          "fragility": "Med-High",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "B1_readonly_output",
+          "category": "B",
+          "category_name": "File System",
+          "variant_name": "Read-only Output Dir",
+          "fragility": "Med",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        }
+      ]
+    },
+    {
+      "id": "manufacturing-equipment-maintenance",
+      "domain": "Manufacturing",
+      "variants": [
+        {
+          "type": "B1_readonly_output",
+          "category": "B",
+          "category_name": "File System",
+          "variant_name": "Read-only Output Dir",
+          "fragility": "Med",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        }
+      ]
+    },
+    {
+      "id": "manufacturing-fjsp-optimization",
+      "domain": "Manufacturing",
+      "variants": [
+        {
+          "type": "A1_bom",
+          "category": "A",
+          "category_name": "Data Encoding",
+          "variant_name": "BOM Injection",
+          "fragility": "Med",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "A3_zero_width",
+          "category": "A",
+          "category_name": "Data Encoding",
+          "variant_name": "Zero-width Characters",
+          "fragility": "Med-High",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "B1_readonly_output",
+          "category": "B",
+          "category_name": "File System",
+          "variant_name": "Read-only Output Dir",
+          "fragility": "Med",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        }
+      ]
+    },
+    {
+      "id": "mars-clouds-clustering",
+      "domain": "Data Science",
+      "variants": [
+        {
+          "type": "B1_readonly_output",
+          "category": "B",
+          "category_name": "File System",
+          "variant_name": "Read-only Output Dir",
+          "fragility": "Med",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "E1_missing_dep",
+          "category": "E",
+          "category_name": "Dependency",
+          "variant_name": "Missing Optional Dep",
+          "fragility": "Med",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        }
+      ]
+    },
+    {
+      "id": "offer-letter-generator",
+      "domain": "Document Generation",
+      "variants": [
+        {
+          "type": "A3_zero_width",
+          "category": "A",
+          "category_name": "Data Encoding",
+          "variant_name": "Zero-width Characters",
+          "fragility": "Med-High",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "B1_readonly_output",
+          "category": "B",
+          "category_name": "File System",
+          "variant_name": "Read-only Output Dir",
+          "fragility": "Med",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "E1_missing_dep",
+          "category": "E",
+          "category_name": "Dependency",
+          "variant_name": "Missing Optional Dep",
+          "fragility": "Med",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        }
+      ]
+    },
+    {
+      "id": "paper-anonymizer",
+      "domain": "Document Editing",
+      "variants": [
+        {
+          "type": "B1_readonly_output",
+          "category": "B",
+          "category_name": "File System",
+          "variant_name": "Read-only Output Dir",
+          "fragility": "Med",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "D1_dns_jitter",
+          "category": "D",
+          "category_name": "Network / Service",
+          "variant_name": "DNS Jitter (50% Loss)",
+          "fragility": "Med-High",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "D2_rate_limit",
+          "category": "D",
+          "category_name": "Network / Service",
+          "variant_name": "HTTPS Throttling",
+          "fragility": "Med-High",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "E1_missing_dep",
+          "category": "E",
+          "category_name": "Dependency",
+          "variant_name": "Missing Optional Dep",
+          "fragility": "Med",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        }
+      ]
+    },
+    {
+      "id": "parallel-tfidf-search",
+      "domain": "Parallelization",
+      "variants": [
+        {
+          "type": "B1_readonly_output",
+          "category": "B",
+          "category_name": "File System",
+          "variant_name": "Read-only Output Dir",
+          "fragility": "Med",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        }
+      ]
+    },
+    {
+      "id": "pdf-excel-diff",
+      "domain": "Data Comparison",
+      "variants": [
+        {
+          "type": "A1_bom",
+          "category": "A",
+          "category_name": "Data Encoding",
+          "variant_name": "BOM Injection",
+          "fragility": "Med",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "A3_zero_width",
+          "category": "A",
+          "category_name": "Data Encoding",
+          "variant_name": "Zero-width Characters",
+          "fragility": "Med-High",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "B1_readonly_output",
+          "category": "B",
+          "category_name": "File System",
+          "variant_name": "Read-only Output Dir",
+          "fragility": "Med",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "C1_nan_poison",
+          "category": "C",
+          "category_name": "Data Quality",
+          "variant_name": "NaN/Inf Poisoning",
+          "fragility": "High",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "C4_extremes",
+          "category": "C",
+          "category_name": "Data Quality",
+          "variant_name": "Extreme Values",
+          "fragility": "High",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "C5_type_confusion",
+          "category": "C",
+          "category_name": "Data Quality",
+          "variant_name": "Type Confusion",
+          "fragility": "High",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        }
+      ]
+    },
+    {
+      "id": "powerlifting-coef-calc",
+      "domain": "Data Analysis",
+      "variants": [
+        {
+          "type": "B1_readonly_output",
+          "category": "B",
+          "category_name": "File System",
+          "variant_name": "Read-only Output Dir",
+          "fragility": "Med",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "C1_nan_poison",
+          "category": "C",
+          "category_name": "Data Quality",
+          "variant_name": "NaN/Inf Poisoning",
+          "fragility": "High",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "C3_duplicate_keys",
+          "category": "C",
+          "category_name": "Data Quality",
+          "variant_name": "Duplicate Primary Keys",
+          "fragility": "Low",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "C4_extremes",
+          "category": "C",
+          "category_name": "Data Quality",
+          "variant_name": "Extreme Values",
+          "fragility": "High",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "C5_type_confusion",
+          "category": "C",
+          "category_name": "Data Quality",
+          "variant_name": "Type Confusion",
+          "fragility": "High",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        }
+      ]
+    },
+    {
+      "id": "pptx-reference-formatting",
+      "domain": "Office Suite",
+      "variants": [
+        {
+          "type": "B1_readonly_output",
+          "category": "B",
+          "category_name": "File System",
+          "variant_name": "Read-only Output Dir",
+          "fragility": "Med",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "D1_dns_jitter",
+          "category": "D",
+          "category_name": "Network / Service",
+          "variant_name": "DNS Jitter (50% Loss)",
+          "fragility": "Med-High",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "D2_rate_limit",
+          "category": "D",
+          "category_name": "Network / Service",
+          "variant_name": "HTTPS Throttling",
+          "fragility": "Med-High",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "E1_missing_dep",
+          "category": "E",
+          "category_name": "Dependency",
+          "variant_name": "Missing Optional Dep",
+          "fragility": "Med",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        }
+      ]
+    },
+    {
+      "id": "protein-expression-analysis",
+      "domain": "Data Analysis",
+      "variants": [
+        {
+          "type": "A1_bom",
+          "category": "A",
+          "category_name": "Data Encoding",
+          "variant_name": "BOM Injection",
+          "fragility": "Med",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "A3_zero_width",
+          "category": "A",
+          "category_name": "Data Encoding",
+          "variant_name": "Zero-width Characters",
+          "fragility": "Med-High",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "B1_readonly_output",
+          "category": "B",
+          "category_name": "File System",
+          "variant_name": "Read-only Output Dir",
+          "fragility": "Med",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "B3_dirty_output",
+          "category": "B",
+          "category_name": "File System",
+          "variant_name": "Output Contamination",
+          "fragility": "Med",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "C1_nan_poison",
+          "category": "C",
+          "category_name": "Data Quality",
+          "variant_name": "NaN/Inf Poisoning",
+          "fragility": "High",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "C4_extremes",
+          "category": "C",
+          "category_name": "Data Quality",
+          "variant_name": "Extreme Values",
+          "fragility": "High",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "C5_type_confusion",
+          "category": "C",
+          "category_name": "Data Quality",
+          "variant_name": "Type Confusion",
+          "fragility": "High",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        }
+      ]
+    },
+    {
+      "id": "r2r-mpc-control",
+      "domain": "Control Systems",
+      "variants": [
+        {
+          "type": "B1_readonly_output",
+          "category": "B",
+          "category_name": "File System",
+          "variant_name": "Read-only Output Dir",
+          "fragility": "Med",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "E1_missing_dep",
+          "category": "E",
+          "category_name": "Dependency",
+          "variant_name": "Missing Optional Dep",
+          "fragility": "Med",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        }
+      ]
+    },
+    {
+      "id": "react-performance-debugging",
+      "domain": "Web Performance",
+      "variants": [
+        {
+          "type": "B1_readonly_output",
+          "category": "B",
+          "category_name": "File System",
+          "variant_name": "Read-only Output Dir",
+          "fragility": "Med",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "E1_missing_dep",
+          "category": "E",
+          "category_name": "Dependency",
+          "variant_name": "Missing Optional Dep",
+          "fragility": "Med",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "E2_version_drift",
+          "category": "E",
+          "category_name": "Dependency",
+          "variant_name": "Library Version Drift",
+          "fragility": "High",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        }
+      ]
+    },
+    {
+      "id": "reserves-at-risk-calc",
+      "domain": "Financial Analysis",
+      "variants": [
+        {
+          "type": "A1_bom",
+          "category": "A",
+          "category_name": "Data Encoding",
+          "variant_name": "BOM Injection",
+          "fragility": "Med",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "A3_zero_width",
+          "category": "A",
+          "category_name": "Data Encoding",
+          "variant_name": "Zero-width Characters",
+          "fragility": "Med-High",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "B1_readonly_output",
+          "category": "B",
+          "category_name": "File System",
+          "variant_name": "Read-only Output Dir",
+          "fragility": "Med",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "B3_dirty_output",
+          "category": "B",
+          "category_name": "File System",
+          "variant_name": "Output Contamination",
+          "fragility": "Med",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "C1_nan_poison",
+          "category": "C",
+          "category_name": "Data Quality",
+          "variant_name": "NaN/Inf Poisoning",
+          "fragility": "High",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "C4_extremes",
+          "category": "C",
+          "category_name": "Data Quality",
+          "variant_name": "Extreme Values",
+          "fragility": "High",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "C5_type_confusion",
+          "category": "C",
+          "category_name": "Data Quality",
+          "variant_name": "Type Confusion",
+          "fragility": "High",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        }
+      ]
+    },
+    {
+      "id": "sales-pivot-analysis",
+      "domain": "Data Analysis",
+      "variants": [
+        {
+          "type": "A1_bom",
+          "category": "A",
+          "category_name": "Data Encoding",
+          "variant_name": "BOM Injection",
+          "fragility": "Med",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "A3_zero_width",
+          "category": "A",
+          "category_name": "Data Encoding",
+          "variant_name": "Zero-width Characters",
+          "fragility": "Med-High",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "B1_readonly_output",
+          "category": "B",
+          "category_name": "File System",
+          "variant_name": "Read-only Output Dir",
+          "fragility": "Med",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "B3_dirty_output",
+          "category": "B",
+          "category_name": "File System",
+          "variant_name": "Output Contamination",
+          "fragility": "Med",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "C1_nan_poison",
+          "category": "C",
+          "category_name": "Data Quality",
+          "variant_name": "NaN/Inf Poisoning",
+          "fragility": "High",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "C3_duplicate_keys",
+          "category": "C",
+          "category_name": "Data Quality",
+          "variant_name": "Duplicate Primary Keys",
+          "fragility": "Low",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "C4_extremes",
+          "category": "C",
+          "category_name": "Data Quality",
+          "variant_name": "Extreme Values",
+          "fragility": "High",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "C5_type_confusion",
+          "category": "C",
+          "category_name": "Data Quality",
+          "variant_name": "Type Confusion",
+          "fragility": "High",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        }
+      ]
+    },
+    {
+      "id": "sec-financial-report",
+      "domain": "Finance",
+      "variants": [
+        {
+          "type": "B1_readonly_output",
+          "category": "B",
+          "category_name": "File System",
+          "variant_name": "Read-only Output Dir",
+          "fragility": "Med",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "D1_dns_jitter",
+          "category": "D",
+          "category_name": "Network / Service",
+          "variant_name": "DNS Jitter (50% Loss)",
+          "fragility": "Med-High",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "D2_rate_limit",
+          "category": "D",
+          "category_name": "Network / Service",
+          "variant_name": "HTTPS Throttling",
+          "fragility": "Med-High",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        }
+      ]
+    },
+    {
+      "id": "seismic-phase-picking",
+      "domain": "Seismology",
+      "variants": [
+        {
+          "type": "B1_readonly_output",
+          "category": "B",
+          "category_name": "File System",
+          "variant_name": "Read-only Output Dir",
+          "fragility": "Med",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "D1_dns_jitter",
+          "category": "D",
+          "category_name": "Network / Service",
+          "variant_name": "DNS Jitter (50% Loss)",
+          "fragility": "Med-High",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "D2_rate_limit",
+          "category": "D",
+          "category_name": "Network / Service",
+          "variant_name": "HTTPS Throttling",
+          "fragility": "Med-High",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        }
+      ]
+    },
+    {
+      "id": "shock-analysis-demand",
+      "domain": "Financial Analysis",
+      "variants": [
+        {
+          "type": "A1_bom",
+          "category": "A",
+          "category_name": "Data Encoding",
+          "variant_name": "BOM Injection",
+          "fragility": "Med",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "A3_zero_width",
+          "category": "A",
+          "category_name": "Data Encoding",
+          "variant_name": "Zero-width Characters",
+          "fragility": "Med-High",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "B1_readonly_output",
+          "category": "B",
+          "category_name": "File System",
+          "variant_name": "Read-only Output Dir",
+          "fragility": "Med",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "B3_dirty_output",
+          "category": "B",
+          "category_name": "File System",
+          "variant_name": "Output Contamination",
+          "fragility": "Med",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "C1_nan_poison",
+          "category": "C",
+          "category_name": "Data Quality",
+          "variant_name": "NaN/Inf Poisoning",
+          "fragility": "High",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "C4_extremes",
+          "category": "C",
+          "category_name": "Data Quality",
+          "variant_name": "Extreme Values",
+          "fragility": "High",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "C5_type_confusion",
+          "category": "C",
+          "category_name": "Data Quality",
+          "variant_name": "Type Confusion",
+          "fragility": "High",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "D1_dns_jitter",
+          "category": "D",
+          "category_name": "Network / Service",
+          "variant_name": "DNS Jitter (50% Loss)",
+          "fragility": "Med-High",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        }
+      ]
+    },
+    {
+      "id": "shock-analysis-supply",
+      "domain": "Financial Analysis",
+      "variants": [
+        {
+          "type": "A1_bom",
+          "category": "A",
+          "category_name": "Data Encoding",
+          "variant_name": "BOM Injection",
+          "fragility": "Med",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "A3_zero_width",
+          "category": "A",
+          "category_name": "Data Encoding",
+          "variant_name": "Zero-width Characters",
+          "fragility": "Med-High",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "B1_readonly_output",
+          "category": "B",
+          "category_name": "File System",
+          "variant_name": "Read-only Output Dir",
+          "fragility": "Med",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "B3_dirty_output",
+          "category": "B",
+          "category_name": "File System",
+          "variant_name": "Output Contamination",
+          "fragility": "Med",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "C1_nan_poison",
+          "category": "C",
+          "category_name": "Data Quality",
+          "variant_name": "NaN/Inf Poisoning",
+          "fragility": "High",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "C4_extremes",
+          "category": "C",
+          "category_name": "Data Quality",
+          "variant_name": "Extreme Values",
+          "fragility": "High",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "C5_type_confusion",
+          "category": "C",
+          "category_name": "Data Quality",
+          "variant_name": "Type Confusion",
+          "fragility": "High",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "D1_dns_jitter",
+          "category": "D",
+          "category_name": "Network / Service",
+          "variant_name": "DNS Jitter (50% Loss)",
+          "fragility": "Med-High",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        }
+      ]
+    },
+    {
+      "id": "software-dependency-audit",
+      "domain": "Security",
+      "variants": [
+        {
+          "type": "B1_readonly_output",
+          "category": "B",
+          "category_name": "File System",
+          "variant_name": "Read-only Output Dir",
+          "fragility": "Med",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "D1_dns_jitter",
+          "category": "D",
+          "category_name": "Network / Service",
+          "variant_name": "DNS Jitter (50% Loss)",
+          "fragility": "Med-High",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "E1_missing_dep",
+          "category": "E",
+          "category_name": "Dependency",
+          "variant_name": "Missing Optional Dep",
+          "fragility": "Med",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        }
+      ]
+    },
+    {
+      "id": "suricata-custom-exfil",
+      "domain": "Security & Ctf",
+      "variants": [
+        {
+          "type": "G1_multi_vector",
+          "category": "G",
+          "category_name": "Security",
+          "variant_name": "Multi-vector Attack",
+          "fragility": "High",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        }
+      ]
+    },
+    {
+      "id": "taxonomy-tree-merge",
+      "domain": "Ml/Nlp",
+      "variants": [
+        {
+          "type": "A1_bom",
+          "category": "A",
+          "category_name": "Data Encoding",
+          "variant_name": "BOM Injection",
+          "fragility": "Med",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "A3_zero_width",
+          "category": "A",
+          "category_name": "Data Encoding",
+          "variant_name": "Zero-width Characters",
+          "fragility": "Med-High",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "B1_readonly_output",
+          "category": "B",
+          "category_name": "File System",
+          "variant_name": "Read-only Output Dir",
+          "fragility": "Med",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        }
+      ]
+    },
+    {
+      "id": "trend-anomaly-causal-inference",
+      "domain": "Data Science",
+      "variants": [
+        {
+          "type": "A1_bom",
+          "category": "A",
+          "category_name": "Data Encoding",
+          "variant_name": "BOM Injection",
+          "fragility": "Med",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "A3_zero_width",
+          "category": "A",
+          "category_name": "Data Encoding",
+          "variant_name": "Zero-width Characters",
+          "fragility": "Med-High",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "B1_readonly_output",
+          "category": "B",
+          "category_name": "File System",
+          "variant_name": "Read-only Output Dir",
+          "fragility": "Med",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "C1_nan_poison",
+          "category": "C",
+          "category_name": "Data Quality",
+          "variant_name": "NaN/Inf Poisoning",
+          "fragility": "High",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "C4_extremes",
+          "category": "C",
+          "category_name": "Data Quality",
+          "variant_name": "Extreme Values",
+          "fragility": "High",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        }
+      ]
+    },
+    {
+      "id": "weighted-gdp-calc",
+      "domain": "Financial Analysis",
+      "variants": [
+        {
+          "type": "A1_bom",
+          "category": "A",
+          "category_name": "Data Encoding",
+          "variant_name": "BOM Injection",
+          "fragility": "Med",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "A3_zero_width",
+          "category": "A",
+          "category_name": "Data Encoding",
+          "variant_name": "Zero-width Characters",
+          "fragility": "Med-High",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "B1_readonly_output",
+          "category": "B",
+          "category_name": "File System",
+          "variant_name": "Read-only Output Dir",
+          "fragility": "Med",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "B3_dirty_output",
+          "category": "B",
+          "category_name": "File System",
+          "variant_name": "Output Contamination",
+          "fragility": "Med",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "C1_nan_poison",
+          "category": "C",
+          "category_name": "Data Quality",
+          "variant_name": "NaN/Inf Poisoning",
+          "fragility": "High",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "C4_extremes",
+          "category": "C",
+          "category_name": "Data Quality",
+          "variant_name": "Extreme Values",
+          "fragility": "High",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "C5_type_confusion",
+          "category": "C",
+          "category_name": "Data Quality",
+          "variant_name": "Type Confusion",
+          "fragility": "High",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        }
+      ]
+    },
+    {
+      "id": "xlsx-recover-data",
+      "domain": "Spreadsheet",
+      "variants": [
+        {
+          "type": "A1_bom",
+          "category": "A",
+          "category_name": "Data Encoding",
+          "variant_name": "BOM Injection",
+          "fragility": "Med",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "A3_zero_width",
+          "category": "A",
+          "category_name": "Data Encoding",
+          "variant_name": "Zero-width Characters",
+          "fragility": "Med-High",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "B1_readonly_output",
+          "category": "B",
+          "category_name": "File System",
+          "variant_name": "Read-only Output Dir",
+          "fragility": "Med",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "B3_dirty_output",
+          "category": "B",
+          "category_name": "File System",
+          "variant_name": "Output Contamination",
+          "fragility": "Med",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "C1_nan_poison",
+          "category": "C",
+          "category_name": "Data Quality",
+          "variant_name": "NaN/Inf Poisoning",
+          "fragility": "High",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "C4_extremes",
+          "category": "C",
+          "category_name": "Data Quality",
+          "variant_name": "Extreme Values",
+          "fragility": "High",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
+        },
+        {
+          "type": "C5_type_confusion",
+          "category": "C",
+          "category_name": "Data Quality",
+          "variant_name": "Type Confusion",
+          "fragility": "High",
+          "results": {
+            "s1": 1.0,
+            "s2": 0.0,
+            "s3": 0.0,
+            "s4": 0.0
+          }
         }
       ]
     }
