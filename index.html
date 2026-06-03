@@ -112,15 +112,30 @@
             </article>
           </div>
           <div class="mini-chart-preview" aria-label="Preview of common-case and tail-case collapse curves">
-            <svg class="mini-collapse-chart" viewBox="0 0 200 120" role="img" aria-labelledby="mini-chart-title mini-chart-desc">
+            <svg class="mini-collapse-chart" viewBox="0 0 240 150" role="img" aria-labelledby="mini-chart-title mini-chart-desc">
               <title id="mini-chart-title">TailSkills collapse curve preview</title>
-              <desc id="mini-chart-desc">Common-case remains stable from S1 to S4 while tail-case performance drops sharply.</desc>
-              <polyline points="25,60 75,55 125,62 175,62" fill="none" stroke="var(--accent-common)" stroke-width="2"></polyline>
-              <polyline points="25,61 75,85 125,100 175,100" fill="none" stroke="var(--accent-tail)" stroke-width="2"></polyline>
-              <text x="25" y="115" font-size="8" fill="var(--text-secondary)" text-anchor="middle">S1</text>
-              <text x="75" y="115" font-size="8" fill="var(--text-secondary)" text-anchor="middle">S2</text>
-              <text x="125" y="115" font-size="8" fill="var(--text-secondary)" text-anchor="middle">S3</text>
-              <text x="175" y="115" font-size="8" fill="var(--text-secondary)" text-anchor="middle">S4</text>
+              <desc id="mini-chart-desc">A preview chart with axes: common-case pass rate stays near 50 percent from S1 to S4 while tail-case pass rate drops to about 23 percent.</desc>
+              <g class="mini-chart-grid" aria-hidden="true">
+                <line x1="42" y1="110" x2="218" y2="110"></line>
+                <line x1="42" y1="73" x2="218" y2="73"></line>
+                <line x1="42" y1="36" x2="218" y2="36"></line>
+              </g>
+              <g class="mini-chart-axis" aria-hidden="true">
+                <line x1="42" y1="18" x2="42" y2="110"></line>
+                <line x1="42" y1="110" x2="218" y2="110"></line>
+              </g>
+              <g class="mini-chart-ticks" aria-hidden="true">
+                <text x="34" y="113" text-anchor="end">0</text>
+                <text x="34" y="76" text-anchor="end">25</text>
+                <text x="34" y="39" text-anchor="end">50</text>
+                <text x="42" y="130" text-anchor="middle">S1</text>
+                <text x="101" y="130" text-anchor="middle">S2</text>
+                <text x="160" y="130" text-anchor="middle">S3</text>
+                <text x="218" y="130" text-anchor="middle">S4</text>
+                <text x="11" y="64" text-anchor="middle" transform="rotate(-90 11 64)">Pass rate (%)</text>
+              </g>
+              <polyline points="42,35 101,31 160,37 218,37" fill="none" stroke="var(--accent-common)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></polyline>
+              <polyline points="42,36 101,58 160,75 218,76" fill="none" stroke="var(--accent-tail)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></polyline>
             </svg>
             <div class="mini-chart-legend" aria-hidden="true">
               <span class="legend-common">Common-case</span>
@@ -138,15 +153,15 @@
           <p class="page-subtitle">A compact preview of the benchmark pipeline, distillation process, and skill-card evidence.</p>
           <div class="figure-grid">
             <a class="figure-card" href="experiments.html#introduction" aria-label="Open benchmark pipeline figure on the experiments page">
-              <img src="static/images/benchmark-pipeline.png" alt="TailSkills benchmark construction pipeline." width="300" height="200" loading="lazy" decoding="async">
+              <img src="static/images/benchmark-pipeline-preview.png" alt="TailSkills benchmark construction pipeline." width="720" height="420" loading="lazy" decoding="async">
               <span class="figure-label">Benchmark Pipeline</span>
             </a>
             <a class="figure-card" href="experiments.html#introduction" aria-label="Open distillation process figure on the experiments page">
-              <img src="static/images/introduction-infographic.png" alt="Overview of the skill distillation process." width="300" height="200" loading="lazy" decoding="async">
+              <img src="static/images/introduction-infographic-preview.png" alt="Overview of the skill distillation process." width="520" height="668" loading="lazy" decoding="async">
               <span class="figure-label">Distillation Process</span>
             </a>
             <a class="figure-card" href="experiments.html#distillation-example" aria-label="Open S1 to S4 skill-card comparison on the experiments page">
-              <img src="static/images/distillation-example.png" alt="S1 to S4 skill-card comparison showing tail knowledge disappearing." width="300" height="134" loading="lazy" decoding="async">
+              <img src="static/images/distillation-example-preview.png" alt="S1 to S4 skill-card comparison showing tail knowledge disappearing." width="720" height="322" loading="lazy" decoding="async">
               <span class="figure-label">Skill Cards S1-S4</span>
             </a>
           </div>
@@ -170,6 +185,9 @@
               Tail knowledge retained
               <span class="autopsy-retention">100.0%</span>
             </p>
+            <div class="autopsy-retention-meter" aria-hidden="true">
+              <div class="autopsy-retention-meter__fill"></div>
+            </div>
           </div>
           <div class="autopsy-layout">
             <aside class="depth-rail" aria-label="Distillation depth">

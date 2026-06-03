@@ -12,6 +12,7 @@
   var sectionIndicatorDots = document.querySelectorAll(".section-indicator__dot");
   var autopsyContainer = document.querySelector(".autopsy-scroll-container");
   var autopsyProgressFill = document.querySelector(".autopsy-progress-bar__fill");
+  var autopsyRetentionMeterFill = document.querySelector(".autopsy-retention-meter__fill");
   var autopsyIntroOverlay = document.querySelector(".autopsy-intro-overlay");
   var tailTexts = document.querySelectorAll(".tail-text");
   var depthIndicators = document.querySelectorAll(".depth-indicator");
@@ -210,8 +211,12 @@
     var retention;
 
     autopsyContainer.style.backgroundColor = "rgb(" + bgR + "," + bgG + "," + bgB + ")";
+    autopsyContainer.style.setProperty("--autopsy-progress-accent", "color-mix(in srgb, var(--accent-tail) " + (45 + progress * 55).toFixed(1) + "%, var(--accent-highlight))");
     if (autopsyProgressFill) {
       autopsyProgressFill.style.width = (progress * 100).toFixed(1) + "%";
+    }
+    if (autopsyRetentionMeterFill) {
+      autopsyRetentionMeterFill.style.width = (progress * 100).toFixed(1) + "%";
     }
     if (autopsyIntroOverlay) {
       autopsyIntroOverlay.classList.toggle("is-hidden", progress > 0.05);
@@ -263,6 +268,9 @@
       autopsyContainer.style.backgroundColor = "";
       if (autopsyProgressFill) {
         autopsyProgressFill.style.width = "0%";
+      }
+      if (autopsyRetentionMeterFill) {
+        autopsyRetentionMeterFill.style.width = "0%";
       }
       if (autopsyIntroOverlay) {
         autopsyIntroOverlay.classList.remove("is-hidden");
