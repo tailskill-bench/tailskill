@@ -14,7 +14,7 @@
   <body data-page="home">
     <a class="skip-link" href="#main">Skip to content</a>
 
-    <header class="site-header" data-commit-marker="commit-11-final-qa">
+    <header class="site-header" data-commit-marker="iteration-2-home-redesign">
       <nav class="site-nav" aria-label="Primary navigation">
         <a class="brand" href="index.html" aria-label="TailSkills home">TailSkills</a>
         <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-links">
@@ -32,7 +32,7 @@
       </nav>
     </header>
 
-    <main id="main">
+    <main id="main" class="page-transition">
       <section class="page-section hero-section" id="hero" aria-labelledby="hero-title">
         <div class="section-inner">
           <div class="hero-grid">
@@ -85,446 +85,98 @@
             </div>
           </div>
         </div>
+        <a class="scroll-hint" href="#core-findings" aria-label="Scroll to core findings"></a>
       </section>
 
-      <section class="page-section" id="abstract" aria-labelledby="abstract-title">
-        <div class="section-inner is-narrow">
-          <p class="section-kicker">Paper Abstract</p>
-          <h2 id="abstract-title">Abstract</h2>
-          <div class="abstract-card">
-            <p>
-              Agent skills package procedural knowledge into reusable artifacts that can improve LLM agents at inference time.
-              Existing work shows that curated skills can materially raise average pass rates and that transferable skills can
-              be distilled from execution traces. However, current evaluations emphasize average-case performance and
-              systematically under-measure rare exceptions.
-            </p>
-            <p>
-              This paper studies tail-knowledge collapse: under recursive rewriting of a robust skill artifact into shorter or
-              more standardized variants, common-case utility may remain stable while rare exception handling degrades. To
-              investigate this, we introduce the TailSkills benchmark, a tail-focused evaluation suite featuring 14 variant
-              types across six categories, 208 oracle-verified exception-heavy task variants with deterministic verifiers, and
-              an expert-guided agentic construction pipeline.
-            </p>
-            <p>
-              We show that recursive distillation can preserve common-case utility while degrading tail-case performance, and
-              that this degradation is accompanied by the preferential removal of short, local tail-handling instructions
-              relative to regular workflow content.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      <section class="page-section" id="introduction" aria-labelledby="introduction-title">
+      <section class="page-section" id="core-findings" aria-labelledby="findings-title">
         <div class="section-inner">
-          <p class="section-kicker">Skill Distillation Visual</p>
-          <h2 id="introduction-title">Introduction</h2>
-          <figure class="image-figure intro-figure">
-            <div class="image-frame">
-              <img src="static/images/introduction-infographic.png" alt="TailSkills infographic showing recursive skill distillation from S1 to S4 and contrasting ideal sandbox success with real-world tail failure." width="1000" height="1284" loading="lazy" decoding="async">
-            </div>
-            <figcaption>
-              Recursive skill distillation compresses a robust skill while disproportionately eroding rare exception handling.
-            </figcaption>
-          </figure>
-          <div class="stat-grid" aria-label="Distillation summary statistics">
-            <article class="stat-card stat-card--common">
-              <span class="stat-card__label">Common-case retention</span>
-              <strong>~100%</strong>
-              <span>across S1 to S4</span>
+          <p class="section-kicker">Core Findings</p>
+          <h2 id="findings-title">Tail knowledge fails first</h2>
+          <p class="page-subtitle">
+            Recursive skill rewriting keeps much of the common workflow intact, while short local exception-handling instructions disappear early.
+          </p>
+          <div class="finding-stat-grid">
+            <article class="finding-stat-card">
+              <span class="counter-value"><span data-counter data-target="27.4" data-decimals="1" data-duration="600">0.0</span><span class="counter-affix">pp</span></span>
+              <span class="counter-label">Drop</span>
+              <p>Tail pass rate falls from 50.5% to 23.1% by S4, a 54% relative degradation.</p>
             </article>
-            <article class="stat-card stat-card--tail">
-              <span class="stat-card__label">Tail-logic retention</span>
-              <strong>100% to 15.7%</strong>
-              <span>after recursive compression</span>
+            <article class="finding-stat-card">
+              <span class="counter-value"><span class="counter-affix">CI =</span><span data-counter data-target="0.65" data-decimals="2" data-duration="500">0.00</span></span>
+              <span class="counter-label">Index</span>
+              <p>Tail-specific instructions degrade about twice as fast as regular workflow content.</p>
             </article>
-            <article class="stat-card">
-              <span class="stat-card__label">Total skill size</span>
-              <strong>8K to 2.7K</strong>
-              <span>characters from S1 to S4</span>
+            <article class="finding-stat-card">
+              <span class="counter-value"><span data-counter data-target="0.3" data-decimals="1" data-duration="400">0.0</span><span class="counter-affix">% Gap</span></span>
+              <span class="counter-label">Baseline</span>
+              <p>The S1 common-case and tail-case starting point is nearly matched before distillation.</p>
             </article>
           </div>
         </div>
       </section>
 
-      <section class="page-section" id="benchmark" aria-labelledby="benchmark-title">
-        <div class="section-inner">
-          <p class="section-kicker">TailSkills Benchmark</p>
-          <h2 id="benchmark-title">Benchmark Overview</h2>
-          <figure class="image-figure pipeline-figure">
-            <div class="image-frame">
-              <img src="static/images/benchmark-pipeline.png" alt="TailSkills construction pipeline with planning, construction, oracle generation, and sandbox verification stages." width="1960" height="1142" loading="lazy" decoding="async">
-            </div>
-            <figcaption>
-              TailSkills builds exception-heavy variants through planning, construction, oracle generation, and deterministic sandbox verification.
-            </figcaption>
-          </figure>
-
-          <div class="pipeline-steps" aria-label="Benchmark construction stages">
-            <span>Planning</span>
-            <span>Construction</span>
-            <span>Oracle Generation</span>
-            <span>Sandbox Verification</span>
+      <section class="page-section autopsy-scroll-container" id="skill-autopsy" aria-labelledby="autopsy-title">
+        <div class="section-inner autopsy-sticky">
+          <div>
+            <p class="section-kicker">Skill Autopsy</p>
+            <h2 id="autopsy-title">Watch tail knowledge disappear as you scroll</h2>
           </div>
-
-          <div class="taxonomy-grid" aria-label="TailSkills variant taxonomy">
-            <article class="taxonomy-card taxonomy-card--a">
-              <button type="button" class="taxonomy-trigger" aria-expanded="false" aria-controls="taxonomy-a">
-                <span class="taxonomy-code">A</span>
-                <span class="taxonomy-title">Data Encoding</span>
-                <span class="taxonomy-meta">49 variants</span>
-                <span class="fragility-badge fragility-badge--med">Med Fragility</span>
-              </button>
-              <div class="taxonomy-detail" id="taxonomy-a" hidden>
-                <p><strong>A1: BOM injection</strong><span>23 tasks</span><em>Med</em></p>
-                <p><strong>A2: Zero-width characters</strong><span>26 tasks</span><em>Med-High</em></p>
+          <div class="autopsy-layout">
+            <aside class="depth-rail" aria-label="Distillation depth">
+              <div class="depth-indicator is-active" data-depth-stage="0"><span>S1 baseline</span></div>
+              <div class="depth-indicator" data-depth-stage="1"><span>S2 rewrite</span></div>
+              <div class="depth-indicator" data-depth-stage="2"><span>S3 standardized</span></div>
+              <div class="depth-indicator" data-depth-stage="3"><span>S4 compressed</span></div>
+              <p class="autopsy-retention-wrap">
+                Tail knowledge retained
+                <span class="autopsy-retention">100.0%</span>
+              </p>
+            </aside>
+            <article class="skill-document" aria-label="Skill document autopsy">
+              <div class="skill-document__header">
+                <span>Skill Document</span>
+                <span>energy-market-pricing / E1</span>
               </div>
-            </article>
+              <pre><code>Dependencies:
+pip install numpy scipy cvxpy==1.4.2
 
-            <article class="taxonomy-card taxonomy-card--b">
-              <button type="button" class="taxonomy-trigger" aria-expanded="false" aria-controls="taxonomy-b">
-                <span class="taxonomy-code">B</span>
-                <span class="taxonomy-title">File System</span>
-                <span class="taxonomy-meta">60 variants</span>
-                <span class="fragility-badge fragility-badge--med">Med Fragility</span>
-              </button>
-              <div class="taxonomy-detail" id="taxonomy-b" hidden>
-                <p><strong>B1: Read-only output dir</strong><span>50 tasks</span><em>Med</em></p>
-                <p><strong>B2: Output contamination</strong><span>10 tasks</span><em>Med</em></p>
-              </div>
-            </article>
+<span class="tail-text">[TAIL] If ModuleNotFoundError: the package may have been removed.</span>
+<span class="tail-text">[TAIL] Reinstall with: pip install --no-cache cvxpy==1.4.2</span>
 
-            <article class="taxonomy-card taxonomy-card--c">
-              <button type="button" class="taxonomy-trigger" aria-expanded="false" aria-controls="taxonomy-c">
-                <span class="taxonomy-code">C</span>
-                <span class="taxonomy-title">Data Quality</span>
-                <span class="taxonomy-meta">39 variants</span>
-                <span class="fragility-badge fragility-badge--high">High Fragility</span>
-              </button>
-              <div class="taxonomy-detail" id="taxonomy-c" hidden>
-                <p><strong>C1: NaN/Inf poisoning</strong><span>13 tasks</span><em>High</em></p>
-                <p><strong>C2: Duplicate primary keys</strong><span>3 tasks</span><em>Low</em></p>
-                <p><strong>C3: Extreme values</strong><span>13 tasks</span><em>High</em></p>
-                <p><strong>C4: Type confusion</strong><span>10 tasks</span><em>High</em></p>
-              </div>
-            </article>
+Analysis Workflow:
+1. Load data from CSV files
+2. Compute trend using linear regression
+3. Extract dominant factor via PCA
+4. Run attribution analysis
 
-            <article class="taxonomy-card taxonomy-card--d">
-              <button type="button" class="taxonomy-trigger" aria-expanded="false" aria-controls="taxonomy-d">
-                <span class="taxonomy-code">D</span>
-                <span class="taxonomy-title">Network / Service</span>
-                <span class="taxonomy-meta">35 variants</span>
-                <span class="fragility-badge fragility-badge--med-high">Med-High Fragility</span>
-              </button>
-              <div class="taxonomy-detail" id="taxonomy-d" hidden>
-                <p><strong>D1: DNS jitter (50% loss)</strong><span>19 tasks</span><em>Med-High</em></p>
-                <p><strong>D2: HTTPS connection throttling</strong><span>16 tasks</span><em>Med-High</em></p>
-              </div>
-            </article>
-
-            <article class="taxonomy-card taxonomy-card--e">
-              <button type="button" class="taxonomy-trigger" aria-expanded="false" aria-controls="taxonomy-e">
-                <span class="taxonomy-code">E</span>
-                <span class="taxonomy-title">Dependency</span>
-                <span class="taxonomy-meta">22 variants</span>
-                <span class="fragility-badge fragility-badge--med">Med Fragility</span>
-              </button>
-              <div class="taxonomy-detail" id="taxonomy-e" hidden>
-                <p><strong>E1: Missing optional dep</strong><span>20 tasks</span><em>Med</em></p>
-                <p><strong>E2: Library version drift</strong><span>2 tasks</span><em>High</em></p>
-              </div>
-            </article>
-
-            <article class="taxonomy-card taxonomy-card--g">
-              <button type="button" class="taxonomy-trigger" aria-expanded="false" aria-controls="taxonomy-g">
-                <span class="taxonomy-code">G</span>
-                <span class="taxonomy-title">Security</span>
-                <span class="taxonomy-meta">3 variants</span>
-                <span class="fragility-badge fragility-badge--high">High Fragility</span>
-              </button>
-              <div class="taxonomy-detail" id="taxonomy-g" hidden>
-                <p><strong>G1: Multi-vector attack</strong><span>2 tasks</span><em>High</em></p>
-                <p><strong>G2: Security fallback</strong><span>1 task</span><em>High</em></p>
-              </div>
+Solver Configuration:
+Use prob.solve(solver=cp.CLARABEL)</code></pre>
             </article>
           </div>
         </div>
       </section>
 
-      <section class="page-section" id="main-results" aria-labelledby="main-results-title">
+      <section class="page-section" id="explore" aria-labelledby="explore-title">
         <div class="section-inner">
-          <p class="section-kicker">Collapse Curves</p>
-          <h2 id="main-results-title">Main Results</h2>
-          <div class="chart-grid">
-            <article class="chart-panel">
-              <h3>Overall Tail-Collapse Curve</h3>
-              <div class="chart-wrap">
-                <canvas id="overall-chart" aria-label="Line chart comparing common-case and tail-case pass rates across S1 to S4." role="img"></canvas>
-              </div>
-            </article>
-            <article class="chart-panel">
-              <h3>Category-Specific Collapse</h3>
-              <div class="chart-wrap">
-                <canvas id="category-chart" aria-label="Line chart showing category-specific tail pass rates across S1 to S4." role="img"></canvas>
-              </div>
-            </article>
+          <p class="section-kicker">Explore</p>
+          <h2 id="explore-title">Choose the level of detail</h2>
+          <div class="explore-grid">
+            <a class="explore-card" href="tasks.html">
+              <h3>Explore the Benchmark</h3>
+              <p>14 variant types across 6 categories, covering 208 oracle-verified tasks.</p>
+              <span class="arrow" aria-hidden="true">-&gt;</span>
+            </a>
+            <a class="explore-card" href="experiments.html">
+              <h3>View Full Experiments</h3>
+              <p>Interactive collapse curves, ablation studies, and case-study comparisons.</p>
+              <span class="arrow" aria-hidden="true">-&gt;</span>
+            </a>
+            <a class="explore-card" href="#">
+              <h3>Read Paper</h3>
+              <p>arXiv preprint placeholder with BibTeX citation below.</p>
+              <span class="arrow" aria-hidden="true">-&gt;</span>
+            </a>
           </div>
-
-          <div class="table-wrap" aria-label="Main results pass rates and collapse metrics">
-            <table class="results-table">
-              <thead>
-                <tr>
-                  <th scope="col">Distribution / Category</th>
-                  <th scope="col">S1</th>
-                  <th scope="col">S2</th>
-                  <th scope="col">S3</th>
-                  <th scope="col">S4</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <th scope="row">Common-case</th>
-                  <td>50.8%</td>
-                  <td>52.5%</td>
-                  <td>49.2%</td>
-                  <td>49.2%</td>
-                </tr>
-                <tr>
-                  <th scope="row">Tail-case</th>
-                  <td>50.5%</td>
-                  <td>35.4%</td>
-                  <td>23.4%</td>
-                  <td>23.1%</td>
-                </tr>
-                <tr class="metric-row">
-                  <th scope="row">Gap</th>
-                  <td>0.3%</td>
-                  <td>17.1%</td>
-                  <td>25.8%</td>
-                  <td>26.1%</td>
-                </tr>
-                <tr class="metric-row">
-                  <th scope="row">Collapse Index</th>
-                  <td>0.00</td>
-                  <td>0.49</td>
-                  <td>0.64</td>
-                  <td>0.65</td>
-                </tr>
-                <tr class="category-row category-row--a">
-                  <th scope="row">A: Encoding</th>
-                  <td>43.5%</td>
-                  <td>26.0%</td>
-                  <td>17.4%</td>
-                  <td>14.3%</td>
-                </tr>
-                <tr class="category-row category-row--b">
-                  <th scope="row">B: File System</th>
-                  <td>51.7%</td>
-                  <td>38.3%</td>
-                  <td>30.9%</td>
-                  <td>28.3%</td>
-                </tr>
-                <tr class="category-row category-row--c">
-                  <th scope="row">C: Data Quality</th>
-                  <td>39.5%</td>
-                  <td>28.2%</td>
-                  <td>17.6%</td>
-                  <td>5.1%</td>
-                </tr>
-                <tr class="category-row category-row--d">
-                  <th scope="row">D: Network</th>
-                  <td>48.4%</td>
-                  <td>34.3%</td>
-                  <td>14.3%</td>
-                  <td>34.3%</td>
-                </tr>
-                <tr class="category-row category-row--e">
-                  <th scope="row">E: Dependency</th>
-                  <td>81.8%</td>
-                  <td>59.1%</td>
-                  <td>40.0%</td>
-                  <td>45.5%</td>
-                </tr>
-                <tr class="category-row category-row--g">
-                  <th scope="row">G: Multi-vector</th>
-                  <td>66.7%</td>
-                  <td>33.3%</td>
-                  <td>50.0%</td>
-                  <td>0.0%</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-
-          <div class="takeaway-grid" aria-label="Main result takeaways">
-            <article class="takeaway-card">
-              <strong>27.4pp Drop</strong>
-              <span>Tail-case: 50.5% to 23.1%</span>
-              <p>54% relative degradation</p>
-            </article>
-            <article class="takeaway-card">
-              <strong>CI = 0.65</strong>
-              <span>at S4</span>
-              <p>Tail degrades roughly 2x faster than common-case.</p>
-            </article>
-            <article class="takeaway-card">
-              <strong>0.3% Gap</strong>
-              <span>at S1 baseline</span>
-              <p>Oracle-verified variants are solvable before compression.</p>
-            </article>
-          </div>
-        </div>
-      </section>
-
-      <section class="page-section" id="ablation" aria-labelledby="ablation-title">
-        <div class="section-inner">
-          <p class="section-kicker">Retention Analysis</p>
-          <h2 id="ablation-title">Ablation Studies</h2>
-          <div class="ablation-layout">
-            <article class="chart-panel">
-              <h3>Instruction Retention Across Compression</h3>
-              <div class="chart-wrap">
-                <canvas id="retention-chart" aria-label="Grouped bar chart showing total, regular content, and tail logic retention from S1 to S4." role="img"></canvas>
-              </div>
-            </article>
-
-            <div class="finding-grid" aria-label="Ablation key findings">
-              <article class="finding-card finding-card--tail">
-                <span>Tail Retention at S4</span>
-                <strong>15.7%</strong>
-                <p>versus 48.7% regular content</p>
-              </article>
-              <article class="finding-card finding-card--tail">
-                <span>Complete Tail Loss at S4</span>
-                <strong>67.3%</strong>
-                <p>two thirds of variants lose all tail knowledge</p>
-              </article>
-              <article class="finding-card finding-card--tail">
-                <span>Tail Forgetting Rate</span>
-                <strong>48.0%</strong>
-                <p>tasks that pass at S1 but fail at S2</p>
-              </article>
-              <article class="finding-card finding-card--common">
-                <span>Common Forgetting Rate</span>
-                <strong>3.3%</strong>
-                <p>same depth, nearly zero degradation</p>
-              </article>
-            </div>
-          </div>
-
-          <aside class="deletion-callout">
-            Removing the defensive fragment from S1 makes <strong>0/48</strong> tasks pass, down from <strong>48/48</strong>.
-          </aside>
-
-          <div class="table-wrap compact-table" aria-label="Forgetting rate data">
-            <table class="results-table">
-              <thead>
-                <tr>
-                  <th scope="col">Distribution</th>
-                  <th scope="col">F(2)</th>
-                  <th scope="col">F(3)</th>
-                  <th scope="col">F(4)</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <th scope="row">Common (Dc)</th>
-                  <td>-3.3%</td>
-                  <td>3.3%</td>
-                  <td>3.3%</td>
-                </tr>
-                <tr class="metric-row">
-                  <th scope="row">Tail (Dt)</th>
-                  <td>48.0%</td>
-                  <td>63.4%</td>
-                  <td>44.6%</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </section>
-
-      <section class="page-section" id="case-study" aria-labelledby="case-study-title">
-        <div class="section-inner">
-          <p class="section-kicker">Regular vs Tail-Aware</p>
-          <h2 id="case-study-title">Case Study</h2>
-          <figure class="image-figure case-figure">
-            <div class="image-frame">
-              <img src="static/images/case-study-comparison.jpg" alt="Comparison of regular distillation dropping extreme value handling and tail-aware distillation preserving it." width="2085" height="1280" loading="lazy" decoding="async">
-            </div>
-            <figcaption>
-              A C4 tail variant exposes the difference between preserving the workflow and preserving the exception clause.
-            </figcaption>
-          </figure>
-
-          <div class="case-comparison" aria-label="Regular distillation and tail-aware distillation comparison">
-            <article class="case-panel case-panel--regular">
-              <h3>Regular Distillation</h3>
-              <dl>
-                <div>
-                  <dt>Keeps</dt>
-                  <dd>Core workflow</dd>
-                </div>
-                <div>
-                  <dt>Drops</dt>
-                  <dd>Extreme value handling</dd>
-                </div>
-                <div>
-                  <dt>Result</dt>
-                  <dd>Heat = 85.94%</dd>
-                </div>
-                <div>
-                  <dt>Verifier</dt>
-                  <dd class="verdict verdict--fail">FAIL</dd>
-                </div>
-              </dl>
-            </article>
-            <article class="case-panel case-panel--aware">
-              <h3>Tail-Aware Distillation</h3>
-              <dl>
-                <div>
-                  <dt>Keeps</dt>
-                  <dd>Core workflow</dd>
-                </div>
-                <div>
-                  <dt>Keeps</dt>
-                  <dd>Extreme value handling</dd>
-                </div>
-                <div>
-                  <dt>Result</dt>
-                  <dd>Heat = 49.66%</dd>
-                </div>
-                <div>
-                  <dt>Verifier</dt>
-                  <dd class="verdict verdict--pass">PASS</dd>
-                </div>
-              </dl>
-            </article>
-          </div>
-        </div>
-      </section>
-
-      <section class="page-section" id="task-gallery" aria-labelledby="task-gallery-title">
-        <div class="section-inner">
-          <p class="section-kicker">208 Exception-Heavy Tasks</p>
-          <h2 id="task-gallery-title">Task Gallery</h2>
-          <div class="gallery-toolbar" aria-label="Task gallery controls">
-            <label class="search-field">
-              <span class="sr-only">Search tasks</span>
-              <input id="task-search" type="search" placeholder="Search tasks or domains" autocomplete="off">
-            </label>
-            <div class="filter-group" aria-label="Filter by category">
-              <button type="button" class="filter-button is-active" data-filter="all">All</button>
-              <button type="button" class="filter-button filter-button--a" data-filter="A">A: Encode</button>
-              <button type="button" class="filter-button filter-button--b" data-filter="B">B: FileSys</button>
-              <button type="button" class="filter-button filter-button--c" data-filter="C">C: DataQl</button>
-              <button type="button" class="filter-button filter-button--d" data-filter="D">D: Network</button>
-              <button type="button" class="filter-button filter-button--e" data-filter="E">E: Depend</button>
-              <button type="button" class="filter-button filter-button--g" data-filter="G">G: Secure</button>
-            </div>
-          </div>
-          <p class="gallery-count" id="gallery-count" aria-live="polite">Loading sample tasks...</p>
-          <div class="task-grid" id="task-grid" aria-live="polite"></div>
         </div>
       </section>
 
@@ -555,10 +207,7 @@
       </section>
     </main>
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.6/dist/chart.umd.min.js" defer></script>
     <script src="static/js/main.js" defer></script>
     <script src="static/js/home.js" defer></script>
-    <script src="static/js/tasks.js" defer></script>
-    <script src="static/js/experiments.js" defer></script>
   </body>
 </html>
