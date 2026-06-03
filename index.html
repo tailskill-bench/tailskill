@@ -122,6 +122,10 @@
               <text x="125" y="115" font-size="8" fill="var(--text-secondary)" text-anchor="middle">S3</text>
               <text x="175" y="115" font-size="8" fill="var(--text-secondary)" text-anchor="middle">S4</text>
             </svg>
+            <div class="mini-chart-legend" aria-hidden="true">
+              <span class="legend-common">Common-case</span>
+              <span class="legend-tail">Tail-case</span>
+            </div>
             <a href="experiments.html#main-results" class="chart-expand-link">View full interactive chart -&gt;</a>
           </div>
         </div>
@@ -132,6 +136,20 @@
           <p class="section-kicker">Paper Figures</p>
           <h2 id="figure-gallery-title">At a glance</h2>
           <p class="page-subtitle">A compact preview of the benchmark pipeline, distillation process, and skill-card evidence.</p>
+          <div class="figure-grid">
+            <a class="figure-card" href="experiments.html#introduction" aria-label="Open benchmark pipeline figure on the experiments page">
+              <img src="static/images/benchmark-pipeline.png" alt="TailSkills benchmark construction pipeline." width="300" height="200" loading="lazy" decoding="async">
+              <span class="figure-label">Benchmark Pipeline</span>
+            </a>
+            <a class="figure-card" href="experiments.html#introduction" aria-label="Open distillation process figure on the experiments page">
+              <img src="static/images/introduction-infographic.png" alt="Overview of the skill distillation process." width="300" height="200" loading="lazy" decoding="async">
+              <span class="figure-label">Distillation Process</span>
+            </a>
+            <a class="figure-card" href="experiments.html#distillation-example" aria-label="Open S1 to S4 skill-card comparison on the experiments page">
+              <img src="static/images/distillation-example.png" alt="S1 to S4 skill-card comparison showing tail knowledge disappearing." width="300" height="134" loading="lazy" decoding="async">
+              <span class="figure-label">Skill Cards S1-S4</span>
+            </a>
+          </div>
         </div>
       </section>
 
