@@ -5,7 +5,7 @@
 
 > When agent skills are recursively compressed, the happy path survives — but exception handling silently vanishes.
 
-**TailSkills** is a benchmark and experimental framework for studying **Tail Knowledge Collapse**: the systematic loss of rare exception-handling knowledge during recursive LLM-based distillation of agent skills. As skills are compressed through successive rounds (S1 → S2 → S3 → S4), common-case utility remains stable while tail performance degrades precipitously.
+**TailSkills** is a benchmark and experimental framework for studying **Tail Knowledge Collapse**: the systematic loss of rare exception-handling knowledge during recursive LLM-based distillation of agent skills. As skills are compressed through successive rounds , common-case utility remains stable while tail performance degrades precipitously.
 
 Paper: *Focused but Fragile: Tail Knowledge Collapse in Recursive Agent Skill Distillation* (EMNLP 2026 submission).
 
