@@ -1,0 +1,1001 @@
+\documentclass[11pt]{article}
+\usepackage[review]{acl}
+\usepackage{times}
+\usepackage{latexsym}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{microtype}
+\usepackage{inconsolata}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{multirow}
+\usepackage[most]{tcolorbox}
+\usepackage{tikz}
+\usetikzlibrary{positioning, decorations.pathreplacing, arrows.meta}
+\usepackage{listings}
+\definecolor{tailpink}{RGB}{226,171,184}
+\definecolor{commongreen}{RGB}{178,217,179}
+
+\lstset{
+  basicstyle=\ttfamily\scriptsize,
+  breaklines=true,
+  breakatwhitespace=false,
+  columns=fullflexible,
+  keepspaces=true,
+  frame=none,
+  xleftmargin=2pt,
+  xrightmargin=2pt,
+}
+
+% Appendix block styles
+\newtcolorbox{anomalyblock}[1][]{
+  colback=red!5!white, colframe=red!60!black,
+  fonttitle=\bfseries, title={#1},
+  boxrule=0.5pt, arc=2pt, left=4pt, right=4pt, top=2pt, bottom=2pt
+}
+\newtcolorbox{promptblock}[1][]{
+  colback=blue!5!white, colframe=blue!60!black,
+  fonttitle=\bfseries\small, fontupper=\small, title={#1},
+  boxrule=0.5pt, arc=2pt, left=4pt, right=4pt, top=2pt, bottom=2pt
+}
+\newtcolorbox{settingsblock}[1][]{
+  colback=gray!8!white, colframe=gray!60!black,
+  fonttitle=\bfseries\small, fontupper=\small, title={#1},
+  boxrule=0.5pt, arc=2pt, left=4pt, right=4pt, top=2pt, bottom=2pt
+}
+
+\title{Focused but Fragile: Tail Knowledge Collapse in \\ Recursive Agent Skill Distillation}
+
+\author{Anonymous Author(s) \\
+  Affiliation \\
+  Address \\
+  \texttt{email} \\}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Agent skills package procedural knowledge into reusable artifacts that can improve LLM agents at inference time. Existing work shows that curated skills can materially raise average pass rates and that transferable skills can be distilled from execution traces. However, current evaluations emphasize average-case performance and systematically under-measure rare exceptions. This paper studies \textit{tail-knowledge collapse}: under recursive rewriting of a robust skill artifact into shorter or more standardized variants, common-case utility may remain stable while rare exception handling degrades. To investigate this, we introduce the \textbf{TailSkills} benchmark, a tail-focused evaluation suite featuring 14 variant types across six categories, 208 oracle-verified exception-heavy task variants with deterministic verifiers, and an expert-guided agentic construction pipeline. We show that recursive distillation can preserve common-case utility while degrading tail-case performance, and that this degradation is accompanied by the preferential removal of short, local tail-handling instructions relative to regular workflow content.
+\end{abstract}
+
+\section{Introduction}
+
+Organizations are increasingly externalizing workflow knowledge into structured ``skills'' that agents can load at inference time. This abstraction is attractive because it makes procedural knowledge editable, auditable, and reusable without retraining the base model. Recent studies report that curated skills improve average task performance, and that trajectory-driven distillation can produce skills that transfer across models and settings \citep{li2026skillsbench, ni2026trace2skill, wang2026skillsd, jiang2026sok}. Yet, an average-case view of skill quality is incomplete: the most valuable parts of human procedural knowledge are often the rare branches, exception rules, boundary cases, and escalation conditions that are infrequent in benchmark distributions but critical in real-world deployments.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\columnwidth]{introduction.png}
+\caption{Recursive distillation ($s_1 \to s_4$) preserves the core workflow (blue) but progressively discards tail-handling knowledge (red), causing failures under tail perturbations while appearing stable in normal settings.}
+\label{fig:overview}
+\end{figure}
+
+This motivates a simple but fundamental question: what happens to exception knowledge when a robust skill artifact is recursively rewritten into shorter, cleaner, or more standardized artifacts? Our central hypothesis is that such rewriting preserves the ``happy path'' better than the tail. In other words, recursive distillation can create a skill that appears focused and useful while silently deleting the rules that matter most under distribution shift. We term this phenomenon \textit{tail-knowledge collapse}, drawing an analogue to model collapse \citep{shumailov2024modelcollapse} but operating at the level of procedural artifacts rather than model weights (Figure~\ref{fig:overview}). A distilled skill may remain useful when the environment is stable and inputs follow expected distributions, yet fail under noisy data, permission constraints, transient network failures, and other perturbations that require precisely the defensive knowledge that distillation has erased. To study this hypothesis, we construct \textbf{TailSkills}, a benchmark that evaluates agents across distillation depths on both common-case and tail-variant tasks.
+
+
+
+This paper makes the following contributions:
+\begin{itemize}
+\item We formalize tail-knowledge collapse for recursively rewritten skill artifacts and define the tail-collapse gap $G_k$ and Collapse Index as principled metrics.
+\item We introduce \textbf{TailSkills}, a benchmark built from an expert-derived tail taxonomy, reusable variant templates, and an agentic construction pipeline that instantiates and verifies 208 recoverable task variants with deterministic verifiers.
+\item We evaluate recursive skill distillation through paired common-case and tail-case agent runs, and provide skill-text evidence that distillation preferentially removes concrete tail-handling instructions while retaining substantially more regular workflow content.
+\end{itemize}
+
+\section{Related Work}
+
+\subsection{Agent Skills}
+
+Recent work has explored equipping LLM agents with reusable procedural knowledge externalized as ``skills.'' The SkillsBench benchmark \citep{li2026skillsbench} formalized the evaluation of agent skills across diverse tasks, showing that curated skills improve average pass rates, while \citet{liu2026wildskills} extended evaluation to realistic wild settings and \citet{han2026swe} examined whether skills actually help in real-world software engineering. On the skill acquisition front, Trace2Skill \citep{ni2026trace2skill} introduced trajectory-driven distillation to extract transferable skills from execution traces, and SkillX \citep{wang2026skillx} proposed automatically constructing skill knowledge bases for agents. Evolutionary approaches have also emerged: EvoSkill \citep{alzubi2026evoskill} discovers skills for multi-agent systems via automated search, CoEvoSkills \citep{zhang2026coevoskills} enables self-evolving skills through co-evolutionary verification, and SkillRL \citep{xia2026skillrl} augments skill refinement with reinforcement learning. Skill-SD \citep{wang2026skillsd} introduces skill-conditioned self-distillation for multi-turn agents, and \citet{inhar2026localize} argues that agentic memory should localize compression to preserve critical knowledge. Surveys by \citet{jiang2026sok} and \citet{xu2026agent} categorize the architecture, acquisition, and security landscape of agent skills. Despite this progress, evaluations consistently emphasize average-case performance, leaving tail robustness under iterative refinement largely unexplored.
+
+\subsection{Prompt and Context Compression}
+
+Our work relates to prompt compression, which aims to reduce LLM input length while preserving task-relevant information. LLMLingua \citep{jiang2023llmlingua} introduced token-level prompt compression using small models, extended to long contexts by LongLLMLingua \citep{jiang2024longllmlingua} and refined into task-agnostic compression via data distillation in LLMLingua-2 \citep{pan2024llmlingua2}. \citet{li2023selectivecontext} proposed selective context compression to enhance inference efficiency, and \citet{li2025promptcompression} survey the broader landscape. More recently, \citet{zhang2026experiencecompression} proposed an experience compression spectrum that unifies memory, skills, and rules in LLM agents. While prompt compression targets input efficiency, our work examines a different but related phenomenon: compression applied to procedural skill artifacts, where information loss is not just an efficiency trade-off but a correctness hazard that disproportionately affects rare exception-handling knowledge.
+
+\subsection{Model Collapse and Factual Degradation}
+
+\citet{shumailov2024modelcollapse} showed that models trained on recursively generated synthetic data undergo model collapse, progressively losing tail information in the data distribution. This finding draws a parallel to our work, though we operate at a different level of abstraction: rather than model weights degrading through retraining, we study procedural knowledge artifacts degrading through recursive rewriting. A related line of work examines factual degradation in summarization: \citet{maynez2020faithfulness} showed that abstractive summarization systems systematically distort source content, and FRANK \citep{pagnoni2021frank} provided a benchmark for measuring factuality errors. These findings suggest that information loss under compression is a general phenomenon; our work provides evidence that it manifests acutely in skill artifacts, where tail knowledge is structurally more vulnerable than common-case knowledge.
+
+\subsection{Robustness and Security Evaluation}
+
+Robustness evaluation has matured with behavioral testing frameworks: CheckList \citep{ribeiro2020checklist} introduced capability-level testing for NLP models, Robustness Gym \citep{goel2021robustnessgym} unified evaluation across multiple dimensions, and WILDS \citep{koh2021wilds} benchmarked in-the-wild distribution shifts. In the agent domain, ReliabilityBench \citep{gupta2026reliabilitybench} evaluates LLM agent reliability under production-like stress conditions, Agent Security Bench \citep{zhang2025agentsecuritybench} systematically tests agent vulnerabilities under adversarial attacks, and Skill-Inject \citep{schmotz2026skillinject} measures agent vulnerability to skill file attacks. However, these benchmarks evaluate the agent model or its attack surface, not the durability of its supporting knowledge artifacts under iterative compression. Our work complements this line by evaluating how skills degrade through distillation, independent of the agent model.
+
+\section{Problem Formulation}
+
+Let $h^{(T)}$ denote the original SkillsBench skill for base task $T$. For each tail variant $v$ of task $T$, we construct a robust augmented baseline skill $s_1^{(T,v)}$ by integrating the defensive guidance required by $v$ into $h^{(T)}$. Let $\mathcal{R}$ be a rewriting or distillation operator that produces a shorter or more standardized skill. Recursive distillation yields:
+\begin{equation}
+s_{k+1}^{(T,v)} = \mathcal{R}(s_k^{(T,v)}), \quad k = 1, 2, \dots, K-1.
+\label{eq:distill}
+\end{equation}
+We use $k$ to index skill artifacts, not rewrite steps: $s_1$ is the uncompressed augmented baseline, and $s_k$ has undergone $k-1$ rewrite steps.
+
+Let $\mathcal{V}$ be the set of tail variants, where each instance $i=(T_i,v_i)$ consists of a base task and a tail perturbation. For convenience, we write $s_k^{(i)} = s_k^{(T_i, v_i)}$. Let $Y(m,s,T)\in\{0,1\}$ denote verifier success for model $m$ using skill $s$ on task instance $T$. Tail accuracy at depth $k$ is:
+\begin{equation}
+A_t(k)=\frac{1}{|\mathcal{V}|}
+\sum_{i\in\mathcal{V}}Y(m,s_k^{(i)},T_i^{v_i}).
+\label{eq:tail-acc}
+\end{equation}
+For the paired common-case control, we evaluate the same depth-$k$ skill on the unperturbed base task:
+\begin{equation}
+A_c(k)=\frac{1}{|\mathcal{V}|}
+\sum_{i\in\mathcal{V}}Y(m,s_k^{(i)},T_i).
+\label{eq:common-acc}
+\end{equation}
+
+We define the \textit{tail-collapse gap} at artifact depth $k$ as:
+\begin{equation}
+G_k = [A_t(1)-A_t(k)] - [A_c(1)-A_c(k)].
+\label{eq:gap}
+\end{equation}
+A positive $G_k$ indicates that recursive rewriting harms tail performance more severely than paired common-case performance. We hypothesize that $G_k$ grows with $k$, showing that compression preferentially discards the defensive logic necessary for tail variants.
+
+
+\section{The TailSkills Benchmark}
+
+Building upon SkillsBench \citep{li2026skillsbench}, we construct \textbf{TailSkills}, a tail-focused benchmark for evaluating whether agent skills retain rare but critical exception-handling knowledge under recursive rewriting. TailSkills is designed to separate \emph{skill knowledge loss} from ordinary task difficulty: each tail variant preserves the original task intent and remains solvable by an oracle equipped with the appropriate recovery logic. Crucially, TailSkills is not produced by unconstrained LLM benchmark generation. Human experts define the tail space and reusable perturbation templates, while a construction agent scales their task-aware instantiation under strict oracle-verification constraints. Figure~\ref{fig:tailskills-benchmark} summarizes the taxonomy, task--variant planning process, and construction--verification workflow.
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\textwidth]{main.png}
+\caption{TailSkills construction: experts define tail taxonomy and templates; agents instantiate variants with oracle-verified recoverability; only variants passing deterministic verification are admitted.}
+\label{fig:tailskills-benchmark}
+\end{figure*}
+
+\subsection{Design Goals}
+
+TailSkills follows four design goals.
+
+\paragraph{Recoverability.}
+Each tail variant must satisfy a \textit{Recoverability Constraint}: the injected anomaly must not make the task structurally unsolvable. A variant should fail only when the executing agent lacks the specific robust-handling knowledge required by the anomaly, rather than because the benchmark instance is impossible.
+
+\paragraph{Instruction invariance.}
+The agent-visible \texttt{instruction.md} is kept identical to the original task. TailSkills therefore evaluates whether the skill artifact contains sufficient exception-handling knowledge, not whether the user instruction explicitly warns the agent about the perturbation.
+
+\paragraph{Isolation from the upstream benchmark.}
+All variants are constructed through an overlay-copy mechanism. We clone the original task directory and apply variant-specific patches only to the copied environment, leaving the upstream SkillsBench task unchanged.
+
+\paragraph{Oracle-verified admission.}
+A candidate variant is admitted only if a recoverability oracle passes the deterministic verifier with reward $=1.0$. This ensures that each accepted variant is both perturbed and solvable.
+
+\subsection{Expert-Derived Tail Variant Taxonomy}
+
+We first construct a tail variant taxonomy through human expert analysis of long-tail failure modes in software engineering and production agent workflows. The taxonomy is intended to cover recurring sources of real-world fragility, including data encoding corruption, file-system constraints, data boundary violations, network unreliability, dependency drift, and security regressions. Human experts then instantiate each category as a reusable \textit{variant template} that specifies: (i) the type of anomaly to introduce, (ii) task applicability conditions, (iii) the expected recovery knowledge, and (iv) verifier-side checks.
+
+The resulting taxonomy contains 14 variant types spanning six categories, summarized in Table~\ref{tab:variants}. Examples include C1: NaN/Inf poisoning, which inserts invalid floating-point values into numeric fields; B1: read-only output directory, which makes the expected output location non-writable; D2: rate limiting, which simulates transient service throttling; and E1: missing dependency, which removes a required package from the runtime environment.
+
+\begin{table}[t]
+\centering\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}llcc@{}}
+\toprule
+\textbf{Cat.} & \textbf{Variant Type} & \textbf{N} & \textbf{Exp. Frag.} \\
+\midrule
+\multicolumn{4}{@{}l}{\textit{A: Data Encoding}} \\
+ & A1: BOM injection & 23 & Med \\
+ & A2: Zero-width characters & 26 & Med--High \\
+\midrule
+\multicolumn{4}{@{}l}{\textit{B: File System}} \\
+ & B1: Read-only output dir & 50 & Med \\
+ & B2: Output contamination & 10 & Med \\
+\midrule
+\multicolumn{4}{@{}l}{\textit{C: Data Boundary}} \\
+ & C1: NaN/Inf poisoning & 13 & High \\
+ & C2: Duplicate primary keys & 3 & Low \\
+ & C3: Extreme values ($0, -1, -999$) & 13 & High \\
+ & C4: Type confusion (num $\to$ str) & 10 & High \\
+\midrule
+\multicolumn{4}{@{}l}{\textit{D: Network / Service}} \\
+ & D1: DNS jitter (50\% loss) & 19 & Med--High \\
+ & D2: HTTPS connection throttling & 16 & Med--High \\
+\midrule
+\multicolumn{4}{@{}l}{\textit{E: Dependency}} \\
+ & E1: Missing optional dep & 20 & Med \\
+ & E2: Library version drift & 2 & High \\
+\midrule
+\multicolumn{4}{@{}l}{\textit{G: Security}} \\
+ & G1: Multi-vector attack & 2 & High \\
+ & G2: Security fallback & 1 & High \\
+\midrule
+\multicolumn{2}{@{}l}{\textbf{Total}} & \textbf{208} & \\
+\bottomrule
+\end{tabular}
+\caption{TailSkills variant taxonomy with oracle-verified counts and expected fragility under distillation. Expected fragility is a pre-experimental qualitative annotation based on the locality and domain specificity of the required defensive rule.}
+\label{tab:variants}
+\end{table}
+
+\subsection{Task--Variant Applicability and Planning}
+
+Not every variant template is meaningful for every task. For example, NaN/Inf poisoning requires a task with numeric data fields, while rate-limit variants require network or API access. We therefore construct a task--variant applicability matrix $\mathcal{M}$, where $\mathcal{M}(T,v)=1$ indicates that variant $v$ can be meaningfully applied to task $T$.
+
+For each applicable pair $(T,v)$, the construction agent performs task-aware planning rather than blindly applying a template. Guided by a detailed procedure specification, the agent reads the task artifacts---the environment specification, user instruction, reference solution, and original skill---and extracts the parameters needed for construction: target data files, file formats, numeric and key columns, output paths, external dependencies, API usage, and the location where recovery logic should be inserted. The output of this step is an injection plan $P(T,v)$ that specifies where to perturb, what to perturb, and how the oracle should recover.
+
+\subsection{Overlay Tail Variant Construction}
+
+Given an injection plan $P(T,v)$, TailSkills constructs the variant through an isolated overlay copy. The original task directory is cloned, and the variant is introduced by patching the copied environment, typically through Dockerfile-level mutations or auxiliary injection scripts. The original task semantics and the agent-visible instruction are preserved.
+
+Concretely, the injection may corrupt input data, modify file-system permissions, perturb network behavior, or alter dependency availability. For instance, C1 injects NaN/Inf values into task-relevant numeric columns; B1 makes the output directory read-only; E1 uninstalls a required dependency during image construction; and D1/D2 introduce DNS jitter or rate-limit behavior. These perturbations simulate realistic production anomalies while preserving recoverability.
+
+\subsection{Recoverability Oracle and S1 Skill Construction}
+
+For each candidate variant, we construct two paired artifacts: a \textit{recoverability oracle} and a full baseline skill $s_1$.
+
+The recoverability oracle is a variant-aware reference solution that demonstrates the task remains solvable under the injected anomaly. It follows the original task solution whenever possible, but adds the minimal recovery logic required by the variant. For example, data-boundary variants may require imputing or filtering invalid numeric values before the original computation; file-system variants may require repairing output permissions before writing files; dependency variants may require reinstalling the expected package version. The oracle is not allowed to bypass the variant challenge: except for tasks whose original oracle is already a direct-copy solution, it must execute the intended task logic after handling the perturbation.
+
+The baseline skill $s_1$ contains the original skill content plus naturally integrated robust-handling knowledge relevant to the variant. Rather than appending an artificial warning section, the added knowledge is inserted into contextually appropriate parts of the skill, such as data loading, output writing, dependency setup, or network request handling. This makes $s_1$ the full, tail-aware skill from which recursively distilled skills are later derived.
+
+\subsection{Sandbox Verification and Admission}
+
+Each candidate variant is executed in an isolated Docker sandbox using the recoverability oracle. The deterministic verifier checks both the original task objective and variant-specific conditions. If the oracle fails, the construction agent diagnoses the logs, repairs the oracle, auxiliary utilities, or verifier checks, and retries the validation. We allow at most three repair attempts; persistent failures are discarded or marked for human review. Only variants whose oracle obtains reward $=1.0$ are admitted into TailSkills.
+
+The resulting 208 oracle-verified variants span 54 base tasks and diverse data formats (XLSX, CSV, JSON, PDF, CIF, TXT) across multiple domains (seismology, finance, manufacturing, molecular biology, climatology, and others). By requiring both expert-defined perturbations and deterministic oracle verification, TailSkills evaluates whether skill artifacts preserve recoverable tail knowledge rather than whether agents can solve impossible or under-specified tasks.
+
+\section{Experimental Setup}
+
+\subsection{Distillation Protocol}
+
+We implement a recursive distillation protocol to simulate the skill compression process. At each step, a language model is prompted with a generic compression instruction (full prompt in Appendix~\ref{sec:distill-prompt}): compress the skill document to approximately 70\% of its original length, retaining the information considered most critical.
+
+This prompt is content-neutral with respect to exception handling---it does not instruct the model to preserve or omit any particular type of content, although it is aggressive about length reduction. Because exception handling appears less frequently than the core workflow in most skill documents, we expect the model to preferentially discard tail logic. After three recursive compression steps, we obtain four depth conditions at approximately 100\% ($s_1$), 70\% ($s_2$), 49\% ($s_3$), and 34\% ($s_4$) of the original length.
+
+\subsection{Evaluation Matrix}
+
+We evaluate across four skill depths ($s_1$ through $s_4$) on both the base task distribution $\mathcal{D}_c$ (54 SkillsBench base tasks) and the tail variant distribution $\mathcal{D}_t$ (208 TailSkills variants), yielding 1,048 skill-conditioned agent runs in the main experiment. Each run deploys a separate agent instance in an isolated Docker container with full file system and shell access. The agent receives the skill document as context and executes the task. Binary success/failure outcomes are scored by the benchmark's deterministic verifiers.
+
+\subsection{Metrics}
+
+We report three primary metrics:
+
+\begin{itemize}
+\item \textbf{Common-case and tail-case success rates:} $A_c(k)$ (Eq.~\ref{eq:common-acc}) and $A_t(k)$ (Eq.~\ref{eq:tail-acc}) across depths $k$.
+\item \textbf{Tail-collapse gap} $G_k$ (Eq.~\ref{eq:gap}), capturing the differential degradation between distributions.
+\item \textbf{Collapse Index} at depth $k$, defined as:
+\end{itemize}
+\begin{equation}
+\mathrm{CI}_k = 1 - \frac{A_t(k) \;/\; A_t(1)}{A_c(k) \;/\; A_c(1)}
+\label{eq:ci}
+\end{equation}
+which quantifies the relative retention of tail knowledge compared to common-case knowledge, normalized by each distribution's baseline. We report $\mathrm{CI}_k$ only when both baseline accuracies are non-zero; negative values indicate that tail retention exceeds common-case retention. A $\mathrm{CI}_k$ approaching 1 indicates severe collapse. We additionally report an artifact-level \textbf{exception-retention diagnostic}, decomposing each distilled skill into high-precision retained $s_1$ tail-handling units, retained regular skill content, and total retained skill words.
+
+\subsection{Models and Infrastructure}
+
+We use Gemini 2.5 Flash for distillation (cost-efficient text compression) and Gemini 2.5 Flash with Gemini CLI harness for agent evaluation. All evaluations run on Harbor v0.4.0, a Docker-containerized evaluation framework that provides deterministic sandboxing for reproducible agent runs.
+
+\section{Experiments}
+\subsection{Main Results}
+
+We evaluate 54 SkillsBench base tasks and 208 TailSkills variants across four distillation depths, yielding 1,048 skill-conditioned agent runs. Table~\ref{tab:main-results} presents pass rates for common-case and tail-case distributions, disaggregated by tail variant category.
+
+
+The central finding is a stark asymmetry between common-case and tail-case performance. Common-case pass rates remain remarkably stable across all four depths, fluctuating within a narrow 49--53\% band. This stability demonstrates that recursive distillation preserves the core workflow knowledge necessary for standard task execution. In contrast, tail-case pass rates exhibit a clear monotonic decline: from 50.5\% at $s_1$ to 35.4\% at $s_2$, 23.4\% at $s_3$, and 23.1\% at $s_4$---a 27.4 percentage-point absolute drop and 54\% relative degradation.
+
+\begin{table}[t]
+\centering\small
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{@{}lcccc@{}}
+\toprule
+\textbf{Distribution / Category} & $s_1$ & $s_2$ & $s_3$ & $s_4$ \\
+\midrule
+\textbf{Common-case} & 50.8\% & 52.5\% & 49.2\% & 49.2\% \\
+\textbf{Tail-case} & 50.5\% & 35.4\% & 23.4\% & 23.1\% \\
+\midrule
+Gap & 0.3\% & 17.1\% & 25.8\% & 26.1\% \\
+Collapse Index & 0.00 & 0.49 & 0.64 & 0.65 \\
+\midrule
+\multicolumn{5}{@{}l}{\textit{By Tail Variant Category}} \\
+\midrule
+A: Encoding & 43.5\% & 26.0\% & 17.4\% & 14.3\% \\
+B: File System & 51.7\% & 38.3\% & 30.9\% & 28.3\% \\
+C: Data Quality & 39.5\% & 28.2\% & 17.6\% & 5.1\% \\
+\midrule
+D: Network & 48.4\% & 34.3\% & 14.3\% & 34.3\% \\
+E: Dependency & 81.8\% & 59.1\% & 40.0\% & 45.5\% \\
+G: Multi-vector & 66.7\% & 33.3\% & 50.0\% & 0.0\% \\
+\bottomrule
+\end{tabular}
+\caption{Pass rates across distillation depths. Common-case remains stable; tail variants show progressive degradation. Categories A--C exhibit monotonic decline; D--E show S4 rebound. CI = Collapse Index.}
+\label{tab:main-results}
+\end{table}
+
+\begin{figure*}[t]
+\centering
+\begin{minipage}{0.48\textwidth}
+\centering
+\includegraphics[width=\textwidth]{mainresult1.png}
+\end{minipage}
+\hfill
+\begin{minipage}{0.48\textwidth}
+\centering
+\includegraphics[width=\textwidth]{mainresult2.png}
+\end{minipage}
+\caption{(a) Overall tail-collapse curve: common-case performance remains stable, tail-case drops sharply. (b) Collapse curves by category: local defensive logic degrades more sharply. Shaded bands denote reward variability.}
+\label{fig:mainresult}
+\end{figure*}
+
+Figure~\ref{fig:mainresult} visualizes the collapse pattern. The common-case curve remains nearly flat across $s_1$--$s_4$, whereas the tail-case curve drops rapidly after the first distillation step. Categories requiring local, variant-specific defensive logic exhibit the steepest degradation.
+
+The tail-collapse gap widens dramatically with distillation depth. At $s_1$, common-case and tail-case distributions are nearly indistinguishable (gap = 0.3\%), reflecting the oracle-verified recoverability of all variants. By $s_2$, the gap expands to 17.1 percentage points; at $s_3$ and $s_4$, it exceeds 25 percentage points. The Collapse Index quantifies this differential degradation: a value of 0.65 at $s_4$ indicates that tail knowledge degrades nearly twice as severely as common-case knowledge relative to their respective baselines.
+
+Disaggregating by variant category reveals heterogeneous degradation patterns. Three categories---Encoding (A), File System (B), and Data Quality (C)---exhibit the expected monotonic decline, with Data Quality showing the most severe collapse (39.5\% $\to$ 5.1\%). These categories share a common characteristic: the required defensive knowledge is \textit{local} and \textit{domain-specific}, appearing as isolated code snippets for handling BOM markers, repairing permissions, or filtering invalid values. Such localized instructions are easily identified as ``non-essential'' during compression and preferentially removed.
+
+Network (D) and Dependency (E) categories show an unexpected rebound at $s_4$. We hypothesize that these categories require \textit{generalizable} defensive patterns---retry logic, fallback imports, version checks---that may be partially preserved in compressed skills through different mechanisms, or that agents can recover through trial-and-error when the skill is sufficiently concise. The Multi-vector (G) category has too few samples for reliable inference.
+
+These results support our central hypothesis: recursive distillation creates a \textit{knowledge gradient} where frequently-invoked workflow steps are preserved at the expense of rare exception-handling branches. The skill artifact remains functional for common cases while silently losing the knowledge required for tail recovery.
+
+
+\subsection{Ablation Studies}
+\label{sec:ablation}
+
+To understand \textit{why} tail collapse occurs and rule out alternative explanations, we begin with an artifact-level exception-retention analysis and outline complementary task-outcome analyses. The retention analysis tests whether defensive knowledge is preferentially deleted during compression; the remaining analyses require task-success results and are reported once the corresponding agent evaluations are complete.
+
+\paragraph{Tail-logic retention under recursive distillation.}
+\label{sec:retention}
+We first examine whether the concrete exception-handling instructions introduced in $s_1$ remain recoverable after recursive skill distillation.
+For each tail variant, we decompose the skill artifact into high-precision $s_1$ tail-handling units and the remaining regular skill content.
+A later skill is counted as retaining a tail unit only when the concrete handling step remains recoverable under the high-precision matching rule; keyword-only matches are excluded.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\columnwidth]{ablation1.png}
+\caption{
+\textbf{High-precision tail-logic retention under recursive skill distillation.}
+(a) Mean retention of total skill words, regular skill content, and high-precision $s_1$ tail-handling units.
+(b) Fraction of variants with no recoverable $s_1$ tail unit at each distilled depth.
+}
+\label{fig:tail-retention}
+\end{figure}
+
+Figure~\ref{fig:tail-retention} shows a clear asymmetry between regular skill content and tail-handling logic.
+While total skill retention decreases to 45.6\% and regular-content retention remains 48.7\% at $s_4$, high-precision tail retention drops to 15.7\%.
+This corresponds to a 33.0 percentage-point gap between regular-content retention and tail retention at the final distilled depth.
+
+The right panel further measures complete tail-logic disappearance.
+Here, a variant is counted as \emph{tail absent} at a given depth if it contains an extractable $s_1$ tail-handling unit but no such unit can be recovered at that later depth under the high-precision rule.
+This absent rate rises steadily across recursive distillation, from 34.6\% at $s_2$ to 53.7\% at $s_3$ and 67.3\% at $s_4$.
+Together, these results show that recursive distillation does not merely shorten skill artifacts uniformly; it preferentially removes rare, local, environment-specific exception-handling instructions.
+
+\begin{table}[t]
+\centering
+\small
+\setlength{\tabcolsep}{3.8pt}
+\renewcommand{\arraystretch}{1.08}
+\begin{tabular}{lcccc}
+\toprule
+Depth & Total & Regular & Tail & Tail absent \\
+\midrule
+$s_1$ & 100.0 & 100.0 & 100.0 & -- \\
+$s_2$ & 70.9  & 73.5  & 43.5  & 34.6 \\
+$s_3$ & 52.9  & 56.1  & 22.7  & 53.7 \\
+$s_4$ & 45.6  & 48.7  & 15.7  & 67.3 \\
+\bottomrule
+\end{tabular}
+\caption{
+Numerical values for the high-precision retention analysis in Figure~\ref{fig:tail-retention}. Values are percentages.
+}
+\label{tab:tail-retention-values}
+\end{table}
+
+\paragraph{Success-Conditioned Forgetting.}
+\label{sec:forgetting}
+Is tail collapse an artifact of inherently difficult tasks? Although all 208 variants satisfy the Recoverability Constraint, the Oracle verification only guarantees solvability in principle. To control for tasks where $s_1$ itself fails, we restrict analysis to variants where the agent \textit{succeeds with} $s_1$, defining the \textit{forgetting rate}:
+\begin{equation}
+F(k) = \Pr\big[\text{success}(s_k)=0 \;\big|\; \text{success}(s_1)=1\big]
+\end{equation}
+computed separately for $\mathcal{D}_c$ and $\mathcal{D}_t$. A substantially higher $F(k)$ on $\mathcal{D}_t$ than $\mathcal{D}_c$ would confirm that tail collapse reflects genuine skill degradation, not task difficulty.
+
+\begin{table}[t]
+\centering\small
+\begin{tabular}{@{}lccc@{}}
+\toprule
+\textbf{Distribution} & $F(2)$ & $F(3)$ & $F(4)$ \\
+\midrule
+Common ($\mathcal{D}_c$) & -3.3\% & 3.3\% & 3.3\% \\
+Tail ($\mathcal{D}_t$) & 48.0\% & 63.4\% & 44.6\% \\
+\bottomrule
+\end{tabular}
+\caption{Success-conditioned forgetting rates. $F(k)$ = fraction of tasks where $s_1$ succeeds but $s_k$ fails. Tail forgetting rates use Method-2 adjustment.}
+\label{tab:forgetting}
+\end{table}
+
+Table~\ref{tab:forgetting} shows that tail variants exhibit forgetting rates 15--20 times higher than common-case tasks across all depths. The common-case distribution shows minimal degradation (even slight improvement at $s_2$), while tail variants lose nearly half of the initially successful runs by $s_2$ and over two-thirds by $s_3$. This confirms that tail collapse is not due to task difficulty but reflects genuine knowledge loss in the skill artifact.
+
+\paragraph{Retention-Success Correlation.}
+\label{sec:correlation}
+Is the deleted defensive knowledge causally relevant to task outcome, or merely correlated with skill length? We join the text-level retention analysis with agent-level outcomes. For each variant $v$ at depth $k$, we compute the binary retention indicator $r_k^{(v)} = \mathbf{1}[\text{any high-precision } s_1 \text{ tail unit is retained in } s_k^{(v)}]$ and the task outcome $y_k^{(v)} \in \{0,1\}$.
+
+\begin{table}[t]
+\centering\small
+\begin{tabular}{@{}lc@{}}
+\toprule
+\textbf{Defense Status} & \textbf{Success Rate} \\
+\midrule
+Retained in $s_4$ & 17.9\% \\
+Dropped from $s_4$ & 19.3\% \\
+\midrule
+\textit{Overall at $s_4$} & \textit{19.0\%} \\
+\bottomrule
+\end{tabular}
+\caption{Task success rate by defense-retention status at $s_4$, excluding recovery tasks. Defense retention rate: 19.5\%.}
+\label{tab:correlation}
+\end{table}
+
+Table~\ref{tab:correlation} reports success rates stratified by defense-retention status. The high-precision retention rate is 19.5\%, consistent with the text-level analysis in Section~\ref{sec:retention}. The near-identical success rates between retained and dropped conditions reflect the severity of compression at $s_4$: with only 34\% of original skill length remaining, even retained defensive fragments may be insufficient when other critical skill components---data loading patterns, output formatting, error handling---have been deleted. This finding suggests that by the final compression stage, the artifact has crossed a critical threshold where partial knowledge preservation no longer translates to partial task recovery.
+
+
+\paragraph{Tail-Defense Deletion Ablation.}
+\label{sec:ablation-deletion}
+Does the defensive fragment causally determine recovery? We construct a tail-stripped control $s_1^{-\mathrm{tail}}$ by removing \textit{only} the variant-specific defensive rule from $s_1$ while preserving the common workflow, file paths, commands, and output format. For example, the \texttt{encoding='utf-8-sig'} instruction is removed for A1 variants; the \texttt{PermissionError} handling logic is removed for B1 variants. Because $s_1^{-\mathrm{tail}}$ is shorter than $s_1$, any degradation cannot be attributed to excessive context length. We evaluate on the same stratified subset as the compression-policy ablation. If $s_1$ succeeds and $s_1^{-\mathrm{tail}}$ fails, the defensive fragment is \textit{necessary} for recovery.
+
+We instantiate this test on a stratified subset of 50 variants sampled only from cases where the full $s_1$ skill succeeds. The stripped control replaces the TailSkills-augmented skill with the corresponding original SkillsBench skill, thereby removing the tail-variant rule and its helper logic while leaving the task environment, tests, and common task workflow unchanged. Two runs were excluded due to local Windows/Harbor infrastructure failures before agent execution; among the remaining 48 valid runs, every $s_1^{-\mathrm{tail}}$ run fails (0/48). Thus, the full $s_1$ condition has tail accuracy 1.000 by construction on this subset, while deleting the defensive fragment reduces tail accuracy to 0.000. This establishes the reverse causal direction: the same knowledge that disappears under compression is sufficient to reproduce the failure when removed from the otherwise full skill.
+
+\begin{table}[t]
+\centering\small
+\begin{tabular}{@{}ccc@{}}
+\toprule
+\textbf{Skill Condition} & \textbf{Valid Runs} & \textbf{Tail Acc.} \\
+\midrule
+$s_1$ & 48 & 1.000 \\
+$s_1^{-\mathrm{tail}}$ & 48 & 0.000 \\
+\bottomrule
+\end{tabular}
+\caption{Tail-defense deletion ablation. On variants where the full $s_1$ skill succeeds, removing the variant-specific defensive knowledge reproduces failure in all valid runs. Two additional selected runs were excluded due to infrastructure failures before agent execution.}
+\label{tab:ablation-deletion}
+\end{table}
+
+\subsection{Case Study: Regular vs. Tail-Aware Distillation}
+\label{sec:case-study}
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\textwidth]{casestudy.png}
+\caption{Case study: regular vs.\ tail-aware distillation under C3 extreme values.}
+\label{fig:case-study}
+\end{figure*}
+
+Is collapse caused by shorter skills or by the compression model's \textit{choices}? We decouple length from content by constructing a length-matched \textit{tail-aware} skill $s_4^{\mathrm{tail}}$ using an alternative prompt that instructs the rewriter to preserve exception-handling rules, fallback paths, input validation, permission checks, retry/backoff logic, and post-fix verification \textit{before} removing any defensive content. The prompt uses the same character budget as neutral $s_4$ and is forbidden from introducing new defenses.
+
+
+Figure~\ref{fig:case-study} illustrates how tail-aware distillation prevents tail-knowledge collapse on the C3 lake-warming attribution variant. The task requires trend estimation and driver attribution from environmental CSV files, while the C3 variant injects extreme values such as 0, -1, and -999 into numeric fields. Regular distillation preserves the main analysis workflow but drops the rare data-cleaning branch: the regular $s_2$ and $s_3$ skills still produce valid trend results, but their attribution estimates are distorted, yielding Heat contributions of 85.94\% and 81.66\%, outside the expected 40--60\% range. The regular $s_4$ skill further collapses and fails to generate valid outputs. Tail-aware distillation, however, preserves the recovery rule for detecting and repairing extreme values before attribution. Consequently, the tail-aware compressed skills pass the C3 variant across all depths, with \texttt{dominant\_factor.csv} recovering Heat at approximately 49\%. The case study demonstrates that neutral compression removes rare recovery knowledge, whereas tail-aware compression can preserve it without sacrificing the main task workflow.
+
+\section{Conclusion}
+
+We introduced \textsc{TailSkills}, a benchmark for studying how externally loaded agent skills degrade under recursive distillation. Unlike average-case skill evaluations, TailSkills stresses rare but recoverable exception conditions, including encoding anomalies, file-system constraints, data-quality violations, network disruptions, dependency drift, and security regressions.
+
+Our experiments show that recursive skill compression can preserve common-case utility while substantially degrading tail-case performance. This degradation is not merely a consequence of shorter context: high-precision retention analysis shows that local tail-handling instructions disappear much faster than regular workflow content, and the tail-defense deletion ablation demonstrates that removing these defensive fragments from otherwise successful skills is sufficient to reproduce failures.
+
+These findings suggest that skill distillation should be evaluated not only by average pass rate or artifact length, but also by the durability of rare defensive knowledge. More broadly, the results highlight a reliability risk for agent systems that repeatedly rewrite, summarize, or standardize procedural artifacts. Future skill compression methods should explicitly preserve exception-handling logic, fallback paths, validation routines, and post-fix verification steps rather than optimizing only for concision.
+
+\section*{Limitations}
+
+This work studies text-based skill artifacts in sandboxed environments. Findings may not generalize to skills internalized through fine-tuning or to multimodal procedural knowledge. TailSkills variants are template-derived rather than collected from production, and may under-represent enterprise-specific exceptions. We focus on compression; other rewriting operators may induce different failure modes. Binary verifiers may obscure partial degradations.
+
+\section*{Potential Risks}
+
+This work improves skill reliability by identifying when defensive knowledge is lost. The analysis could be misused to weaken skills, but we frame experiments around robustness evaluation rather than attack optimization. All adversarial variants run in isolated Docker sandboxes without targeting live systems. The benchmark shows that rare defensive rules are vulnerable under compression, but should not be interpreted as evidence that all distillation is harmful. TailSkills is a diagnostic tool, not an argument against skill reuse.
+
+\bibliography{custom}
+
+\appendix
+
+\begin{figure*}[t]
+\centering\small
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{cccc}
+% S1
+\begin{minipage}[t]{0.235\textwidth}
+\begin{tcolorbox}[colback=white,colframe=commongreen!80!black,
+  fonttitle=\scriptsize\bfseries,coltitle=black,
+  title={S$_1$~~17{,}730 B~~%
+  \textcolor{green!50!black}{$\checkmark$}},
+  boxrule=0.5pt,arc=2pt,left=3pt,right=3pt,top=2pt,bottom=2pt]
+{\scriptsize\bfseries Dependencies}\\[1pt]
+\begin{tcolorbox}[colback=commongreen!40,colframe=commongreen!70!black,
+  boxrule=0.3pt,arc=1pt,left=2pt,right=2pt,top=1pt,bottom=1pt]
+{\scriptsize\texttt{pip3 install numpy\\
+scipy cvxpy==1.4.2}}
+\end{tcolorbox}
+\begin{tcolorbox}[colback=tailpink!40,colframe=tailpink!70!black,
+  boxrule=0.3pt,arc=1pt,left=2pt,right=2pt,top=1pt,bottom=1pt]
+{\scriptsize\textcolor{red!60!black}{%
+If \texttt{ModuleNotFound}:\\
+the package may have been\\
+removed. Reinstall with:\\
+\texttt{pip3 install -{}-no-cache}\\
+\texttt{~~cvxpy==1.4.2}}}
+\end{tcolorbox}
+\begin{tcolorbox}[colback=commongreen!40,colframe=commongreen!70!black,
+  boxrule=0.3pt,arc=1pt,left=2pt,right=2pt,top=1pt,bottom=1pt]
+{\scriptsize\texttt{prob.solve(}\\
+\texttt{~~solver=cp.CLARABEL)}}
+\end{tcolorbox}
+\end{tcolorbox}
+\end{minipage}
+&
+% S2
+\begin{minipage}[t]{0.235\textwidth}
+\begin{tcolorbox}[colback=white,colframe=commongreen!80!black,
+  fonttitle=\scriptsize\bfseries,coltitle=black,
+  title={S$_2$~~14{,}209 B~~%
+  \textcolor{green!50!black}{$\checkmark$}},
+  boxrule=0.5pt,arc=2pt,left=3pt,right=3pt,top=2pt,bottom=2pt]
+{\scriptsize\bfseries Dependencies}\\[1pt]
+\begin{tcolorbox}[colback=commongreen!40,colframe=commongreen!70!black,
+  boxrule=0.3pt,arc=1pt,left=2pt,right=2pt,top=1pt,bottom=1pt]
+{\scriptsize\texttt{pip3 install numpy\\
+scipy cvxpy==1.4.2}}
+\end{tcolorbox}
+\begin{tcolorbox}[colback=tailpink!40,colframe=tailpink!70!black,
+  boxrule=0.3pt,arc=1pt,left=2pt,right=2pt,top=1pt,bottom=1pt]
+{\scriptsize\textcolor{red!60!black}{%
+If \texttt{ModuleNotFound}:\\
+reinstall with:\\
+\texttt{pip3 install -{}-no-cache}\\
+\texttt{~~cvxpy==1.4.2}}}
+\end{tcolorbox}
+\begin{tcolorbox}[colback=commongreen!40,colframe=commongreen!70!black,
+  boxrule=0.3pt,arc=1pt,left=2pt,right=2pt,top=1pt,bottom=1pt]
+{\scriptsize\texttt{prob.solve(}\\
+\texttt{~~solver=cp.CLARABEL)}}
+\end{tcolorbox}
+\end{tcolorbox}
+\end{minipage}
+&
+% S3
+\begin{minipage}[t]{0.235\textwidth}
+\begin{tcolorbox}[colback=white,colframe=tailpink!80!black,
+  fonttitle=\scriptsize\bfseries,coltitle=black,
+  title={S$_3$~~8{,}221 B~~%
+  \textcolor{red!60!black}{$\times$}},
+  boxrule=0.5pt,arc=2pt,left=3pt,right=3pt,top=2pt,bottom=2pt]
+{\scriptsize\bfseries Dependencies}\\[1pt]
+\begin{tcolorbox}[colback=commongreen!40,colframe=commongreen!70!black,
+  boxrule=0.3pt,arc=1pt,left=2pt,right=2pt,top=1pt,bottom=1pt]
+{\scriptsize\texttt{pip3 install numpy\\
+scipy cvxpy==1.4.2}}
+\end{tcolorbox}
+\begin{tcolorbox}[colback=gray!10,colframe=gray!40,
+  boxrule=0.3pt,arc=1pt,left=2pt,right=2pt,top=1pt,bottom=1pt]
+{\scriptsize\textcolor{gray}{\textit{(conditional reinstall}}\\
+\textcolor{gray}{\textit{instructions removed)}}}
+\end{tcolorbox}
+\begin{tcolorbox}[colback=commongreen!40,colframe=commongreen!70!black,
+  boxrule=0.3pt,arc=1pt,left=2pt,right=2pt,top=1pt,bottom=1pt]
+{\scriptsize\texttt{prob.solve(}\\
+\texttt{~~solver=cp.CLARABEL)}}
+\end{tcolorbox}
+\end{tcolorbox}
+\end{minipage}
+&
+% S4
+\begin{minipage}[t]{0.235\textwidth}
+\begin{tcolorbox}[colback=white,colframe=tailpink!80!black,
+  fonttitle=\scriptsize\bfseries,coltitle=black,
+  title={S$_4$~~7{,}299 B~~%
+  \textcolor{red!60!black}{$\times$}},
+  boxrule=0.5pt,arc=2pt,left=3pt,right=3pt,top=2pt,bottom=2pt]
+{\scriptsize\bfseries Deps \& Solver}\\[1pt]
+\begin{tcolorbox}[colback=commongreen!40,colframe=commongreen!70!black,
+  boxrule=0.3pt,arc=1pt,left=2pt,right=2pt,top=1pt,bottom=1pt]
+{\scriptsize\texttt{pip3 install numpy\\
+scipy cvxpy==1.4.2}}
+\end{tcolorbox}
+\begin{tcolorbox}[colback=gray!10,colframe=gray!40,
+  boxrule=0.3pt,arc=1pt,left=2pt,right=2pt,top=1pt,bottom=1pt]
+{\scriptsize\textcolor{gray}{\textit{(conditional reinstall}}\\
+\textcolor{gray}{\textit{instructions removed)}}}
+\end{tcolorbox}
+\begin{tcolorbox}[colback=commongreen!40,colframe=commongreen!70!black,
+  boxrule=0.3pt,arc=1pt,left=2pt,right=2pt,top=1pt,bottom=1pt]
+{\scriptsize\texttt{prob.solve(}\\
+\texttt{~~solver=cp.CLARABEL)}}
+\end{tcolorbox}
+\end{tcolorbox}
+\end{minipage}
+\\[-2pt]
+{\scriptsize 586 lines}
+&
+{\scriptsize 436 lines}
+&
+{\scriptsize 248 lines}
+&
+{\scriptsize 214 lines}
+\\[-1pt]
+\multicolumn{4}{c}{%
+  \scriptsize S$_1$ $\xrightarrow{\text{80.1\%}}$ S$_2$
+  $\xrightarrow{\text{57.9\%}}$ S$_3$
+  $\xrightarrow{\text{88.8\%}}$ S$_4$
+  \quad\textbf{Total: 41.1\% of S$_1$}
+}
+\end{tabular}
+\vspace{2pt}
+
+\centering\scriptsize
+\makebox[0pt][c]{%
+\tcbox[colback=commongreen!40,colframe=commongreen!70!black,
+  boxrule=0.3pt,arc=1pt,left=2pt,right=2pt,top=1pt,bottom=1pt,
+  on line]{Common Knowledge}~~
+\tcbox[colback=tailpink!40,colframe=tailpink!70!black,
+  boxrule=0.3pt,arc=1pt,left=2pt,right=2pt,top=1pt,bottom=1pt,
+  on line]{Tail Knowledge}~~
+\tcbox[colback=gray!10,colframe=gray!40,
+  boxrule=0.3pt,arc=1pt,left=2pt,right=2pt,top=1pt,bottom=1pt,
+  on line]{\textcolor{gray}{Lost}}}
+
+\caption{Case study of tail knowledge collapse under recursive distillation (\texttt{energy-market-pricing}, E1 variant). Each card shows the actual ``Dependencies'' section. The defensive \texttt{ModuleNotFoundError} handling (\textcolor{tailpink!70!black}{\textbf{pink}}) is retained in S$_1$--S$_2$ but disappears at S$_3$, while standard installation and solver configuration (\textcolor{commongreen!60!black}{\textbf{green}}) persist through all four rounds.}
+\label{fig:tail-collapse}
+\end{figure*}
+
+\section{Skill Distillation Case Study}
+\label{sec:distillation-case}
+
+Figure~\ref{fig:tail-collapse} illustrates the central finding of this work through a concrete case study. We trace the \texttt{energy-market-pricing} skill (E1 variant) through four recursive distillation rounds and observe that exception-handling (tail) knowledge progressively degrades while common-case knowledge is preserved. The defensive code for handling \texttt{ModuleNotFoundError}---installed via the Overlay Copy mechanism during benchmark construction---remains intact through S$_1$ and S$_2$ but completely disappears at S$_3$. Meanwhile, standard installation commands, solver configuration, and domain formulas survive all four rounds.
+
+\section{Tail Variant Examples}
+\label{sec:variant-examples}
+
+We provide one concrete example per variant type below, illustrating the anomaly description, a task-specific before/after comparison, the defensive knowledge embedded in $s_1$, and the Oracle recovery strategy.
+
+\subsection{A1: BOM Injection}
+
+\begin{anomalyblock}[A1: BOM Injection]
+Enterprise ERP systems (e.g., SAP, Microsoft Dynamics) export CSV files with a UTF-8 BOM (\texttt{\textbackslash xEF\textbackslash xBB\textbackslash xBF}) prepended to the file. The BOM is invisible in text editors and spreadsheets, but a naive \texttt{pd.read\_csv()} call produces a column named \texttt{"\textbackslash ufeffYear"} instead of \texttt{"Year"}, causing \texttt{KeyError} on all subsequent column lookups.
+\end{anomalyblock}
+
+\textbf{Example task.} Shock Analysis (Demand Side) --- estimate investment spending shocks using macroeconomic data from \texttt{test - demand.xlsx}.
+
+\textbf{Before injection.} The CSV sidecar \texttt{weo\_data\_export.csv} begins with standard UTF-8 header bytes \texttt{59 65 61 72} (``Year''). \texttt{pd.read\_csv()} correctly parses columns \texttt{Year}, \texttt{Real\_GDP\_growth}, \texttt{GDP\_deflator} with dtype \texttt{float64}.
+
+\textbf{After injection.} The injection script prepends \texttt{\textbackslash xEF\textbackslash xBB\textbackslash xBF} before the header. The file's hex header becomes \texttt{EF BB BF 59 65 61 72}. \texttt{pd.read\_csv()} parses the first column as \texttt{"\textbackslash ufeffYear"} instead of \texttt{"Year"}, causing \texttt{KeyError} on all subsequent lookups.
+
+\textbf{Defensive knowledge in $s_1$:} \textit{``Some data sources include a UTF-8 BOM. Use \texttt{encoding='utf-8-sig'} to transparently strip BOM markers, or run \texttt{python3 clean\_data.py <file>} before processing.''}
+
+\textbf{Oracle recovery:} Strips the BOM via the auxiliary cleaning script before any data processing.
+
+\subsection{A2: Zero-Width Character Injection}
+
+\begin{anomalyblock}[A2: Zero-Width Character Injection]
+Data scraped from web pages or exported from legacy systems may contain invisible zero-width Unicode characters (U+200B, U+200C, U+200D) embedded in numeric fields. The values appear visually identical in spreadsheets---\texttt{4.8} vs.\ \texttt{"\textbackslash u200B4.8\textbackslash u200D"}---but \texttt{float()} raises \texttt{ValueError: could not convert string to float}.
+\end{anomalyblock}
+
+\textbf{Example task.} Shock Analysis (Demand Side) --- estimate investment spending shocks using macroeconomic data from \texttt{test - demand.xlsx}.
+
+\textbf{Before injection.} In sheet \texttt{WEO\_Data}, cell \texttt{B2} contains Python \texttt{float} \texttt{4.8}; \texttt{isinstance(cell.value, float)} returns \texttt{True}.
+
+\textbf{After injection.} The injection script wraps $\sim$10\% of numeric cells with random zero-width characters. Cell \texttt{B2} becomes \texttt{"\textbackslash u200B4.8\textbackslash u200C"} (Python \texttt{str}); \texttt{isinstance(cell.value, float)} returns \texttt{False}, and \texttt{float(cell.value)} raises \texttt{ValueError}.
+
+\textbf{Defensive knowledge in $s_1$:} \textit{``When numeric parsing fails on apparently valid values, strip invisible characters: \texttt{val.encode('ascii', errors='ignore').decode()}, or use \texttt{pd.to\_numeric(errors='coerce')}.''}
+
+\textbf{Oracle recovery:} Sanitizes all string fields by stripping non-ASCII characters before numeric conversion.
+
+\subsection{B1: Read-Only Output Directory}
+
+\begin{anomalyblock}[B1: Read-Only Output Directory]
+Production environments commonly restrict write access to output directories via read-only mounts, immutable filesystems (e.g., OSTree), or security policies. An agent attempting \texttt{df.to\_csv("/root/output/result.csv")} receives \texttt{PermissionError: [Errno 13] Permission denied}.
+\end{anomalyblock}
+
+\textbf{Example task.} Shock Analysis (Demand Side) --- compute macroeconomic scenarios and write results to \texttt{test - demand.xlsx}.
+
+\textbf{Before injection.} Working directory \texttt{/root} has default permissions \texttt{drwxr-xr-x} (755). The agent can create files and subdirectories freely.
+
+\textbf{After injection.} A single \texttt{chmod 555 /root} sets the directory to \texttt{dr-xr-xr-x}. The candidate is admitted only when sandbox verification confirms that the agent process cannot write to the target path and receives a permission failure.
+
+\textbf{Defensive knowledge in $s_1$:} \textit{``Before writing output, check directory permissions with \texttt{os.access(dir, os.W\_OK)}. On \texttt{PermissionError}, restore write access with \texttt{os.chmod(dir, 0o755)}, or fall back to \texttt{/tmp/} as an alternative output path.''}
+
+\textbf{Oracle recovery:} Detects \texttt{PermissionError}, restores write permissions via \texttt{os.chmod()}, and writes normally.
+
+\subsection{B2: Output Contamination}
+
+\begin{anomalyblock}[B2: Output Contamination]
+A previous failed run leaves a corrupted or incomplete file at the expected output path. If the agent appends to or reads from this file without verification, corrupted content silently pollutes results. This variant additionally locks the directory read-only, compounding the recovery challenge.
+\end{anomalyblock}
+
+\textbf{Example task.} Shock Analysis (Demand Side) --- compute macroeconomic scenarios and write results to \texttt{test - demand.xlsx}.
+
+\textbf{Before injection.} The output path \texttt{/root/test - demand.xlsx} contains a valid XLSX workbook with multiple sheets and formulas.
+
+\textbf{After injection.} The Dockerfile overwrites the file with literal text and locks the directory: \texttt{echo "CORRUPTED\_NOT\_VALID\_XLSX\_DATA" > "/root/test - demand.xlsx"} followed by \texttt{chmod 555 /root}. The file's magic bytes are \texttt{CORR} instead of the XLSX signature \texttt{PK}, and \texttt{openpyxl.load\_workbook()} raises \texttt{BadZipFile}.
+
+\textbf{Defensive knowledge in $s_1$:} \textit{``Before writing output files, verify that the output directory is writable, restore write access if needed, and remove any pre-existing files at the target path with \texttt{os.remove()}. Never append to files whose provenance is uncertain.''}
+
+\textbf{Oracle recovery:} Restores directory write permission when needed, deletes any pre-existing file, and then writes fresh results.
+
+\subsection{C1: NaN/Inf Poisoning}
+
+\begin{anomalyblock}[C1: NaN/Inf Poisoning]
+Sensor failures, data transmission interruptions, or logarithmic overflow introduce NaN and Inf into numerical columns. NaN propagates virally: \texttt{NaN + any value = NaN}, silently corrupting all downstream calculations without raising an error. This is the most dangerous failure mode---the agent considers the task successful while producing entirely wrong results.
+\end{anomalyblock}
+
+\textbf{Example task.} Shock Analysis (Demand Side) --- compute macroeconomic scenarios from \texttt{test - demand.xlsx}.
+
+\textbf{Before injection.} All cells in the \texttt{WEO\_Data} sheet contain valid Python \texttt{float} or \texttt{int} values, e.g., \texttt{4.8}, \texttt{-6.3}, \texttt{10.5}. Arithmetic operations complete normally.
+
+\textbf{After injection.} Two randomly sampled rows have their first numeric cell set to \texttt{None} (openpyxl writes an empty cell $\rightarrow$ \texttt{NaN} when read), and a third row's first numeric cell is set to \texttt{float('inf')}. Downstream, \texttt{NaN + 4.5} silently produces \texttt{NaN}, while \texttt{inf * 2} produces \texttt{inf}---both passing without error but yielding meaningless results.
+
+\textbf{Defensive knowledge in $s_1$:} \textit{``After loading data, check \texttt{df.isnull().sum()} and \texttt{np.isfinite(df[col]).all()}. Drop or impute poisoned values before any computation.''}
+
+\textbf{Oracle recovery:} Filters rows with \texttt{np.isfinite()} and imputes using column medians.
+
+\subsection{C2: Duplicate Primary Keys}
+
+\begin{anomalyblock}[C2: Duplicate Primary Keys]
+ETL pipeline re-execution or upstream deduplication failures introduce duplicate rows sharing the same primary key but with slightly different values. Merge and join operations produce Cartesian products, inflating aggregated values by the duplication factor.
+\end{anomalyblock}
+
+\textbf{Example task.} Powerlifting Coefficient Calculation --- compute Dots scores for lifters in \texttt{openipf.xlsx}.
+
+\textbf{Before injection.} Each lifter has a unique \texttt{Name} key. A \texttt{merge(on='Name', validate='one\_to\_one')} completes without error.
+
+\textbf{After injection.} Three rows are duplicated with the same primary key but non-key numeric values inflated by 5\%. For example, lifter ``John Doe'' with \texttt{TotalKg=500} appears twice, once with \texttt{TotalKg=525.0}. A naive \texttt{merge()} produces $2\times$ rows and inflated aggregate sums.
+
+\textbf{Defensive knowledge in $s_1$:} \textit{``After loading, verify key uniqueness with \texttt{df.duplicated(subset=['key']).any()}. Use \texttt{drop\_duplicates(keep='first')} or \texttt{merge(validate='one\_to\_one')}.''}
+
+\textbf{Oracle recovery:} Deduplicates on the lifter identifier before computing coefficients, retaining the first valid record.
+
+\subsection{C3: Extreme Values}
+
+\begin{anomalyblock}[C3: Extreme Values]
+Data collection anomalies or uncleaned placeholder conventions introduce semantically invalid values: \texttt{0} for ``no reading,'' \texttt{-1} for ``sensor offline,'' or \texttt{-999} for ``missing.'' These pass type and NaN checks but produce nonsensical results---e.g., a station coordinate of $-999$ causes the association algorithm to place events at impossible locations.
+\end{anomalyblock}
+
+\textbf{Example task.} Shock Analysis (Demand Side) --- compute macroeconomic scenarios from \texttt{test - demand.xlsx}.
+
+\textbf{Before injection.} Numeric cells contain realistic values within expected ranges, e.g., GDP growth rates like \texttt{4.8}, \texttt{-6.3}, \texttt{10.5}. All pass \texttt{np.isfinite()} and type checks.
+
+\textbf{After injection.} Three randomly sampled rows have their first numeric cell replaced with $0$, $-1$, and $-999$ respectively. These values are valid \texttt{float}s that pass all NaN/type guards, but a GDP growth of $-999$\% is semantically impossible and silently distorts all downstream statistics.
+
+\textbf{Defensive knowledge in $s_1$:} \textit{``Apply domain-aware range validation: \texttt{df = df[(df[col] > lower) \& (df[col] < upper)]}.''}
+
+\textbf{Oracle recovery:} Filters rows outside valid range and replaces with column medians.
+
+\subsection{C4: Type Confusion}
+
+\begin{anomalyblock}[C4: Type Confusion]
+Manual data entry or cross-system data exchange introduces non-numeric markers (\texttt{N/A}, \texttt{-}, \texttt{\#REF!}, \texttt{TBD}) into numeric columns. The column's dtype silently becomes \texttt{object}, and arithmetic operations either raise \texttt{TypeError} or produce concatenated strings (e.g., \texttt{"4.8" + "2.1" = "4.82.1"}).
+\end{anomalyblock}
+
+\textbf{Example task.} Shock Analysis (Demand Side) --- compute macroeconomic scenarios from \texttt{test - demand.xlsx}.
+
+\textbf{Before injection.} Numeric cells contain Python \texttt{float} values; the column dtype is \texttt{float64}. Operations like \texttt{df[col].mean()} return a valid \texttt{float}.
+
+\textbf{After injection.} Up to 3 cells are converted from \texttt{float} to \texttt{str} via \texttt{cell.value = str(cell.value)}. The value \texttt{4.8} becomes the string \texttt{"4.8"}. When loaded by \texttt{pandas}, the column dtype becomes \texttt{object}; \texttt{df[col].mean()} raises \texttt{TypeError} or returns a concatenated string depending on the operation.
+
+\textbf{Defensive knowledge in $s_1$:} \textit{``Use \texttt{pd.to\_numeric(errors='coerce')} to safely convert columns. Check for newly created NaN values and never assume a CSV column is purely numeric.''}
+
+\textbf{Oracle recovery:} Coerces columns with \texttt{pd.to\_numeric(errors='coerce')} and imputes resulting NaN values.
+
+\subsection{D1: DNS Jitter}
+
+\begin{anomalyblock}[D1: DNS Jitter]
+Cloud environments experience intermittent DNS resolution failures due to network congestion, DNS server overload, or transient routing issues. An agent querying an external API faces \texttt{socket.gaierror} on roughly half of its requests. Without retry logic, the agent crashes or silently skips data collection.
+\end{anomalyblock}
+
+\textbf{Example task.} Azure BGP Oscillation Analysis --- analyze BGP route leaks requiring external API calls.
+
+\textbf{Before injection.} Container DNS operates normally; \texttt{requests.get("https://api.example.com")} resolves and returns data reliably.
+
+\textbf{After injection.} An iptables rule drops 50\% of outbound UDP port 53 packets at random. A simple \texttt{requests.get()} call has $\sim$50\% chance of \texttt{socket.gaierror: [Errno -2] Name or service not known}. The fault is applied at container start via an \texttt{ENTRYPOINT} wrapper script.
+
+\textbf{Defensive knowledge in $s_1$:} \textit{``Catch \texttt{socket.gaierror} on network requests and retry with exponential backoff. Cache resolved hostnames to avoid repeated DNS lookups.''}
+
+\textbf{Oracle recovery:} Pre-resolves all hostnames at startup with retry logic and caches results.
+
+\subsection{D2: HTTPS Connection Throttling}
+
+\begin{anomalyblock}[D2: HTTPS Connection Throttling]
+External services and container policies may throttle outbound connections. Rapid parallel API calls can exceed the connection budget, causing connection failures or timeouts. Agents that do not implement backoff and request pacing fail on subsequent requests.
+\end{anomalyblock}
+
+\textbf{Example task.} Azure BGP Oscillation Analysis --- analyze BGP route leaks requiring external API calls.
+
+\textbf{Before injection.} The agent can open unlimited concurrent HTTPS connections. Parallel API calls complete without interruption.
+
+\textbf{After injection.} An iptables rule limits concurrent outbound HTTPS (port 443) connections to 3. Any 4th concurrent connection is silently dropped, causing \texttt{ConnectionError} or timeout. The fault is applied via the same \texttt{ENTRYPOINT} wrapper as D1.
+
+\textbf{Defensive knowledge in $s_1$:} \textit{``Implement exponential backoff (max 3 retries) on \texttt{ConnectionError} and \texttt{Timeout}. Space requests with \texttt{time.sleep()}.''}
+
+\textbf{Oracle recovery:} Wraps API calls in a retry decorator with exponential backoff (base 1s, max 3 retries).
+
+\subsection{E1: Missing Optional Dependency}
+
+\begin{anomalyblock}[E1: Missing Optional Dependency]
+Container images built from minimal base images may lack optional Python packages that the skill document implicitly relies on. An \texttt{import pymatgen} statement raises \texttt{ModuleNotFoundError}, halting execution immediately even though the package can be installed at runtime.
+\end{anomalyblock}
+
+\textbf{Example task.} Crystallographic Wyckoff Position Analysis --- analyze crystal symmetry from CIF files using \texttt{pymatgen} and \texttt{sympy}.
+
+\textbf{Before injection.} The Dockerfile installs \texttt{pymatgen==2025.10.7} and \texttt{sympy==1.14.0}. Running \texttt{import pymatgen; from pymatgen.core import Structure} succeeds.
+
+\textbf{After injection.} The Dockerfile appends \texttt{RUN pip uninstall -y pymatgen sympy}. The packages are fully removed from \texttt{site-packages}; \texttt{import pymatgen} raises \texttt{ModuleNotFoundError: No module named 'pymatgen'}.
+
+\textbf{Defensive knowledge in $s_1$:} \textit{``Before importing, verify availability with \texttt{importlib.util.find\_spec()}. Install missing packages at runtime via \texttt{pip install} or \texttt{uv pip install}.''}
+
+\textbf{Oracle recovery:} Checks package availability and installs via \texttt{uv pip install} before importing.
+
+\subsection{E2: Library Version Drift}
+
+\begin{anomalyblock}[E2: Library Version Drift]
+Production environments may pin library versions for stability. A skill written for a newer library version calls methods unavailable in the installed version, causing \texttt{AttributeError}. The test infrastructure works but the skill's API assumptions are wrong.
+\end{anomalyblock}
+
+\textbf{Example task.} Fix Visual Stability --- debug rendering issues in a Next.js app using Playwright.
+
+\textbf{Before injection.} The base Dockerfile installs the current Playwright version. \texttt{page.expect()} and other modern API methods are available for visual assertion.
+
+\textbf{After injection.} An explicit \texttt{RUN pip3 install playwright==1.40.0} downgrades the library. The \texttt{page.expect()} method does not exist in 1.40; calling it raises \texttt{AttributeError}. Older assertion patterns (e.g., manual screenshot comparison) must be used instead.
+
+\textbf{Defensive knowledge in $s_1$:} \textit{``Verify the installed library version matches the expected API. Adapt selectors and assertions to the available version, or upgrade if possible.''}
+
+\textbf{Oracle recovery:} Detects Playwright version and adapts the test script to 1.40.0 API.
+
+\subsection{G1: Multi-Vector Attack}
+
+\begin{anomalyblock}[G1: Multi-Vector Attack]
+Real production incidents often involve compounding failures: a security patch must be applied to a system where the deployment directory is locked down by policy and the build toolchain is unavailable (removed to reduce attack surface). The agent must handle both constraints simultaneously.
+\end{anomalyblock}
+
+\textbf{Example task.} Suricata Custom Exfil Detection --- write Suricata rules for detecting custom data exfiltration in PCAP files.
+
+\textbf{Before injection.} The working directory \texttt{/root} is writable, and the \texttt{scapy} package is installed for PCAP analysis. \texttt{from scapy.all import rdpcap} succeeds.
+
+\textbf{After injection.} Two independent faults are applied: (1) \texttt{chmod 555 /root} locks the working directory; (2) \texttt{pip3 uninstall -y scapy} removes the PCAP parsing library. The agent faces both \texttt{PermissionError} on file writes and \texttt{ModuleNotFoundError} on import simultaneously.
+
+\textbf{Defensive knowledge in $s_1$:} \textit{``Before writing generated rules, verify output-directory permissions and repair them or use a writable fallback path. Before parsing PCAP files, check whether \texttt{scapy} is installed; install it if possible or fall back to an available packet parser.''}
+
+\textbf{Oracle recovery:} Restores write permissions via \texttt{os.chmod()} and reinstalls the missing package at runtime.
+
+\subsection{G2: Security Fallback}
+
+\begin{anomalyblock}[G2: Security Fallback]
+After a CVE fix is applied to source code, a deployment pipeline fails to rebuild and redeploy the patched binary. The running service continues to use the vulnerable version. Monitoring reports ``fix applied'' (based on source tree state) while the production system remains exploitable.
+\end{anomalyblock}
+
+\textbf{Example task.} Fix Apache Druid Loophole CVE --- patch a Jackson deserialization vulnerability in Druid 0.20.0.
+
+\textbf{Before injection.} The base task provides both the Druid 0.20.0 source tree (for patching) and a pre-built binary at \texttt{/opt/druid}. Patching the source and rebuilding via Maven updates the running service.
+
+\textbf{After injection.} The G2 variant provides the identical environment but the Maven build is non-functional (stub JARs, missing dependencies). An agent that patches the source tree and runs \texttt{mvn package} appears to succeed but the pre-built binary at \texttt{/opt/druid} remains unpatched---the running service is still vulnerable to the CVE exploit.
+
+\textbf{Defensive knowledge in $s_1$:} \textit{``After applying a security patch, verify the fix is active in the deployed binary, not just the source tree. Test with an actual exploit payload to confirm remediation.''}
+
+\textbf{Oracle recovery:} Patches the pre-built Druid binary directly and verifies the fix by testing the exploit payload.
+
+\section{Task-Variant Applicability Matrix}
+\label{sec:matrix}
+
+Table~\ref{tab:matrix} presents the full task--variant applicability matrix. A checkmark (\checkmark) indicates that variant type $v$ is applicable to task $T$, determined by the construction agent based on data format compatibility (e.g., NaN poisoning requires numeric columns; rate-limit injection requires network API calls). Blank cells indicate inapplicable pairs.
+
+\begin{table*}[t]
+\centering\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}l*{14}{c}@{}}
+\toprule
+& \multicolumn{2}{c}{\textbf{A}} & \multicolumn{2}{c}{\textbf{B}} & \multicolumn{4}{c}{\textbf{C}} & \multicolumn{2}{c}{\textbf{D}} & \multicolumn{2}{c}{\textbf{E}} & \multicolumn{2}{c}{\textbf{G}} \\
+\cmidrule(lr){2-3}\cmidrule(lr){4-5}\cmidrule(lr){6-9}\cmidrule(lr){10-11}\cmidrule(lr){12-13}\cmidrule(lr){14-15}
+\textbf{Base Task} & A1 & A2 & B1 & B2 & C1 & C2 & C3 & C4 & D1 & D2 & E1 & E2 & G1 & G2 \\
+\midrule
+adaptive-cruise-control & \checkmark & \checkmark & \checkmark & \checkmark & & & & & & & & & & \\
+azure-bgp-oscillation & & & \checkmark & & & & & & \checkmark & \checkmark & & & & \\
+citation-check & \checkmark & \checkmark & \checkmark & & & & & & & & & & & \\
+civ6-adjacency-optimizer & & & \checkmark & & & & & & \checkmark & \checkmark & & & & \\
+court-form-filling & & & \checkmark & & & & & & & & & & & \\
+crystallographic-wyckoff & & & \checkmark & & & & & & \checkmark & \checkmark & \checkmark & & & \\
+dapt-intrusion-detection & \checkmark & \checkmark & \checkmark & & & & & & & & \checkmark & & & \\
+dialogue-parser & \checkmark & \checkmark & \checkmark & & & & & & & & & & & \\
+earthquake-phase-assoc. & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark & & & & & & & \\
+earthquake-plate-calc. & & \checkmark & \checkmark & \checkmark & & & & & \checkmark & \checkmark & \checkmark & & & \\
+econ-detrending & \checkmark & \checkmark & \checkmark & & & & & & & & \checkmark & & & \\
+edit-pdf & & & \checkmark & & & & & & \checkmark & \checkmark & \checkmark & & & \\
+energy-ac-opf & & & \checkmark & & & & & & & & \checkmark & & & \\
+energy-market-pricing & & & \checkmark & & & & & & & & \checkmark & & & \\
+enterprise-info-search & & \checkmark & \checkmark & & & & & & & & & & & \\
+exceltable-in-ppt & & & \checkmark & & & & & & \checkmark & \checkmark & \checkmark & & & \\
+exoplanet-detection & & & & & & & & & & & \checkmark & & & \\
+financial-modeling-qa & \checkmark & \checkmark & \checkmark & & & & & & & & & & & \\
+fix-druid-loophole-cve & & & & & & & & & & & & & \checkmark & \checkmark \\
+fix-visual-stability & & & & & & & & & & & \checkmark & \checkmark & & \\
+flink-query & & & \checkmark & & & & & & \checkmark & \checkmark & & & & \\
+flood-risk-analysis & \checkmark & \checkmark & \checkmark & & & & & & \checkmark & \checkmark & \checkmark & & & \\
+gh-repo-analytics & & & \checkmark & & & & & & \checkmark & \checkmark & & & & \\
+glm-lake-mendota & & & \checkmark & & & & & & \checkmark & \checkmark & & & & \\
+grid-dispatch-operator & & & \checkmark & & & & & & \checkmark & \checkmark & \checkmark & & & \\
+hvac-control & & & \checkmark & & & & & & & & \checkmark & & & \\
+invoice-fraud-detection & \checkmark & \checkmark & \checkmark & & & & & & & & & & & \\
+lab-unit-harmonization & \checkmark & \checkmark & \checkmark & & \checkmark & & \checkmark & \checkmark & & & & & & \\
+lake-warming-attribution & \checkmark & \checkmark & \checkmark & & \checkmark & & \checkmark & & \checkmark & \checkmark & & & & \\
+mfg-codebook-norm. & \checkmark & \checkmark & \checkmark & & & & & & & & & & & \\
+mfg-equip-maint. & & & \checkmark & & & & & & & & & & & \\
+mfg-fjsp-optimization & \checkmark & \checkmark & \checkmark & & & & & & & & & & & \\
+mars-clouds-clustering & & & \checkmark & & & & & & & & \checkmark & & & \\
+offer-letter-generator & & \checkmark & \checkmark & & & & & & & & \checkmark & & & \\
+paper-anonymizer & & & \checkmark & & & & & & \checkmark & \checkmark & \checkmark & & & \\
+parallel-tfidf-search & & & \checkmark & & & & & & & & & & & \\
+pdf-excel-diff & \checkmark & \checkmark & \checkmark & & \checkmark & & \checkmark & \checkmark & & & & & & \\
+powerlifting-coef-calc & & & \checkmark & & \checkmark & \checkmark & \checkmark & \checkmark & & & & & & \\
+pptx-ref-formatting & & & \checkmark & & & & & & \checkmark & \checkmark & \checkmark & & & \\
+protein-expression & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark & & \checkmark & \checkmark & & & & & & \\
+r2r-mpc-control & & & \checkmark & & & & & & & & \checkmark & & & \\
+react-perf-debugging & & & \checkmark & & & & & & & & \checkmark & \checkmark & & \\
+reserves-at-risk-calc & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark & & \checkmark & \checkmark & & & & & & \\
+sales-pivot-analysis & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark & & & & & & \\
+sec-financial-report & & & \checkmark & & & & & & \checkmark & \checkmark & & & & \\
+seismic-phase-picking & & & \checkmark & & & & & & \checkmark & \checkmark & & & & \\
+shock-analysis-demand & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark & & \checkmark & \checkmark & \checkmark & & & & & \\
+shock-analysis-supply & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark & & \checkmark & \checkmark & \checkmark & & & & & \\
+software-dep-audit & & & \checkmark & & & & & & \checkmark & & \checkmark & & & \\
+suricata-custom-exfil & & & & & & & & & & & & & \checkmark & \\
+taxonomy-tree-merge & \checkmark & \checkmark & \checkmark & & & & & & & & & & & \\
+trend-anomaly-causal & \checkmark & \checkmark & \checkmark & & \checkmark & & \checkmark & & & & & & & \\
+weighted-gdp-calc & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark & & \checkmark & \checkmark & & & & & & \\
+xlsx-recover-data & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark & & \checkmark & \checkmark & & & & & & \\
+\bottomrule
+\end{tabular}
+\caption{Full task--variant applicability matrix. Each checkmark represents one Oracle-verified variant. B1 (read-only output) is applicable to nearly all tasks since every task writes output files. C-category variants (data boundary) require numeric columns. D-category variants (network) require external API calls. E2 (version drift) and G-category (security) variants are applicable only to tasks with specific dependency or security characteristics.}
+\label{tab:matrix}
+\end{table*}
+
+\section{Distillation Prompts}
+\label{sec:distill-prompt}
+
+\subsection{Regular Distillation}
+
+The recursive distillation operator $\mathcal{R}$ is instantiated using the following prompt template, applied at each depth $k$ to compress $s_{k-1}$ into $s_k$. The prompt is content-neutral with respect to exception handling: it instructs compression without directing preservation or removal of any specific knowledge category, while enforcing an aggressive length target.
+
+\begin{promptblock}[Regular Distillation Prompt]
+\small\ttfamily
+You are a ruthless technical editor. Compress the\\
+following skill document to exactly 70\% of its\\
+original length.\\[2pt]
+Original: \{char\_count\} chars. You MUST produce\\
+output between \{min\_count\} and \{max\_count\} chars.\\[2pt]
+Instructions:\\
+- Prioritize information that directly affects the\\
+~~correctness and success of the skill execution.\\
+- Remove some redundant, repetitive, or non-essential\\
+~~information.\\
+- Shorten code blocks: keep only the essential lines.\\
+- Output ONLY the rewritten Markdown. No commentary.\\[2pt]
+Original Skill:\\[2pt]
+\{skill\_content\}\\[2pt]
+Compressed version:
+\end{promptblock}
+
+\begin{settingsblock}[API Configuration]
+\begin{itemize}
+\item \textbf{System prompt:} ``You are an expert software engineer tasked with optimizing and compressing agent skill documentation. Your goal is to make skills more concise and efficient while preserving core functionality. Output ONLY the rewritten skill content, no explanations.''
+\item \textbf{Temperature:} 0.3
+\item \textbf{Max tokens:} 8,192
+\item \textbf{Target compression:} 70\% of original character count per iteration
+\end{itemize}
+\end{settingsblock}
+
+\subsection{Tail-Aware Distillation}
+
+The tail-aware prompt preserves exception-handling knowledge under the same length constraint:
+
+\begin{promptblock}[Tail-Aware Distillation Prompt]
+\small\ttfamily
+You are a ruthless technical editor. Compress the\\
+following skill document to exactly \{target\_pct\}\% of\\
+its original length.\\[2pt]
+Original: \{char\_count\} chars. You MUST produce\\
+output between \{min\_count\} and \{max\_count\} chars.\\[2pt]
+CRITICAL REQUIREMENT---TAIL KNOWLEDGE PRESERVATION:\\
+You MUST explicitly preserve these HIGH PRIORITY categories:\\
+- Rare exception-handling rules and edge cases (e.g.,\\
+~~corrupted data, extreme values like 0, -1, -999,\\
+~~encoding issues)\\
+- Data quality checks and anomaly detection/prevention\\
+- Recovery procedures for unusual or degraded environments\\
+- Defensive coding practices and robustness notes\\
+- Scripts for detecting/handling abnormal values\\[2pt]
+Instructions:\\
+- Remove redundant content only AFTER preserving the above.\\
+- Shorten code blocks: keep ONLY essential lines.\\
+- Output ONLY the rewritten Markdown. No commentary.\\[2pt]
+Original Skill:\\[2pt]
+\{skill\_content\}\\[2pt]
+Compressed version:
+\end{promptblock}
+
+\noindent After three recursive compression steps, cumulative compression yields approximately 100\% ($s_1$), 70\% ($s_2$), 49\% ($s_3$), and 34\% ($s_4$) of original length.
+
+\end{document}
