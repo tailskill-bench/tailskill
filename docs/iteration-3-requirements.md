@@ -21,7 +21,7 @@
 3. **Explore 导航卡片被埋在底部** → 添加数量 badge 和 mini 预览
 4. **benchmark-pipeline.png 未使用** → 放到首页 Figure Preview Gallery
 5. **首页与子页面无内容衔接** → 首页添加 mini collapse chart + figure gallery
-6. **Tasks 只有 8 个 placeholder** → 准备好接收 208 任务的结构（UI 改造优先，数据后续填）
+6. ~~Tasks 只有 8 个 placeholder~~ → **已完成**: 208 个真实任务已填入 tasks.json，gallery counter 已更新。Codex 不需要改这块。
 
 ## 2. 首页重构（index.html）
 
@@ -452,31 +452,11 @@ if (autopsyIntro) {
 }
 ```
 
-## 3. Tasks 页增强（tasks.html）
+## 3. Tasks 页（tasks.html）
 
-### 3.1 准备接收 208 任务
+**已由人工完成**: 208 个真实任务数据已填入 `data/tasks.json`，gallery counter 已更新为 `"Showing N of 208 task variants"`。
 
-当前 `tasks.js` 的结构已能处理任意数量的 tasks。需要改的：
-
-1. **gallery-count 文案**: 把 `"Full 208-task data will be added"` 改为 `"{N} of 208 tasks shown"` 的动态文案
-2. **加载状态**: 添加一个 skeleton loading 动画，等 JSON fetch 完成后替换
-
-修改 tasks.js 中 `renderGallery()`:
-```javascript
-function renderGallery() {
-  if (!taskGrid || !galleryCount) return;
-  var visible = taskState.tasks.filter(taskMatches);
-  var total = taskState.tasks.length;
-  galleryCount.textContent = total === 208
-    ? "Showing " + visible.length + " of " + total + " tasks"
-    : "Showing " + visible.length + " sample tasks (" + total + " of 208 loaded)";
-  // ... rest unchanged
-}
-```
-
-### 3.2 不需要改 HTML 结构
-
-当前的 taxonomy cards + gallery toolbar + filter + search 结构已经很好，能处理 208 个任务。
+Codex 不需要修改 tasks.html 或 tasks.js。
 
 ## 4. Experiments 页增强（experiments.html）
 
@@ -533,11 +513,7 @@ Commit 4: feat: enhance explore cards with badges and improve nav discoverabilit
   - 新增 .explore-badge CSS
   - 更新 explore-card 文案
 
-Commit 5: feat: add benchmark-pipeline to experiments page and improve task counter
-  - experiments.html 添加 benchmark-pipeline.png
-  - tasks.js 更新 gallery-count 动态文案
-
-Commit 6: fix: final QA - check all links, alt text, lazy loading, responsive
+Commit 5: fix: final QA - check all links, alt text, lazy loading, responsive
   - 验证所有内部链接可跳转
   - 验证所有图片有 loading="lazy"
   - 验证移动端布局
