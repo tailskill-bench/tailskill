@@ -111,6 +111,27 @@
               <p>The S1 common-case and tail-case starting point is nearly matched before distillation.</p>
             </article>
           </div>
+          <div class="mini-chart-preview" aria-label="Preview of common-case and tail-case collapse curves">
+            <svg class="mini-collapse-chart" viewBox="0 0 200 120" role="img" aria-labelledby="mini-chart-title mini-chart-desc">
+              <title id="mini-chart-title">TailSkills collapse curve preview</title>
+              <desc id="mini-chart-desc">Common-case remains stable from S1 to S4 while tail-case performance drops sharply.</desc>
+              <polyline points="25,60 75,55 125,62 175,62" fill="none" stroke="var(--accent-common)" stroke-width="2"></polyline>
+              <polyline points="25,61 75,85 125,100 175,100" fill="none" stroke="var(--accent-tail)" stroke-width="2"></polyline>
+              <text x="25" y="115" font-size="8" fill="var(--text-secondary)" text-anchor="middle">S1</text>
+              <text x="75" y="115" font-size="8" fill="var(--text-secondary)" text-anchor="middle">S2</text>
+              <text x="125" y="115" font-size="8" fill="var(--text-secondary)" text-anchor="middle">S3</text>
+              <text x="175" y="115" font-size="8" fill="var(--text-secondary)" text-anchor="middle">S4</text>
+            </svg>
+            <a href="experiments.html#main-results" class="chart-expand-link">View full interactive chart -&gt;</a>
+          </div>
+        </div>
+      </section>
+
+      <section class="page-section" id="figure-gallery" aria-labelledby="figure-gallery-title">
+        <div class="section-inner">
+          <p class="section-kicker">Paper Figures</p>
+          <h2 id="figure-gallery-title">At a glance</h2>
+          <p class="page-subtitle">A compact preview of the benchmark pipeline, distillation process, and skill-card evidence.</p>
         </div>
       </section>
 

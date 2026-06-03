@@ -6,6 +6,7 @@
   var galleryCount = document.querySelector("#gallery-count");
   var taskState = {
     tasks: [],
+    totalVariants: 0,
     filter: "all",
     query: ""
   };
@@ -26,6 +27,9 @@
   }
 
   function resultLabel(generation, value) {
+    if (value === null || value === undefined) {
+      return "<span class=\"result-pill result-null\">" + generation.toUpperCase() + " -</span>";
+    }
     var passed = Number(value) >= 1;
     return "<span class=\"result-pill " + (passed ? "result-pill--pass" : "result-pill--fail") + "\">" + generation.toUpperCase() + " " + (passed ? "PASS" : "FAIL") + "</span>";
   }
@@ -77,7 +81,10 @@
       return;
     }
     var visible = taskState.tasks.filter(taskMatches);
-    galleryCount.textContent = "Showing " + visible.length + " of " + total + " task variants";
+    var visibleVariants = visible.reduce(function (sum, task) {
+      return sum + (task.variants || []).length;
+    }, 0);
+    galleryCount.textContent = "Showing " + visibleVariants + " of " + taskState.totalVariants + " task variants";
     taskGrid.innerHTML = visible.map(renderTask).join("");
     taskGrid.querySelectorAll(".task-card__button").forEach(function (button) {
       button.addEventListener("click", function () {
@@ -104,6 +111,9 @@
       })
       .then(function (data) {
         taskState.tasks = data.tasks || [];
+        taskState.totalVariants = taskState.tasks.reduce(function (sum, task) {
+          return sum + (task.variants || []).length;
+        }, 0);
         renderGallery();
       })
       .catch(function () {

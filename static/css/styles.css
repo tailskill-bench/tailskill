@@ -5,6 +5,7 @@
   --bg-tertiary: #f0f0ec;
   --text-primary: #1a1a2e;
   --text-secondary: #5a5a6e;
+  --text-tertiary: #868696;
   --accent-tail: #e2abb8;
   --accent-common: #b2d9b3;
   --accent-highlight: #4a6fa5;
@@ -40,6 +41,7 @@
   --bg-tertiary: #14141e;
   --text-primary: #f0ede6;
   --text-secondary: #a0a0b0;
+  --text-tertiary: #777787;
   --accent-highlight: #6b8fc5;
   --border: #2a2a3a;
   --shadow-color: rgba(0, 0, 0, 0.42);
@@ -1316,6 +1318,11 @@ h3 {
   color: var(--text-primary);
   background: color-mix(in srgb, var(--accent-tail) 20%, var(--bg-tertiary));
   border-color: color-mix(in srgb, var(--accent-tail) 62%, var(--border));
+}
+
+.result-null {
+  color: var(--text-tertiary);
+  background: var(--bg-secondary);
 }
 
 .bibtex-panel {
