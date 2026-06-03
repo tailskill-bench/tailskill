@@ -14,7 +14,7 @@
   <body data-page="tasks">
     <a class="skip-link" href="#main">Skip to content</a>
 
-    <header class="site-header" data-commit-marker="iteration-2-scaffold">
+    <header class="site-header" data-commit-marker="iteration-2-tasks-complete">
       <nav class="site-nav" aria-label="Primary navigation">
         <a class="brand" href="index.html" aria-label="TailSkills home">TailSkills</a>
         <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-links">
@@ -31,18 +31,125 @@
       </nav>
     </header>
 
-    <main id="main">
-      <section class="page-section" id="tasks-overview" aria-labelledby="tasks-title">
-        <div class="section-inner is-narrow">
+    <main id="main" class="page-transition">
+      <section class="page-section page-title-section" id="tasks-overview" aria-labelledby="tasks-title">
+        <div class="section-inner">
           <p class="section-kicker">Benchmark Tasks</p>
-          <h1 id="tasks-title">TailSkills Benchmark</h1>
-          <p class="hero-subtitle">208 oracle-verified exception-heavy task variants with deterministic verifiers</p>
-          <div class="abstract-card">
-            <p>
-              The full taxonomy and sample task gallery will move here in the next migration steps.
-              This scaffold keeps the three-page navigation live while the one-page site remains available.
-            </p>
+          <h1 id="tasks-title" class="page-title">TailSkills Benchmark</h1>
+          <p class="page-subtitle">208 oracle-verified exception-heavy task variants with deterministic verifiers</p>
+        </div>
+      </section>
+
+      <section class="page-section" id="taxonomy" aria-labelledby="taxonomy-title">
+        <div class="section-inner">
+          <p class="section-kicker">Variant Taxonomy</p>
+          <h2 id="taxonomy-title">Exception families</h2>
+          <div class="taxonomy-grid" aria-label="TailSkills variant taxonomy">
+            <article class="taxonomy-card taxonomy-card--a">
+              <button type="button" class="taxonomy-trigger" aria-expanded="false" aria-controls="taxonomy-a">
+                <span class="taxonomy-code">A</span>
+                <span class="taxonomy-title">Data Encoding</span>
+                <span class="taxonomy-meta">49 variants</span>
+                <span class="fragility-badge fragility-badge--med">Med Fragility</span>
+              </button>
+              <div class="taxonomy-detail" id="taxonomy-a" hidden>
+                <p><strong>A1: BOM injection</strong><span>23 tasks</span><em>Med</em></p>
+                <p><strong>A2: Zero-width characters</strong><span>26 tasks</span><em>Med-High</em></p>
+              </div>
+            </article>
+
+            <article class="taxonomy-card taxonomy-card--b">
+              <button type="button" class="taxonomy-trigger" aria-expanded="false" aria-controls="taxonomy-b">
+                <span class="taxonomy-code">B</span>
+                <span class="taxonomy-title">File System</span>
+                <span class="taxonomy-meta">60 variants</span>
+                <span class="fragility-badge fragility-badge--med">Med Fragility</span>
+              </button>
+              <div class="taxonomy-detail" id="taxonomy-b" hidden>
+                <p><strong>B1: Read-only output dir</strong><span>50 tasks</span><em>Med</em></p>
+                <p><strong>B2: Output contamination</strong><span>10 tasks</span><em>Med</em></p>
+              </div>
+            </article>
+
+            <article class="taxonomy-card taxonomy-card--c">
+              <button type="button" class="taxonomy-trigger" aria-expanded="false" aria-controls="taxonomy-c">
+                <span class="taxonomy-code">C</span>
+                <span class="taxonomy-title">Data Quality</span>
+                <span class="taxonomy-meta">39 variants</span>
+                <span class="fragility-badge fragility-badge--high">High Fragility</span>
+              </button>
+              <div class="taxonomy-detail" id="taxonomy-c" hidden>
+                <p><strong>C1: NaN/Inf poisoning</strong><span>13 tasks</span><em>High</em></p>
+                <p><strong>C2: Duplicate primary keys</strong><span>3 tasks</span><em>Low</em></p>
+                <p><strong>C3: Extreme values</strong><span>13 tasks</span><em>High</em></p>
+                <p><strong>C4: Type confusion</strong><span>10 tasks</span><em>High</em></p>
+              </div>
+            </article>
+
+            <article class="taxonomy-card taxonomy-card--d">
+              <button type="button" class="taxonomy-trigger" aria-expanded="false" aria-controls="taxonomy-d">
+                <span class="taxonomy-code">D</span>
+                <span class="taxonomy-title">Network / Service</span>
+                <span class="taxonomy-meta">35 variants</span>
+                <span class="fragility-badge fragility-badge--med-high">Med-High Fragility</span>
+              </button>
+              <div class="taxonomy-detail" id="taxonomy-d" hidden>
+                <p><strong>D1: DNS jitter (50% loss)</strong><span>19 tasks</span><em>Med-High</em></p>
+                <p><strong>D2: HTTPS connection throttling</strong><span>16 tasks</span><em>Med-High</em></p>
+              </div>
+            </article>
+
+            <article class="taxonomy-card taxonomy-card--e">
+              <button type="button" class="taxonomy-trigger" aria-expanded="false" aria-controls="taxonomy-e">
+                <span class="taxonomy-code">E</span>
+                <span class="taxonomy-title">Dependency</span>
+                <span class="taxonomy-meta">22 variants</span>
+                <span class="fragility-badge fragility-badge--med">Med Fragility</span>
+              </button>
+              <div class="taxonomy-detail" id="taxonomy-e" hidden>
+                <p><strong>E1: Missing optional dep</strong><span>20 tasks</span><em>Med</em></p>
+                <p><strong>E2: Library version drift</strong><span>2 tasks</span><em>High</em></p>
+              </div>
+            </article>
+
+            <article class="taxonomy-card taxonomy-card--g">
+              <button type="button" class="taxonomy-trigger" aria-expanded="false" aria-controls="taxonomy-g">
+                <span class="taxonomy-code">G</span>
+                <span class="taxonomy-title">Security</span>
+                <span class="taxonomy-meta">3 variants</span>
+                <span class="fragility-badge fragility-badge--high">High Fragility</span>
+              </button>
+              <div class="taxonomy-detail" id="taxonomy-g" hidden>
+                <p><strong>G1: Multi-vector attack</strong><span>2 tasks</span><em>High</em></p>
+                <p><strong>G2: Security fallback</strong><span>1 task</span><em>High</em></p>
+              </div>
+            </article>
           </div>
+        </div>
+      </section>
+
+      <section class="page-section" id="task-gallery" aria-labelledby="task-gallery-title">
+        <div class="section-inner">
+          <p class="section-kicker">208 Exception-Heavy Tasks</p>
+          <h2 id="task-gallery-title">Task Gallery</h2>
+          <div class="gallery-toolbar" aria-label="Task gallery controls">
+            <label class="search-field">
+              <span class="sr-only">Search tasks</span>
+              <input id="task-search" type="search" placeholder="Search tasks or domains" autocomplete="off">
+            </label>
+            <div class="filter-group" aria-label="Filter by category">
+              <button type="button" class="filter-button is-active" data-filter="all">All</button>
+              <button type="button" class="filter-button filter-button--a" data-filter="A">A: Encode</button>
+              <button type="button" class="filter-button filter-button--b" data-filter="B">B: FileSys</button>
+              <button type="button" class="filter-button filter-button--c" data-filter="C">C: DataQl</button>
+              <button type="button" class="filter-button filter-button--d" data-filter="D">D: Network</button>
+              <button type="button" class="filter-button filter-button--e" data-filter="E">E: Depend</button>
+              <button type="button" class="filter-button filter-button--g" data-filter="G">G: Secure</button>
+            </div>
+          </div>
+          <p class="gallery-count" id="gallery-count" aria-live="polite">Loading sample tasks...</p>
+          <div class="task-grid" id="task-grid" aria-live="polite"></div>
+
           <footer class="site-footer">
             <a href="index.html">Back to Home</a>
             <a href="https://github.com/tailskill-bench/tailskill">GitHub Repository</a>
