@@ -870,6 +870,36 @@ h3 {
   font-size: 0.95rem;
 }
 
+.figure-pair {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 2rem;
+  max-width: 720px;
+  margin: 2rem auto;
+}
+
+.figure-pair .image-figure {
+  margin: 0;
+}
+
+.figure-pair .image-frame {
+  display: flex;
+  align-items: center;
+  max-width: none;
+  min-height: 100%;
+}
+
+.figure-pair .image-frame img {
+  height: auto;
+  object-fit: contain;
+}
+
+.figure-pair figcaption {
+  max-width: none;
+  text-align: center;
+  font-size: 0.85rem;
+}
+
 .intro-figure {
   max-width: 640px;
 }
@@ -2034,6 +2064,11 @@ h3 {
   .figure-grid {
     grid-template-columns: 1fr;
     max-width: 320px;
+  }
+
+  .figure-pair {
+    grid-template-columns: 1fr;
+    max-width: 360px;
   }
 }
 
