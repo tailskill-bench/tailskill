@@ -4,6 +4,7 @@
   var navToggle = document.querySelector(".nav-toggle");
   var navLinks = document.querySelector("#nav-links");
   var themeToggle = document.querySelector("[data-theme-toggle]");
+  var pageName = document.body ? document.body.getAttribute("data-page") : "";
 
   function getCssVar(name) {
     return getComputedStyle(root).getPropertyValue(name).trim();
@@ -100,6 +101,27 @@
       if (event.target && event.target.tagName === "A") {
         navLinks.classList.remove("is-open");
         navToggle.setAttribute("aria-expanded", "false");
+      }
+    });
+  }
+
+  if (navLinks && pageName) {
+    navLinks.querySelectorAll(".nav-link").forEach(function (link) {
+      var href = link.getAttribute("href") || "";
+      var targetPage = "";
+      if (href.indexOf("tasks.html") !== -1) {
+        targetPage = "tasks";
+      } else if (href.indexOf("experiments.html") !== -1) {
+        targetPage = "experiments";
+      } else if (href.indexOf("index.html") !== -1 || href === "./" || href === "/") {
+        targetPage = "home";
+      }
+      var isCurrent = targetPage === pageName;
+      link.classList.toggle("is-current", isCurrent);
+      if (isCurrent) {
+        link.setAttribute("aria-current", "page");
+      } else {
+        link.removeAttribute("aria-current");
       }
     });
   }
