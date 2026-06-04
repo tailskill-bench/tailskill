@@ -47,9 +47,9 @@
           <div class="figure-showcase">
             <figure class="image-figure figure-showcase__item figure-showcase__item--wide">
               <div class="image-frame">
-                <img src="static/images/distillation-example.png" alt="TailSkills benchmark construction pipeline from base task pool through tail variant taxonomy, task construction, oracle generation, and sandbox verification." width="7648" height="3419" loading="eager" decoding="async">
+                <img src="static/images/benchmark-pipeline.png" alt="TailSkills benchmark construction pipeline: 26 base tasks, 14 variant types across 6 categories, oracle verification, producing 208 task variants." width="1960" height="1142" loading="eager" decoding="async">
               </div>
-              <figcaption>Benchmark construction pipeline: task-variant planning, tail injection, oracle and S1 generation, and sandbox verification.</figcaption>
+              <figcaption>Benchmark construction pipeline: base tasks &rarr; variant injection &rarr; oracle verification &rarr; 208 task variants.</figcaption>
             </figure>
             <figure class="image-figure figure-showcase__item figure-showcase__item--process">
               <div class="image-frame">
@@ -102,13 +102,7 @@
           <div class="figure-showcase figure-showcase--curves">
             <figure class="image-figure figure-showcase__item figure-showcase__item--wide">
               <div class="image-frame">
-                <img src="static/images/case-study-comparison.jpg" alt="Overall Tail Knowledge Collapse curve showing common-case pass rate remaining stable while tail-variant pass rate drops from S1 to S4." width="2085" height="1280" loading="eager" decoding="async">
-              </div>
-              <figcaption>Overall tail-collapse curve with confidence intervals.</figcaption>
-            </figure>
-            <figure class="image-figure figure-showcase__item figure-showcase__item--wide">
-              <div class="image-frame">
-                <img src="static/images/category-collapse-curves.jpg" alt="Category-specific tail collapse curves for encoding, file system, data quality, network, and dependency variants." width="1950" height="1280" loading="eager" decoding="async">
+                <img src="static/images/category-collapse-curves.jpg" alt="Category-specific tail collapse curves for encoding, file system, data quality, network, and dependency variants across distillation depth." width="1950" height="1280" loading="lazy" decoding="async">
               </div>
               <figcaption>Category-specific collapse patterns across distillation depth.</figcaption>
             </figure>
@@ -295,10 +289,10 @@
           <h2 id="case-study-title">Case Study</h2>
           <figure class="image-figure case-figure">
             <div class="image-frame">
-              <img src="static/images/benchmark-pipeline.png" alt="Regular distillation drops C4 extreme-value handling while tail-aware distillation preserves the recovery branch and passes verification." width="1960" height="1142" loading="eager" decoding="async">
+              <img src="static/images/case-study-comparison.jpg" alt="Comparison of regular distillation (drops C4 extreme-value handling) versus tail-aware distillation (preserves exception clause), demonstrating why case-specific retention matters." width="2085" height="1280" loading="lazy" decoding="async">
             </div>
             <figcaption>
-              A C4 tail variant exposes the difference between preserving the workflow and preserving the exception clause.
+              Regular distillation drops C4 extreme-value handling while tail-aware distillation preserves the recovery branch and passes verification.
             </figcaption>
           </figure>
 
@@ -353,9 +347,15 @@
         <div class="section-inner">
           <p class="section-kicker">Distillation Example</p>
           <h2 id="distillation-example-title">What gets erased</h2>
+          <figure class="image-figure" style="margin-bottom: 2rem;">
+            <div class="image-frame">
+              <img src="static/images/distillation-example.png" alt="S1 to S4 skill cards comparison: common-case workflow instructions in green persist across all depths while tail-case exception handling in pink progressively disappears at S3 and S4." width="7648" height="3419" loading="lazy" decoding="async">
+            </div>
+            <figcaption>Skill text at each distillation depth. Tail-handling knowledge (pink) disappears at S3 while common workflow (green) persists.</figcaption>
+          </figure>
           <div class="erasure-panel">
             <p>
-              The available static assets do not include a dedicated S1-S4 skill-card image. Rather than placing the benchmark construction figure here again, this section summarizes the paper evidence directly: recursive distillation keeps the common workflow but removes short local recovery clauses such as dependency repair, invalid-value filtering, and output sanity checks.
+              The S1-S4 skill-card figure above shows the paper evidence directly: recursive distillation keeps the common workflow but removes short local recovery clauses such as dependency repair, invalid-value filtering, and output sanity checks.
             </p>
             <ol>
               <li><strong>S1:</strong> full skill includes task workflow plus explicit tail-handling clauses.</li>
