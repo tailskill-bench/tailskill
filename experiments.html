@@ -44,22 +44,14 @@
         <div class="section-inner">
           <p class="section-kicker">Skill Distillation Visual</p>
           <h2 id="introduction-title">Introduction</h2>
-          <div class="figure-showcase">
-            <figure class="image-figure figure-showcase__item figure-showcase__item--wide">
-              <div class="image-frame">
-                <img src="static/images/benchmark-pipeline.jpg" data-dark-src="static/images/benchmark-pipeline-dark.jpg" alt="TailSkills benchmark construction pipeline: 26 base tasks, 14 variant types across 6 categories, oracle verification, producing 208 task variants." width="1920" height="1118" loading="eager" decoding="async">
-              </div>
-              <figcaption>Benchmark construction pipeline: base tasks &rarr; variant injection &rarr; oracle verification &rarr; 208 task variants.</figcaption>
-            </figure>
-            <figure class="image-figure figure-showcase__item figure-showcase__item--process">
-              <div class="image-frame">
-                <img src="static/images/introduction-infographic.jpg" data-dark-src="static/images/introduction-infographic-dark.jpg" alt="TailSkills infographic showing recursive skill distillation from S1 to S4 and contrasting ideal sandbox success with real-world tail failure." width="1000" height="1284" loading="eager" decoding="async">
-              </div>
-              <figcaption>
-                Recursive skill distillation compresses a robust skill while disproportionately eroding rare exception handling.
-              </figcaption>
-            </figure>
-          </div>
+          <figure class="image-figure" style="max-width:680px;margin:2rem auto;">
+            <div class="image-frame">
+              <img src="static/images/introduction-infographic.jpg" data-dark-src="static/images/introduction-infographic-dark.jpg" alt="TailSkills infographic showing recursive skill distillation from S1 to S4 and contrasting ideal sandbox success with real-world tail failure." width="1000" height="1284" loading="eager" decoding="async">
+            </div>
+            <figcaption>
+              Recursive skill distillation compresses a robust skill while disproportionately eroding rare exception handling.
+            </figcaption>
+          </figure>
           <div class="stat-grid" aria-label="Distillation summary statistics">
             <article class="stat-card stat-card--common">
               <span class="stat-card__label">Common-case retention</span>
@@ -100,6 +92,12 @@
           </div>
 
           <div class="figure-showcase figure-showcase--curves">
+            <figure class="image-figure figure-showcase__item figure-showcase__item--wide">
+              <div class="image-frame">
+                <img src="static/images/case-study-comparison.jpg" alt="Overall tail knowledge collapse results: common-case pass rate remains stable while tail-variant pass rate drops significantly from S1 to S4." width="2085" height="1280" loading="lazy" decoding="async">
+              </div>
+              <figcaption>Overall tail-collapse results showing the divergence between common-case and tail-case performance.</figcaption>
+            </figure>
             <figure class="image-figure figure-showcase__item figure-showcase__item--wide">
               <div class="image-frame">
                 <img src="static/images/category-collapse-curves.jpg" alt="Category-specific tail collapse curves for encoding, file system, data quality, network, and dependency variants across distillation depth." width="1950" height="1280" loading="lazy" decoding="async">
@@ -289,7 +287,7 @@
           <h2 id="case-study-title">Case Study</h2>
           <figure class="image-figure case-figure">
             <div class="image-frame">
-              <img src="static/images/case-study-comparison.jpg" alt="Comparison of regular distillation (drops C4 extreme-value handling) versus tail-aware distillation (preserves exception clause), demonstrating why case-specific retention matters." width="2085" height="1280" loading="lazy" decoding="async">
+              <img src="static/images/benchmark-pipeline.jpg" data-dark-src="static/images/benchmark-pipeline-dark.jpg" alt="Case study comparing regular distillation versus tail-aware distillation on a C4 extreme-value variant, showing that preserving exception handling is critical for tail-case success." width="1920" height="1118" loading="lazy" decoding="async">
             </div>
             <figcaption>
               Regular distillation drops C4 extreme-value handling while tail-aware distillation preserves the recovery branch and passes verification.
@@ -345,25 +343,25 @@
 
       <section class="page-section" id="distillation-example" aria-labelledby="distillation-example-title">
         <div class="section-inner">
-          <p class="section-kicker">Distillation Example</p>
-          <h2 id="distillation-example-title">What gets erased</h2>
+          <p class="section-kicker">Benchmark Construction</p>
+          <h2 id="distillation-example-title">How TailSkills builds 208 task variants</h2>
           <figure class="image-figure" style="margin-bottom: 2rem;">
             <div class="image-frame">
-              <img src="static/images/distillation-example.jpg" data-dark-src="static/images/distillation-example-dark.jpg" alt="S1 to S4 skill cards comparison: common-case workflow instructions in green persist across all depths while tail-case exception handling in pink progressively disappears at S3 and S4." width="2400" height="1072" loading="lazy" decoding="async">
+              <img src="static/images/distillation-example.jpg" data-dark-src="static/images/distillation-example-dark.jpg" alt="TailSkills benchmark construction pipeline: 54 base tasks are transformed with 14 variant types across 6 tail categories, oracle-verified to produce 208 task variants." width="2400" height="1072" loading="lazy" decoding="async">
             </div>
-            <figcaption>Skill text at each distillation depth. Tail-handling knowledge (pink) disappears at S3 while common workflow (green) persists.</figcaption>
+            <figcaption>Benchmark construction: base tasks are transformed with tail variant injections, then admitted only after deterministic oracle verification.</figcaption>
           </figure>
           <div class="erasure-panel">
             <p>
-              The S1-S4 skill-card figure above shows the paper evidence directly: recursive distillation keeps the common workflow but removes short local recovery clauses such as dependency repair, invalid-value filtering, and output sanity checks.
+              TailSkills constructs 208 exception-heavy task variants from 54 base tasks using 14 variant types across 6 tail categories (Encoding, File System, Data Quality, Network, Dependency, Security). Each variant injects a specific tail condition that tests whether the agent's skill retains rare exception-handling knowledge.
             </p>
             <ol>
-              <li><strong>S1:</strong> full skill includes task workflow plus explicit tail-handling clauses.</li>
-              <li><strong>S2:</strong> wording is compressed; some recovery details become shorter or less concrete.</li>
-              <li><strong>S3:</strong> local exception branches often disappear while the main workflow remains readable.</li>
-              <li><strong>S4:</strong> the skill is concise and focused, but tail-specific recovery instructions are frequently absent.</li>
+              <li><strong>Base tasks:</strong> 54 SkillsBench tasks with deterministic verifiers and oracle solutions.</li>
+              <li><strong>Variant injection:</strong> 14 types of tail conditions (BOM encoding, read-only output, NaN poisoning, DNS jitter, missing dependencies, etc.)</li>
+              <li><strong>Oracle verification:</strong> every variant is confirmed solvable by an oracle agent before inclusion.</li>
+              <li><strong>Result:</strong> 208 verified task variants that specifically stress tail-knowledge preservation under skill distillation.</li>
             </ol>
-            <a class="section-link" href="index.html#skill-autopsy">View the scroll-driven skill autopsy -&gt;</a>
+            <a class="section-link" href="tasks.html">View all 208 tasks in the registry -&gt;</a>
           </div>
 
           <footer class="site-footer">

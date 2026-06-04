@@ -179,12 +179,10 @@
       "<div class=\"detail-tabs\" role=\"tablist\" aria-label=\"Task detail tabs\">" +
         "<button type=\"button\" class=\"detail-tab is-active\" role=\"tab\" aria-selected=\"true\" aria-controls=\"detail-instruction\">Instruction</button>" +
         "<button type=\"button\" class=\"detail-tab\" role=\"tab\" aria-selected=\"false\" aria-controls=\"detail-verifier\">Verifier</button>" +
-        "<button type=\"button\" class=\"detail-tab\" role=\"tab\" aria-selected=\"false\" aria-controls=\"detail-results\">Results</button>" +
         "<button type=\"button\" class=\"detail-tab\" role=\"tab\" aria-selected=\"false\" aria-controls=\"detail-trajectory\">Trajectory</button>" +
       "</div>" +
       "<section id=\"detail-instruction\" class=\"detail-panel\" role=\"tabpanel\">" + renderInstruction(task) + "</section>" +
       "<section id=\"detail-verifier\" class=\"detail-panel\" role=\"tabpanel\" hidden>" + renderVerifier(task) + "</section>" +
-      "<section id=\"detail-results\" class=\"detail-panel\" role=\"tabpanel\" hidden>" + renderUnavailable("Per-task S1-S4 result") + "</section>" +
       "<section id=\"detail-trajectory\" class=\"detail-panel\" role=\"tabpanel\" hidden>" + renderUnavailable("Execution trajectory") + "</section>";
 
     root.querySelectorAll("[role=\"tab\"]").forEach(function (tab) {

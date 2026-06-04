@@ -1142,7 +1142,7 @@ h3 {
 }
 
 .figure-showcase--curves {
-  grid-template-columns: 1fr;
+  grid-template-columns: 1fr 1fr;
 }
 
 .figure-showcase .image-figure {
