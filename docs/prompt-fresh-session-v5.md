@@ -81,97 +81,293 @@ TailSkills 是一篇被 EMNLP 2026 接收的学术论文，标题是 "Focused bu
 
 ## 第四步：执行修复
 
-详细的修复步骤写在 `docs/iteration-5-fixes.md` 里。请先读那个文件，然后按 P0 → P1 顺序执行。
+下面是详细的修复指令。请严格按照以下步骤执行。
 
-### P0 修复（最高优先级，影响展示正确性）
+### P0-1: 修复 experiments.html 图片位置
 
-**P0-1: 修复 experiments.html 图片位置**
+experiments.html 当前有 4 处图片位置需要修改。
 
-需要做以下交换：
-1. Introduction section：`distillation-example.png` → `benchmark-pipeline.png`（行 50）
-2. Main Results section：移除 `case-study-comparison.jpg`，只保留 `category-collapse-curves.jpg`（行 102-115）
-3. Case Study section：`benchmark-pipeline.png` → `case-study-comparison.jpg`（行 298）
-4. What Gets Erased section：添加 `distillation-example.png` 图片（行 352 后面）
+#### 修改 1：Introduction section（约 line 48-53）
 
-每次交换图片时，必须同时更新 alt text 和 figcaption，使其描述图片的真实内容。
-
-**P0-2: 修复 index.html Benchmark section**
-
-index.html 行 149-150：`distillation-example.png` → `benchmark-pipeline.png`，更新 alt text 和 figcaption。
-
-**P0-3: 补全 2 个 missing task 的 instruction**
-
-运行以下命令（在 D:\codes\tailskill 目录下）：
-
+**当前代码（错误）：**
+```html
+<figure class="image-figure figure-showcase__item figure-showcase__item--wide">
+  <div class="image-frame">
+    <img src="static/images/distillation-example.png" alt="TailSkills benchmark construction pipeline from base task pool through tail variant taxonomy, task construction, oracle generation, and sandbox verification." width="7648" height="3419" loading="eager" decoding="async">
+  </div>
+  <figcaption>Benchmark construction pipeline: task-variant planning, tail injection, oracle and S1 generation, and sandbox verification.</figcaption>
+</figure>
 ```
+
+**替换为：**
+```html
+<figure class="image-figure figure-showcase__item figure-showcase__item--wide">
+  <div class="image-frame">
+    <img src="static/images/benchmark-pipeline.png" alt="TailSkills benchmark construction pipeline: 26 base tasks, 14 variant types across 6 categories, oracle verification, producing 208 task variants." width="1960" height="1142" loading="eager" decoding="async">
+  </div>
+  <figcaption>Benchmark construction pipeline: base tasks → variant injection → oracle verification → 208 task variants.</figcaption>
+</figure>
+```
+
+注意：只替换这一处 figure。下面紧跟的 introduction-infographic.png figure 保持不动。
+
+#### 修改 2：Main Results section（约 line 102-115）
+
+**当前代码（错误）有两个 figure，第一个是 case-study-comparison.jpg：**
+```html
+<div class="figure-showcase figure-showcase--curves">
+  <figure class="image-figure figure-showcase__item figure-showcase__item--wide">
+    <div class="image-frame">
+      <img src="static/images/case-study-comparison.jpg" ...>
+    </div>
+    <figcaption>Overall tail-collapse curve with confidence intervals.</figcaption>
+  </figure>
+  <figure class="image-figure figure-showcase__item figure-showcase__item--wide">
+    <div class="image-frame">
+      <img src="static/images/category-collapse-curves.jpg" ...>
+    </div>
+    <figcaption>Category-specific collapse patterns across distillation depth.</figcaption>
+  </figure>
+</div>
+```
+
+**替换为——删除第一个 figure，只保留 category-collapse-curves.jpg：**
+```html
+<div class="figure-showcase figure-showcase--curves">
+  <figure class="image-figure figure-showcase__item figure-showcase__item--wide">
+    <div class="image-frame">
+      <img src="static/images/category-collapse-curves.jpg" alt="Category-specific tail collapse curves for encoding, file system, data quality, network, and dependency variants across distillation depth." width="1950" height="1280" loading="lazy" decoding="async">
+    </div>
+    <figcaption>Category-specific collapse patterns across distillation depth.</figcaption>
+  </figure>
+</div>
+```
+
+#### 修改 3：Case Study section（约 line 296-303）
+
+**当前代码（错误）：**
+```html
+<figure class="image-figure case-figure">
+  <div class="image-frame">
+    <img src="static/images/benchmark-pipeline.png" alt="Regular distillation drops C4 extreme-value handling while tail-aware distillation preserves the recovery branch and passes verification." width="1960" height="1142" loading="eager" decoding="async">
+  </div>
+  <figcaption>
+    A C4 tail variant exposes the difference between preserving the workflow and preserving the exception clause.
+  </figcaption>
+</figure>
+```
+
+**替换为：**
+```html
+<figure class="image-figure case-figure">
+  <div class="image-frame">
+    <img src="static/images/case-study-comparison.jpg" alt="Comparison of regular distillation (drops C4 extreme-value handling) versus tail-aware distillation (preserves exception clause), demonstrating why case-specific retention matters." width="2085" height="1280" loading="lazy" decoding="async">
+  </div>
+  <figcaption>
+    Regular distillation drops C4 extreme-value handling while tail-aware distillation preserves the recovery branch and passes verification.
+  </figcaption>
+</figure>
+```
+
+#### 修改 4：What Gets Erased section（约 line 352-376）
+
+**当前代码** 是一个纯文字面板 `<div class="erasure-panel">`，包含一段说明文字和列表。
+
+**在 `<div class="erasure-panel">` 之前**，添加图片 figure：
+
+```html
+<figure class="image-figure" style="margin-bottom: 2rem;">
+  <div class="image-frame">
+    <img src="static/images/distillation-example.png" alt="S1 to S4 skill cards comparison: common-case workflow instructions in green persist across all depths while tail-case exception handling in pink progressively disappears at S3 and S4." width="7648" height="3419" loading="lazy" decoding="async">
+  </div>
+  <figcaption>Skill text at each distillation depth. Tail-handling knowledge (pink) disappears at S3 while common workflow (green) persists.</figcaption>
+</figure>
+```
+
+保留原有的 `<div class="erasure-panel">` 文字面板不动，图片加在前面即可。
+
+---
+
+### P0-2: 修复 index.html Benchmark section 图片
+
+index.html 约 line 148-155：
+
+**当前代码（错误）：**
+```html
+<figure class="paper-figure paper-figure--wide">
+  <a class="image-frame pipeline-figure" href="static/images/distillation-example.png" aria-label="Open benchmark construction figure at full size">
+    <img src="static/images/distillation-example.png" alt="TailSkills benchmark construction pipeline: base tasks, variant taxonomy, task-variant planning, oracle generation, and sandbox verification." width="7648" height="3419" loading="eager" decoding="async">
+  </a>
+  <figcaption>
+    Benchmark construction pipeline: 54 base tasks are transformed with 14 variant types across 6 tail categories, then admitted only after deterministic oracle verification.
+  </figcaption>
+</figure>
+```
+
+**替换为：**
+```html
+<figure class="paper-figure paper-figure--wide">
+  <a class="image-frame pipeline-figure" href="static/images/benchmark-pipeline.png" aria-label="Open benchmark pipeline at full size">
+    <img src="static/images/benchmark-pipeline.png" alt="TailSkills benchmark construction pipeline: 54 base tasks, 14 variant types across 6 categories, oracle verification, 208 task variants." width="1960" height="1142" loading="lazy" decoding="async">
+  </a>
+  <figcaption>
+    Benchmark construction pipeline: 54 base tasks are transformed with 14 variant types across 6 tail categories, then admitted only after deterministic oracle verification.
+  </figcaption>
+</figure>
+```
+
+注意变化：
+- 图片从 distillation-example.png（3.2MB, 7648×3419）换成 benchmark-pipeline.png（758KB, 1960×1142）
+- loading 从 eager 改为 lazy
+- href 链接也换成 benchmark-pipeline.png
+
+---
+
+### P0-3: 补全 2 个 missing task 的 instruction
+
+在 D:\codes\tailskill 目录下运行：
+
+```powershell
 python -c "
 import json, os
 DETAILS = 'data/task-details.json'
-GEN = 'D:/temp/Tailskill_base/tailskills/generated-tasks'
+GEN = r'D:\temp\Tailskill_base\tailskills\generated-tasks'
 with open(DETAILS, 'r', encoding='utf-8') as f:
     data = json.load(f)
 for task in data['tasks']:
     if task['id'] in ['gh-repo-analytics', 'trend-anomaly-causal-inference']:
-        dirs = [d for d in os.listdir(GEN) if d.startswith(task['id'] + '--')]
+        # Each base task has multiple variant directories, but they share the same instruction.md
+        # We pick the first variant directory to get the base instruction
+        dirs = sorted([d for d in os.listdir(GEN) if d.startswith(task['id'] + '--')])
         if dirs:
             path = os.path.join(GEN, dirs[0], 'instruction.md')
             if os.path.exists(path):
                 with open(path, 'r', encoding='utf-8') as f:
-                    task['instruction'] = f.read().strip()
+                    content = f.read().strip()
+                task['instruction'] = content
                 task['instruction_available'] = True
-                print(f'Updated {task[\"id\"]}')
+                print(f'Updated {task[\"id\"]}: {len(content)} chars from {dirs[0]}')
 with open(DETAILS, 'w', encoding='utf-8') as f:
     json.dump(data, f, indent=2, ensure_ascii=False)
+print('Done. Verify: all 54 tasks now have instruction_available=True')
 "
 ```
 
-### P1 修复（提升质量）
+运行后，用以下命令验证：
+```powershell
+python -c "import json; d=json.load(open('data/task-details.json','r',encoding='utf-8')); print(f'Tasks: {len(d[\"tasks\"])}'); avail=sum(1 for t in d['tasks'] if t.get('instruction_available')); print(f'With instruction: {avail}')"
+```
 
-**P1-1: 用真实 skill 文本替换 Autopsy 虚构内容**
+预期输出：`Tasks: 54` `With instruction: 54`
 
-index.html 行 226-240 的 skill 文本是编造的。真实 skill 在：
+---
+
+### P1-1: 用真实 skill 文本替换 Autopsy 虚构内容
+
+index.html 约 line 221-241 是 Skill Autopsy 的 skill 文档区域。当前 `<pre><code>` 内的文本是编造的。
+
+**真实 skill 文件位置：**
 `D:\temp\Tailskill_base\tailskills\generated-tasks\energy-market-pricing--E1_missing_dep\environment\skills\s1\SKILL.md`
 
-读取这个文件的前 30 行，替换 index.html 中的虚构文本。用 `<span class="tail-text">` 标记以下类型的行：
-- 关于 fallback/备用方案的说明
-- 关于错误处理的说明
-- 关于诊断/调试的说明
+这个文件有 586 行。你需要从中选取有代表性的段落来展示"common workflow vs tail exception handling"的对比。
 
-**P1-2: 删除 home.js 中的死代码**
+**具体做法：**
 
-`static/js/home.js` 引用了已从 HTML 中移除的 section indicator dots：
-- 行 12: `var sectionIndicatorDots = ...` — 删除
-- 行 143-188: `setActiveSectionIndicator()` 和 `setupSectionIndicator()` 函数 — 整段删除
-- 行 296: `setupSectionIndicator();` — 删除调用
+1. 读取 SKILL.md 全文
+2. 从中选取约 15-20 行有代表性的内容，包含：
+   - **Common workflow 部分**（不加标记）：如主流程步骤、数据处理、公式说明
+   - **Tail exception handling 部分**（用 `<span class="tail-text">` 包裹）：如依赖安装失败的处理、错误恢复指令、防御性检查
 
-**P1-3: 大图改为 lazy loading**
+**Tail 知识的判断标准**——以下模式属于 tail knowledge，需要用 `<span class="tail-text">` 包裹：
+- `If you encounter ...` / `If ... is unavailable` — 条件性错误处理
+- `Reinstall ...` / `fallback` / `fall back` — 恢复/回退指令
+- `when ... is missing` / `check ... if needed` — 防御性检查
+- `ModuleNotFoundError` — 具体错误类型的处理
 
-index.html 行 117 和 150 的 `loading="eager"` 改为 `loading="lazy"`。
+**Common 知识的判断标准**——以下属于 common workflow，不加标记：
+- `pip install ...` — 正常安装步骤
+- `Load ... and validate ...` — 标准数据处理
+- `Solve ... and calculate ...` — 核心算法步骤
+- `Save ... with ...` — 标准输出步骤
+
+**示例替换内容（你可以直接使用）：**
+
+```html
+<pre><code>## Dependencies
+pip3 install numpy==1.26.4 scipy==1.11.4 cvxpy==1.4.2
+<span class="tail-text">If you encounter a ModuleNotFoundError: No module named 'cvxpy',
+the package may have been removed from the environment.
+Reinstall it with:
+pip3 install --no-cache-dir cvxpy==1.4.2</span>
+
+## Market Clearing
+1. Load network.json and validate buses, generators, and demand
+2. Formulate DC-OPF objective with quadratic generator costs
+3. Solve dispatch and extract locational marginal prices
+4. Save report.json with prices, generation, and reserve margins
+
+## Solver Selection
+Use prob.solve(solver=cp.CLARABEL) for quadratic costs
+<span class="tail-text">Quick file size check (if needed):
+wc -l network.json   # Line count
+du -h network.json   # File size</span></code></pre>
+```
+
+**关键约束：**
+- 保持 `energy-market-pricing / E1 missing dependency` 的标题不变
+- `<span class="tail-text">` 标记的行在 Autopsy 滚动时会逐渐模糊/消失（这是已有的 CSS 动画）
+- 内容必须来自真实 SKILL.md，不能编造
+
+---
+
+### P1-2: 删除 home.js 中的死代码
+
+`static/js/home.js` 引用了已从 HTML 中移除的 section indicator dots。需要删除：
+
+1. **约 line 12**：`var sectionIndicatorDots = document.querySelectorAll('.section-indicator__dot');` — 删除这一行
+2. **约 line 143-188**：`setActiveSectionIndicator()` 和 `setupSectionIndicator()` 两个函数 — 整段删除（约 46 行）
+3. **约 line 296**：`setupSectionIndicator();` — 删除这个调用
+
+判断方法：搜索 `sectionIndicatorDots` 和 `setupSectionIndicator`，删除所有包含这两个名称的行。
+
+---
+
+### P1-3: 改大图为 lazy loading
+
+在 index.html 中：
+- 约 line 117 的 `loading="eager"` → `loading="lazy"`（Introduction infographic）
+- 注意：P0-2 已经把 Benchmark 图片改为 lazy 了
+
+在 experiments.html 中：
+- 修改 3 已经把 Case Study 图片改为 lazy
+- 修改 2 已经把 Main Results 图片改为 lazy
+- 修改 4 已经把 What Gets Erased 图片改为 lazy
+- Introduction section 的两张图保持 `loading="eager"`（首屏可见，需要快速加载）
 
 ---
 
 ## 第五步：Git Commit 策略
 
-```bash
+```powershell
 cd D:\codes\tailskill
 ```
 
 3 个 commit：
 
-```
-# Commit 1: 图片修复
+```powershell
+# Commit 1: 图片修复（P0-1 + P0-2 + P1-3）
 git add -A
 git commit -m "fix: correct image placement — swap 3 misplaced figures across homepage and experiments"
 git push origin gh-pages
 
-# Commit 2: 数据修复
+# Commit 2: 数据修复（P0-3）
 git add -A
 git commit -m "fix: add missing task instructions for gh-repo-analytics and trend-anomaly-causal-inference"
 git push origin gh-pages
 
-# Commit 3: 代码质量
+# Commit 3: 代码质量（P1-1 + P1-2）
 git add -A
-git commit -m "fix: use real skill text in autopsy, remove dead code, lazy-load large images"
+git commit -m "fix: use real skill text in autopsy, remove dead code in home.js"
 git push origin gh-pages
 ```
 
@@ -181,15 +377,16 @@ git push origin gh-pages
 
 每次 push 后等 1-2 分钟，然后检查：
 
-- [ ] 首页 Benchmark section：应该看到横版的 pipeline 流程图（有 26 base tasks → variants → oracle 的流程）
+- [ ] 首页 Benchmark section：应该看到横版的 pipeline 流程图（有 base tasks → variants → oracle 的流程）
 - [ ] 首页 Introduction section：应该看到竖版的传送带图（S1→S4 压缩过程）✅ 不改
 - [ ] Experiments Introduction：pipeline 流程图 + 传送带图
+- [ ] Experiments Main Results：只有分类坍塌曲线图（case-study-comparison 已移走）
 - [ ] Experiments Case Study：Regular vs Tail-Aware 对比图
 - [ ] Experiments What Gets Erased：S1-S4 四列 skill cards 对比图
-- [ ] Experiments Main Results：分类坍塌曲线图
 - [ ] 所有图片的 alt text 与图片真实内容一致
 - [ ] Tasks 页 54 张卡片，点击 `gh-repo-analytics` 和 `trend-anomaly-causal-inference` 能看到 instruction
-- [ ] Skill Autopsy 显示真实 skill 文本
+- [ ] Skill Autopsy 显示真实 skill 文本（包含 `<span class="tail-text">` 标记）
+- [ ] 浏览器控制台无 JS 错误（home.js 死代码已删除）
 - [ ] 暗色模式、移动端正常
 
 ---
@@ -210,9 +407,8 @@ git push origin gh-pages
 
 ## 立即开始
 
-1. 读 `docs/iteration-5-fixes.md` — 详细的修复规格
-2. 读 `index.html` — 理解首页结构
-3. 读 `experiments.html` — 理解实验页结构和当前图片位置
-4. 读 `static/js/home.js` — 找到要删除的死代码
-5. 按 P0 → P1 顺序执行修复
-6. 每个 commit 后 push 并验证
+1. 读 `index.html` — 理解首页结构，定位 line 148-155（Benchmark 图片）和 line 221-241（Autopsy 文本）
+2. 读 `experiments.html` — 理解实验页结构，定位 4 处需要修改的图片
+3. 读 `static/js/home.js` — 找到 `sectionIndicatorDots` 和 `setupSectionIndicator` 相关的死代码
+4. 按 P0-1 → P0-2 → P0-3 → P1-1 → P1-2 → P1-3 顺序执行修复
+5. 每个 commit 后 push 并验证

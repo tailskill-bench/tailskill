@@ -1,122 +1,162 @@
-# TailSkills 网站修复任务 — v5
+# TailSkills 网站修复 — 补充修复规格
 
-> 本文档是一个新 Claude Code 会话的完整任务描述。
-> 分支: gh-pages | 项目: D:\codes\tailskill
-> 线上: https://tailskill-bench.github.io/tailskill/
-
----
-
-## 你的任务
-
-修复上一轮开发中引入的错误。主要问题是**图片放错了位置**和一些数据/代码问题。
-按优先级执行 P0 → P1，每完成一组 commit + push。
-
-**先完整阅读本文档，再开始改代码。不要跳过任何步骤。**
+> ⚠️ **主文档是 `prompt-fresh-session-v5.md`**，那份文档包含完整的项目介绍、图片语义说明、修复步骤和验证清单。
+> 本文件是补充参考，提供了一些额外的代码片段模板。如果两份文档有冲突，以 `prompt-fresh-session-v5.md` 为准。
 
 ---
 
-## P0: 图片语义修复（必须修）
+## 项目背景
 
-### 问题说明
+**TailSkills** 是一篇 EMNLP 2026 的学术论文，研究 AI agent 的"技能蒸馏"问题。
+当人类写的 agent 技能（S1, ~8000 字符）被递归压缩成更短版本（S2 ~5600, S3 ~3900, S4 ~2700 字符）时，
+常见的操作流程知识被保留，但罕见的异常处理知识（"tail knowledge"）会逐渐丢失。
+论文提出了 TailSkills 基准测试，包含 208 个经过 oracle 验证的任务变体，14 种变体类型，6 个分类。
 
-上一轮开发把图片的含义搞混了。5 张图中有 3 张放错了位置。
+**论文标题：** "Focused but Fragile: Tail Knowledge Collapse in Recursive Agent Skill Distillation"
+**组织：** tailskill-bench | **仓库：** tailskill | **分支：** gh-pages
 
-**每张图片的真实内容（不要搞混）：**
+## 网站简介
 
-| 文件 | 真实内容 | 尺寸 |
-|------|----------|------|
-| `introduction-infographic.png` | Skill Distillation 传送带图：S1→S2→S3→S4 压缩过程，绿色 common 保留，粉色 tail 消失 | 1000×1284 (竖图) |
-| `benchmark-pipeline.png` | TailSkills Benchmark 构建流程：base task → variant injection → oracle verification → 208 tasks | 1960×1142 (横图) |
-| `distillation-example.png` | S1-S4 Skill Cards 并排对比：4 列，每列是一个 generation 的 skill 文本，粉色部分逐步消失 | 7648×3419 (超宽图) |
-| `case-study-comparison.jpg` | Regular vs Tail-Aware 蒸馏策略对比：同一个 C4 task 两种策略不同结果 | 2085×1280 |
-| `category-collapse-curves.jpg` | 6 个分类的坍塌曲线图 | 1950×1280 |
+我们为这篇论文建了一个学术项目展示网页，类似 XSkill (https://xskill-agent.github.io/xskill_page) 那种论文配套网页。
 
-### P0-1: 修复 experiments.html 图片位置
+**技术栈：** 纯 HTML5 + CSS3 + vanilla JavaScript。无框架、无 npm、无构建工具。
+**字体：** Instrument Serif（标题）+ DM Sans（正文）+ JetBrains Mono（代码）
+**Chart.js 4.x CDN** 仅在 experiments 页面使用。
+**部署：** GitHub Pages，从 gh-pages 分支自动部署。
+**线上地址：** https://tailskill-bench.github.io/tailskill/
 
-**当前错误 → 正确映射：**
+**网站有 4 个页面：**
+1. **index.html** — 首页，有 Hero（压缩滑块交互）、Abstract、Introduction、Benchmark、Skill Autopsy（滚动动画）、Explore 卡片、BibTeX
+2. **tasks.html** — Task Registry，54 个 base task 卡片，搜索/过滤，类似 SkillsBench
+3. **task.html** — Task 详情页，显示 instruction、verifier、results（不可用）、trajectory（不可用）
+4. **experiments.html** — 实验结果页，Chart.js 图表、数据表格、Ablation、Case Study
 
+## 前四轮开发历史
+
+**Round 1：** Codex 搭建了初始单页网站，9 个 section，所有数据与论文一致。
+
+**Round 2：** 单页 → 三页架构（index + tasks + experiments），JS 拆分为 4 个文件，缩小标题字体。
+
+**Round 3：** 修复 tasks.js bug，增强 Autopsy 滚动效果，添加图片预览 gallery。
+
+**Round 4（最近一轮）：** 重大重构——
+- 首页改为学术 paper page 风格（参照 XSkill），新增 Abstract、Introduction 大图、Benchmark 大图
+- Tasks 页改为 Task Registry 风格（参照 SkillsBench），新增 task.html 详情页
+- 移除了错误的 S1-S4 PASS/FAIL 实验结果数据
+- 添加 task-details.json，52 个 task 有 source-backed instructions
+
+**但是！Round 4 引入了严重问题：**
+
+1. **图片放错位置** — 开发者不理解每张图片的实际内容，把 3 张图放到了错误的 section
+2. **2 个 task 被误标为 missing** — 实际本地有 instruction
+3. **Skill Autopsy 用了虚构文本** — 应该用真实 skill 文件内容
+4. **home.js 有死代码** — 引用已删除的 DOM 元素
+
+---
+
+## 你的任务：修复 Round 4 的问题
+
+读取详细任务文档 `docs/iteration-5-fixes.md`，按 P0 → P1 顺序执行。
+每个 P0/P1 完成后 commit + push。
+
+### 图片内容说明（最重要——理解每张图是什么）
+
+项目目录 `static/images/` 有 5 张图片。你无法看到图片内容，所以必须通过下面的描述理解：
+
+| 文件名 | 图片实际内容 | 图片特征 |
+|--------|-------------|----------|
+| `introduction-infographic.png` | **Skill Distillation 流程图**。展示 S1→S2→S3→S4 的压缩过程，像一个传送带。绿色部分（common workflow）保持不变，粉色部分（tail exception handling）逐渐消失。 | 竖图 1000×1284 |
+| `benchmark-pipeline.png` | **TailSkills Benchmark 构建流程**。展示完整的 pipeline：26 个 base task → 14 种 variant injection → oracle verification → 最终 208 个任务。有多个步骤节点和箭头。 | 横图 1960×1142 |
+| `distillation-example.png` | **S1-S4 Skill Cards 并排对比**。4 列并排，每列是一个 generation 的 skill 文本。绿色高亮 common 部分，粉色高亮 tail 部分。可以看到粉色部分从 S3 开始消失。这是"What Gets Erased"的视觉证据。 | 超宽图 7648×3419，3.2MB |
+| `case-study-comparison.jpg` | **Regular vs Tail-Aware 蒸馏对比**。左右两栏，展示同一个 C4 极值任务在两种蒸馏策略下的不同表现。Regular 策略丢失了极值处理，Tail-Aware 保留了。 | 横图 2085×1280 |
+| `category-collapse-curves.jpg` | **6 个分类的坍塌曲线**。6 条折线，每条代表一个 variant category（A-G）在不同压缩深度下的 pass rate 变化。 | 横图 1950×1280 |
+
+### 当前图片位置（有错）
+
+**experiments.html 当前图片位置：**
 ```
-Introduction section (line 48-53):
-  当前: distillation-example.png ← 错！
-  改为: benchmark-pipeline.png
-
-Introduction section (line 54-61):
-  当前: introduction-infographic.png ← 对 ✅，保留不动
-
-Main Results section (line 102-115):
-  当前: case-study-comparison.jpg ← 错！这图是 case study 对比不是 collapse curve
-  改为: 移除 case-study-comparison.jpg，只保留 category-collapse-curves.jpg
-
-Case Study section (line 298):
-  当前: benchmark-pipeline.png ← 错！这图是 pipeline 不是 case study
-  改为: case-study-comparison.jpg
-
-What Gets Erased section (line 352-357):
-  当前: 只有文字面板，没有图片
-  改为: 添加 distillation-example.png 图片展示
+Introduction section → distillation-example.png ❌（应该是 benchmark-pipeline.png）
+                  → introduction-infographic.png ✅
+Main Results section → case-study-comparison.jpg ❌（应该是 category-collapse-curves.jpg only）
+                    → category-collapse-curves.jpg ✅
+Case Study section → benchmark-pipeline.png ❌（应该是 case-study-comparison.jpg）
+What Gets Erased → 只有文字，没有图片 ❌（应该是 distillation-example.png）
 ```
 
-**具体操作：**
+**index.html 当前图片位置：**
+```
+Introduction section → introduction-infographic.png ✅
+Benchmark section → distillation-example.png ❌（应该是 benchmark-pipeline.png）
+```
 
-1. experiments.html line 50：把 `distillation-example.png` 改为 `benchmark-pipeline.png`，同时更新 alt text：
-   ```html
-   <img src="static/images/benchmark-pipeline.png" alt="TailSkills benchmark construction pipeline: 26 base tasks, 14 variant types across 6 categories, oracle verification, producing 208 task variants." width="1960" height="1142" loading="lazy" decoding="async">
-   ```
-   figcaption 改为: `Benchmark construction pipeline: base tasks → variant injection → oracle verification → 208 task variants.`
+### 正确的图片位置（修复目标）
 
-2. experiments.html line 105-108：把 `case-study-comparison.jpg` 的 figure 移到 Case Study section，Main Results 只保留 `category-collapse-curves.jpg`
+**experiments.html：**
+```
+Introduction section → benchmark-pipeline.png + introduction-infographic.png
+Main Results section → category-collapse-curves.jpg（移除 case-study-comparison.jpg）
+Case Study section → case-study-comparison.jpg
+What Gets Erased → distillation-example.png
+```
 
-3. experiments.html Case Study section（大约 line 298）：把 `benchmark-pipeline.png` 替换为 `case-study-comparison.jpg`，更新 alt text：
-   ```html
-   <img src="static/images/case-study-comparison.jpg" alt="Comparison of regular distillation (drops C4 extreme value handling) vs tail-aware distillation (preserves exception clause), showing why case-specific retention matters." width="2085" height="1280" loading="lazy" decoding="async">
-   ```
+**index.html：**
+```
+Introduction section → introduction-infographic.png ✅ 不改
+Benchmark section → benchmark-pipeline.png（替换 distillation-example.png）
+```
 
-4. experiments.html "What Gets Erased" section：添加 `distillation-example.png` 图片：
-   ```html
-   <figure class="image-figure wide-paper-figure">
-     <div class="image-frame">
-       <img src="static/images/distillation-example.png" alt="S1 to S4 skill cards comparison: common-case workflow instructions (green) persist across all depths while tail-case exception handling (pink) progressively disappears at S3 and S4." width="7648" height="3419" loading="lazy" decoding="async">
-     </div>
-     <figcaption>
-       Skill text at each distillation depth. Tail-handling knowledge (pink) disappears at S3 while common workflow (green) persists.
-     </figcaption>
-   </figure>
-   ```
+---
 
-### P0-2: 修复 index.html Benchmark section 图片
+## 具体修复步骤
 
-index.html line 149-150：把 `distillation-example.png` 改为 `benchmark-pipeline.png`：
+### Step 1: 修复 experiments.html 图片（P0）
+
+逐个替换图片 src 和 alt text：
+
+1. **Line ~50**：`distillation-example.png` → `benchmark-pipeline.png`
+   - alt: `"TailSkills benchmark construction pipeline: 26 base tasks, 14 variant types across 6 categories, oracle verification, producing 208 task variants."`
+   - width/height: 1960/1142
+   - figcaption: `"Benchmark construction pipeline: base tasks → variant injection → oracle verification → 208 task variants."`
+
+2. **Line ~105**：移除 `case-study-comparison.jpg` 的整个 `<figure>` 块。Main Results 只保留 `category-collapse-curves.jpg`。
+
+3. **Line ~298** Case Study section：`benchmark-pipeline.png` → `case-study-comparison.jpg`
+   - alt: `"Comparison of regular distillation (drops C4 extreme value handling) vs tail-aware distillation (preserves exception clause), showing why case-specific retention matters."`
+   - width/height: 2085/1280
+
+4. **"What Gets Erased" section**：添加 `distillation-example.png` 图片（当前只有文字面板）
+   - alt: `"S1 to S4 skill cards comparison: common-case workflow instructions (green) persist across all depths while tail-case exception handling (pink) progressively disappears at S3 and S4."`
+   - width/height: 7648/3419
+   - loading: lazy
+   - figcaption: `"Skill text at each distillation depth. Tail-handling knowledge (pink) disappears at S3 while common workflow (green) persists."`
+
+### Step 2: 修复 index.html Benchmark 图片（P0）
+
+index.html 约 line 149-150：`distillation-example.png` → `benchmark-pipeline.png`
 
 ```html
 <a class="image-frame pipeline-figure" href="static/images/benchmark-pipeline.png" aria-label="Open benchmark pipeline at full size">
-  <img src="static/images/benchmark-pipeline.png" alt="TailSkills benchmark construction pipeline: 26 base tasks, 14 variant types across 6 categories, oracle verification, producing 208 task variants." width="1960" height="1142" loading="lazy" decoding="async">
+  <img src="static/images/benchmark-pipeline.png" alt="TailSkills benchmark construction pipeline: 26 base tasks, 14 variant types, oracle verification, 208 task variants." width="1960" height="1142" loading="lazy" decoding="async">
 </a>
 ```
 
-figcaption 更新为：`Benchmark construction pipeline: base tasks → variant injection → oracle verification → 208 task variants.`
+figcaption: `"Benchmark construction pipeline: base tasks → variant injection → oracle verification → 208 task variants."`
 
-### P0-3: 补全 2 个 missing task 的 instruction
+### Step 3: 补全 missing task instructions（P0）
 
-`data/task-details.json` 中 `gh-repo-analytics` 和 `trend-anomaly-causal-inference` 被标记为 instruction 不可用，但它们在本地 generated-tasks 中存在。
-
-运行以下命令提取真实 instruction 并更新 task-details.json：
+运行 python 脚本从本地 generated-tasks 提取 instruction：
 
 ```bash
 cd D:\codes\tailskill
 python -c "
-import json, os, re
-
+import json, os
 DETAILS_FILE = 'data/task-details.json'
 GEN_DIR = 'D:/temp/Tailskill_base/tailskills/generated-tasks'
-
 with open(DETAILS_FILE, 'r', encoding='utf-8') as f:
     data = json.load(f)
-
 missing_ids = ['gh-repo-analytics', 'trend-anomaly-causal-inference']
-
 for task in data['tasks']:
     if task['id'] in missing_ids:
-        # Find any variant directory for this task
         dirs = [d for d in os.listdir(GEN_DIR) if d.startswith(task['id'] + '--')]
         if dirs:
             inst_path = os.path.join(GEN_DIR, dirs[0], 'instruction.md')
@@ -125,104 +165,56 @@ for task in data['tasks']:
                     content = f.read().strip()
                 task['instruction'] = content
                 task['instruction_available'] = True
-                print(f'Updated {task[\"id\"]}: {len(content)} chars from {dirs[0]}')
-            else:
-                print(f'No instruction.md in {dirs[0]}')
-        else:
-            print(f'No directory for {task[\"id\"]}')
-
+                print(f'Updated {task[\"id\"]}: {len(content)} chars')
 with open(DETAILS_FILE, 'w', encoding='utf-8') as f:
     json.dump(data, f, indent=2, ensure_ascii=False)
 print('Done')
 "
 ```
 
----
+### Step 4: 替换 Autopsy 虚构文本（P1）
 
-## P1: 代码质量修复
+从真实 SKILL.md 提取内容：
 
-### P1-1: 用真实 skill 文本替换 Autopsy 虚构内容
-
-index.html line 226-240 的 skill 文本是编造的。替换为真实 SKILL.md 内容。
-
-本地真实 skill 文件位置：
-`D:\temp\Tailskill_base\tailskills\generated-tasks\energy-market-pricing--E1_missing_dep\environment\skills\s1\SKILL.md`
-
-把这个文件的前 30 行提取出来，放入 index.html 的 `<pre><code>` 中作为 autopsy 展示文本。
-
-用以下命令提取：
 ```bash
 head -30 "D:/temp/Tailskill_base/tailskills/generated-tasks/energy-market-pricing--E1_missing_dep/environment/skills/s1/SKILL.md"
 ```
 
-然后用提取到的真实文本替换 index.html 中的虚构文本。
+把输出的真实 skill 文本替换 index.html 中 `<pre><code>` 内的虚构文本（约 line 226-240）。
 
-**注意：** 真实 skill 中需要手动标记哪些行是 "tail" 内容。在 skill 文本中，以下类型的行应该用 `<span class="tail-text">` 包裹：
-- 关于 fallback 的说明（如 "if unavailable", "fallback", "recover"）
-- 关于错误处理的说明（如 "If ModuleNotFoundError", "catch"）
-- 关于诊断/调试的说明（如 "diagnostic note", "debug"）
+将真实文本中涉及 fallback/recovery/error-handling 的行用 `<span class="tail-text">...</span>` 包裹，其他保持不变。
 
-其他内容（主要工作流程、依赖安装、求解器配置）保持不变。
+### Step 5: 删除 home.js 死代码（P1）
 
-### P1-2: 删除 home.js 中的死代码
+`static/js/home.js` 中：
+- Line 12: 删除 `var sectionIndicatorDots = ...`
+- Lines 143-188: 删除 `setActiveSectionIndicator()` 和 `setupSectionIndicator()` 两个函数
+- Line 296: 删除 `setupSectionIndicator();` 调用
 
-`static/js/home.js` 中以下代码引用了不存在的 DOM 元素（section indicator dots 已从 HTML 中移除）：
+### Step 6: 改 loading=eager 为 lazy（P1）
 
-- Line 12: `var sectionIndicatorDots = document.querySelectorAll(".section-indicator__dot");`
-- Lines 143-188: 整个 `setActiveSectionIndicator()` 和 `setupSectionIndicator()` 函数
-- Line 296: `setupSectionIndicator();` 调用
-
-删除这 3 处代码。
-
-### P1-3: 大图改为 lazy loading
-
-index.html line 117 和 line 150 的图片用了 `loading="eager"`。改为 `loading="lazy"`：
-
-```html
-<!-- line 117 -->
-<img src="static/images/introduction-infographic.png" ... loading="lazy" ...>
-
-<!-- line 150 (修改后是 benchmark-pipeline.png) -->
-<img src="static/images/benchmark-pipeline.png" ... loading="lazy" ...>
-```
+index.html 中所有 `<img>` 标签的 `loading="eager"` 改为 `loading="lazy"`。
 
 ---
 
-## Git Commit 策略（3 步）
+## Git Commit 策略
 
-### Commit 1: P0 图片修复
 ```bash
 cd D:\codes\tailskill
-git add -A
-git commit -m "fix: correct image placement across homepage and experiments page
 
-- index.html: Benchmark section now uses benchmark-pipeline.png instead of distillation-example.png
-- experiments.html: Introduction uses benchmark-pipeline.png, Case Study uses case-study-comparison.jpg
-- experiments.html: What Gets Erased now shows distillation-example.png
-- experiments.html: Main Results shows category-collapse-curves.jpg only
-- All alt texts updated to match actual image content
-- Large images changed to loading=lazy"
+# Commit 1: 图片修复
+git add -A
+git commit -m "fix: correct image placement across homepage and experiments page"
 git push origin gh-pages
-```
 
-### Commit 2: P0 数据修复
-```bash
+# Commit 2: 数据修复
 git add -A
-git commit -m "fix: add missing task instructions for gh-repo-analytics and trend-anomaly-causal-inference
-
-- Instructions sourced from local generated-tasks directory
-- task-details.json updated: 54/54 tasks now have instructions"
+git commit -m "fix: add missing task instructions from local generated-tasks"
 git push origin gh-pages
-```
 
-### Commit 3: P1 代码质量
-```bash
+# Commit 3: 代码质量
 git add -A
-git commit -m "fix: replace fabricated autopsy text with real SKILL.md content and remove dead code
-
-- index.html: Skill Autopsy now uses real skill text from energy-market-pricing E1 variant
-- home.js: Remove dead section-indicator code (46 lines)
-- index.html: Change large images from loading=eager to loading=lazy"
+git commit -m "fix: real autopsy text, remove dead code, lazy loading"
 git push origin gh-pages
 ```
 
@@ -230,38 +222,20 @@ git push origin gh-pages
 
 ## 验证清单
 
-每次 push 后等 1-2 分钟，然后在浏览器中验证：
-
-- [ ] 首页 Benchmark section 显示的是 pipeline 流程图（不是 skill cards）
-- [ ] 首页 Introduction section 显示的是 distillation 传送带图 ✅（已正确）
-- [ ] Experiments Introduction section 显示 benchmark-pipeline + introduction-infographic
-- [ ] Experiments Case Study section 显示 Regular vs Tail-Aware 对比图
-- [ ] Experiments "What Gets Erased" section 显示 S1-S4 skill cards 对比图
-- [ ] Experiments Main Results section 显示分类坍塌曲线图
-- [ ] 所有图片的 alt text 与图片真实内容一致
-- [ ] Tasks 页面 54 张卡片都能显示，点击能进入详情
-- [ ] `gh-repo-analytics` 和 `trend-anomaly-causal-inference` 详情页能显示 instruction
-- [ ] Skill Autopsy 显示真实 skill 文本（不是虚构的）
-- [ ] 暗色模式下所有组件正确显示
-- [ ] 移动端（375px）布局正常，无横向溢出
-
----
+每次 push 后等 1-2 分钟，浏览器验证：
+- [ ] 首页 Benchmark 显示 pipeline 流程图（不是 skill cards）
+- [ ] Experiments Introduction 显示 pipeline + infographic
+- [ ] Experiments Case Study 显示 Regular vs Tail-Aware 对比
+- [ ] Experiments "What Gets Erased" 显示 S1-S4 skill cards
+- [ ] 所有图片 alt text 与内容一致
+- [ ] Tasks 页 54 张卡片，点击进详情有 instruction
+- [ ] Skill Autopsy 显示真实 skill 文本
+- [ ] 暗色模式 + 移动端正常
 
 ## 不要做的事
 
-- ❌ 不要改 experiments.html 中的 Chart.js 数据（已验证正确）
-- ❌ 不要改 experiments.html 中的表格数据（已验证正确）
-- ❌ 不要创建新的动画或交互特效
-- ❌ 不要编造任何数据
+- ❌ 不要改 Chart.js 数据或表格数据
+- ❌ 不要创建新动画/特效
+- ❌ 不要编造数据
 - ❌ 不要切换分支
 - ❌ 不要引入 npm/框架
-
----
-
-## 关键约束
-
-- 纯 HTML/CSS/JS
-- 字体: Instrument Serif + DM Sans + JetBrains Mono
-- 亮色默认 #fafaf8
-- Tail accent: #E2ABB8, Common accent: #B2D9B3
-- 本地 generated-tasks 路径: `D:\temp\Tailskill_base\tailskills\generated-tasks\`

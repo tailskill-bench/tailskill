@@ -966,13 +966,16 @@ h3 {
   max-width: none;
   color: inherit;
   text-decoration: none;
-  background: var(--bg-secondary);
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
 }
 
 .paper-figure .image-frame img {
   width: 100%;
   height: auto;
-  max-height: clamp(280px, 62vh, 680px);
+  max-height: clamp(280px, 56vh, 560px);
   object-fit: contain;
 }
 
@@ -1126,9 +1129,15 @@ h3 {
 
 .figure-showcase {
   display: grid;
-  gap: 2.25rem;
+  grid-template-columns: 1.5fr 1fr;
+  gap: 1.5rem;
   width: min(100%, 1120px);
   margin: 2rem auto;
+  align-items: start;
+}
+
+.figure-showcase--curves {
+  grid-template-columns: 1fr;
 }
 
 .figure-showcase .image-figure {
@@ -1139,15 +1148,16 @@ h3 {
 .wide-paper-figure .image-frame {
   max-width: none;
   background: transparent;
-  border-color: color-mix(in srgb, var(--border) 78%, transparent);
-  box-shadow: 0 20px 60px color-mix(in srgb, var(--shadow-color) 58%, transparent);
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
 }
 
 .figure-showcase .image-frame img,
 .wide-paper-figure .image-frame img {
   display: block;
   height: auto;
-  max-height: clamp(280px, 64vh, 720px);
+  max-height: clamp(220px, 48vh, 480px);
   object-fit: contain;
 }
 
@@ -1159,13 +1169,9 @@ h3 {
   font-size: 0.85rem;
 }
 
-.figure-showcase__item--process {
-  width: min(100%, 760px);
-  margin-inline: auto !important;
-}
-
 .figure-showcase__item--process img {
-  max-height: clamp(320px, 58vh, 580px);
+  max-height: clamp(200px, 46vh, 440px);
+  object-fit: contain;
 }
 
 .wide-paper-figure {
@@ -1545,16 +1551,33 @@ h3 {
 }
 
 .case-figure {
-  max-width: 1060px;
+  max-width: 880px;
   margin-inline: auto;
 }
 
 .case-figure .image-frame {
   max-width: none;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
 }
 
 .case-figure img {
-  max-height: clamp(280px, 62vh, 680px);
+  max-height: clamp(200px, 44vh, 420px);
+}
+
+#distillation-example .image-figure .image-frame {
+  max-width: none;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+#distillation-example .image-figure img {
+  max-height: clamp(200px, 44vh, 420px);
+  object-fit: contain;
 }
 
 .erasure-panel {
@@ -2719,11 +2742,11 @@ h3 {
   }
 
   .intro-layout {
-    grid-template-columns: minmax(0, 1.35fr) minmax(15rem, 0.58fr);
+    grid-template-columns: minmax(0, 1fr) minmax(20rem, 1fr);
   }
 
   .finding-stat-grid--intro {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .intro-layout .paper-figure {
@@ -2853,7 +2876,8 @@ h3 {
   }
 
   .figure-showcase {
-    max-width: 360px;
+    grid-template-columns: 1fr;
+    max-width: 100%;
   }
 
   .taxonomy-mini-grid {
