@@ -33,7 +33,7 @@
     return [];
   }
 
-  function findTask(baseData, detailData, id) {
+  function findTask(baseData, detailData, id, variantType) {
     var base = (baseData.tasks || []).filter(function (task) {
       return task.id === id;
     })[0];
@@ -44,10 +44,16 @@
       return null;
     }
     var metadata = (detail && detail.metadata) || {};
+    var variants = (base && base.variants) || [];
+    var selectedVariant = variants.filter(function (variant) {
+      return variant.type === variantType;
+    })[0] || variants[0] || null;
     return {
       id: id,
       domain: (base && base.domain) || (detail && detail.domain) || "",
-      variants: (base && base.variants) || [],
+      variants: variants,
+      selectedVariant: selectedVariant,
+      selectedVariantType: selectedVariant ? selectedVariant.type : "",
       detail: detail || {},
       metadata: metadata,
       name: metadata.name || slugLabel(id),
@@ -92,11 +98,34 @@
       return "<p class=\"empty-state\">No TailSkills variant metadata is available for this task.</p>";
     }
     return "<div class=\"detail-variant-list\">" + task.variants.map(function (variant) {
-      return "<article class=\"detail-variant\">" +
-        "<strong>" + escapeHtml(variant.variant_name || variant.type) + "</strong>" +
-        "<span>" + escapeHtml(variant.category_name || variant.category) + " / " + escapeHtml(variant.fragility || "unknown") + " fragility</span>" +
+      var isActive = task.selectedVariantType === variant.type;
+      var href = "task.html?id=" + encodeURIComponent(task.id) + "&variant=" + encodeURIComponent(variant.type || "");
+      return "<article class=\"detail-variant" + (isActive ? " is-active" : "") + "\">" +
+        "<a href=\"" + href + "\">" +
+          "<strong>" + escapeHtml(variant.variant_name || variant.type) + "</strong>" +
+          "<span>" + escapeHtml(variant.category_name || variant.category) + " / " + escapeHtml(variant.fragility || "unknown") + " fragility</span>" +
+        "</a>" +
       "</article>";
     }).join("") + "</div>";
+  }
+
+  function renderSelectedVariant(task) {
+    if (!task.selectedVariant) {
+      return "";
+    }
+    var variant = task.selectedVariant;
+    return "<section class=\"variant-context\" aria-label=\"Selected TailSkills variant\">" +
+      "<div>" +
+        "<span class=\"section-kicker\">Selected Variant</span>" +
+        "<h2>" + escapeHtml(variant.variant_name || variant.type) + "</h2>" +
+        "<p>" + escapeHtml(task.id + " / " + (variant.type || "variant")) + "</p>" +
+      "</div>" +
+      "<dl class=\"detail-definition-list\">" +
+        "<div><dt>Category</dt><dd>" + escapeHtml(variant.category_name || variant.category || "not listed") + "</dd></div>" +
+        "<div><dt>Variant code</dt><dd>" + escapeHtml(variant.type || "not listed") + "</dd></div>" +
+        "<div><dt>Fragility</dt><dd>" + escapeHtml(variant.fragility || "unknown") + "</dd></div>" +
+      "</dl>" +
+    "</section>";
   }
 
   function renderInstruction(task) {
@@ -145,13 +174,15 @@
       "<div class=\"registry-tags task-detail-tags\">" + renderTags(task.tags) + "</div>" +
       "<div class=\"task-detail-actions\"><a class=\"button-link\" href=\"tasks.html\">Back to Registry</a>" + source + "</div>" +
       "<p class=\"task-detail-summary\">" + escapeHtml(task.instructionAvailable ? task.instruction.replace(/\s+/g, " ").slice(0, 340) + (task.instruction.length > 340 ? "..." : "") : "Detailed task statement is not available for this task in the current public data.") + "</p>" +
+      renderSelectedVariant(task) +
+      renderVariants(task) +
       "<div class=\"detail-tabs\" role=\"tablist\" aria-label=\"Task detail tabs\">" +
         "<button type=\"button\" class=\"detail-tab is-active\" role=\"tab\" aria-selected=\"true\" aria-controls=\"detail-instruction\">Instruction</button>" +
         "<button type=\"button\" class=\"detail-tab\" role=\"tab\" aria-selected=\"false\" aria-controls=\"detail-verifier\">Verifier</button>" +
         "<button type=\"button\" class=\"detail-tab\" role=\"tab\" aria-selected=\"false\" aria-controls=\"detail-results\">Results</button>" +
         "<button type=\"button\" class=\"detail-tab\" role=\"tab\" aria-selected=\"false\" aria-controls=\"detail-trajectory\">Trajectory</button>" +
       "</div>" +
-      "<section id=\"detail-instruction\" class=\"detail-panel\" role=\"tabpanel\">" + renderInstruction(task) + renderVariants(task) + "</section>" +
+      "<section id=\"detail-instruction\" class=\"detail-panel\" role=\"tabpanel\">" + renderInstruction(task) + "</section>" +
       "<section id=\"detail-verifier\" class=\"detail-panel\" role=\"tabpanel\" hidden>" + renderVerifier(task) + "</section>" +
       "<section id=\"detail-results\" class=\"detail-panel\" role=\"tabpanel\" hidden>" + renderUnavailable("Per-task S1-S4 result") + "</section>" +
       "<section id=\"detail-trajectory\" class=\"detail-panel\" role=\"tabpanel\" hidden>" + renderUnavailable("Execution trajectory") + "</section>";
@@ -169,6 +200,7 @@
 
   function loadTask() {
     var id = param("id");
+    var variantType = param("variant");
     if (!root || !id) {
       renderMissing(id);
       return;
@@ -187,7 +219,7 @@
         return response.json();
       })
     ]).then(function (results) {
-      var task = findTask(results[0], results[1], id);
+      var task = findTask(results[0], results[1], id, variantType);
       if (!task) {
         renderMissing(id);
       } else {

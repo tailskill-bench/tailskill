@@ -6,7 +6,7 @@
   var taskGrid = document.querySelector("#task-grid");
   var galleryCount = document.querySelector("#gallery-count");
   var state = {
-    tasks: [],
+    variants: [],
     filterCategory: "all",
     filterDifficulty: "all",
     filterTag: "all",
@@ -49,7 +49,7 @@
     if (!compact) {
       return "Detailed task statement is not included in the current public data release.";
     }
-    return compact.length > 260 ? compact.slice(0, 260).replace(/\s+\S*$/, "") + "..." : compact;
+    return compact.length > 240 ? compact.slice(0, 240).replace(/\s+\S*$/, "") + "..." : compact;
   }
 
   function uniqueSorted(values) {
@@ -86,70 +86,84 @@
     (detailData.tasks || []).forEach(function (detail) {
       detailsById[detail.id] = detail;
     });
-    return (baseData.tasks || []).map(function (task) {
+
+    var records = [];
+    (baseData.tasks || []).forEach(function (task) {
       var detail = detailsById[task.id] || {};
       var metadata = detail.metadata || {};
-      return {
-        id: task.id,
-        domain: task.domain,
-        variants: task.variants || [],
-        detail: detail,
-        name: metadata.name || slugLabel(task.id),
-        category: metadata.category || task.domain,
-        difficulty: metadata.difficulty || "",
-        tags: toArray(metadata.tags),
-        instruction: detail.instruction || "",
-        instructionAvailable: detail.instruction_available === true,
-        sourceUrl: detail.source_url || "",
-        author: metadata.author_name || "",
-        version: detail.version || ""
-      };
+      var baseTags = toArray(metadata.tags);
+      (task.variants || []).forEach(function (variant) {
+        var variantType = variant.type || "";
+        var categoryCode = variant.category || "";
+        var categoryName = variant.category_name || categoryCode || metadata.category || task.domain;
+        records.push({
+          variantRecordId: task.id + "--" + variantType,
+          baseTaskId: task.id,
+          domain: task.domain,
+          detail: detail,
+          name: metadata.name || slugLabel(task.id),
+          category: categoryName,
+          categoryCode: categoryCode,
+          difficulty: metadata.difficulty || "",
+          tags: uniqueSorted(baseTags.concat([categoryCode, variantType]).filter(Boolean)),
+          instruction: detail.instruction || "",
+          instructionAvailable: detail.instruction_available === true,
+          sourceUrl: detail.source_url || "",
+          author: metadata.author_name || "",
+          version: detail.version || "",
+          variant: variant,
+          variantType: variantType,
+          variantName: variant.variant_name || slugLabel(variantType),
+          fragility: variant.fragility || "unknown"
+        });
+      });
     });
+    return records;
   }
 
   function setupFilters() {
-    populateSelect(categoryFilter, uniqueSorted(state.tasks.map(function (task) {
-      return task.category || task.domain;
+    populateSelect(categoryFilter, uniqueSorted(state.variants.map(function (record) {
+      return record.category;
     })), slugLabel);
-    populateSelect(difficultyFilter, uniqueSorted(state.tasks.map(function (task) {
-      return task.difficulty;
+    populateSelect(difficultyFilter, uniqueSorted(state.variants.map(function (record) {
+      return record.difficulty;
     })), slugLabel);
     var tags = [];
-    state.tasks.forEach(function (task) {
-      tags = tags.concat(task.tags || []);
+    state.variants.forEach(function (record) {
+      tags = tags.concat(record.tags || []);
     });
     populateSelect(tagFilter, uniqueSorted(tags), function (tag) {
       return "#" + tag;
     });
   }
 
-  function taskMatches(task) {
+  function variantMatches(record) {
     var query = normalize(state.query);
-    var category = task.category || task.domain;
-    if (state.filterCategory !== "all" && category !== state.filterCategory) {
+    if (state.filterCategory !== "all" && record.category !== state.filterCategory) {
       return false;
     }
-    if (state.filterDifficulty !== "all" && task.difficulty !== state.filterDifficulty) {
+    if (state.filterDifficulty !== "all" && record.difficulty !== state.filterDifficulty) {
       return false;
     }
-    if (state.filterTag !== "all" && (task.tags || []).indexOf(state.filterTag) === -1) {
+    if (state.filterTag !== "all" && (record.tags || []).indexOf(state.filterTag) === -1) {
       return false;
     }
     if (!query) {
       return true;
     }
-    var variantText = (task.variants || []).map(function (variant) {
-      return [variant.type, variant.category_name, variant.variant_name, variant.fragility].join(" ");
-    }).join(" ");
     var haystack = [
-      task.id,
-      task.name,
-      task.domain,
-      task.category,
-      task.difficulty,
-      (task.tags || []).join(" "),
-      task.instruction,
-      variantText
+      record.variantRecordId,
+      record.baseTaskId,
+      record.variantType,
+      record.variantName,
+      record.fragility,
+      record.name,
+      record.domain,
+      record.category,
+      record.categoryCode,
+      record.difficulty,
+      (record.tags || []).join(" "),
+      record.instruction
     ].join(" ").toLowerCase();
     return haystack.indexOf(query) !== -1;
   }
@@ -165,50 +179,44 @@
     return html || "<span class=\"registry-tag registry-tag--muted\">metadata</span>";
   }
 
-  function variantSummary(task) {
-    var variants = task.variants || [];
-    var families = uniqueSorted(variants.map(function (variant) {
-      return variant.category_name;
-    }));
-    return variants.length + " TailSkills variant" + (variants.length === 1 ? "" : "s") + " across " + families.length + " exception family" + (families.length === 1 ? "" : "ies");
-  }
-
-  function renderTask(task) {
-    var href = "task.html?id=" + encodeURIComponent(task.id);
-    var difficulty = task.difficulty ? "<span class=\"difficulty-pill difficulty-pill--" + escapeHtml(task.difficulty) + "\">" + escapeHtml(slugLabel(task.difficulty)) + "</span>" : "";
-    var source = task.sourceUrl ? "<a class=\"registry-source\" href=\"" + escapeHtml(task.sourceUrl) + "\" aria-label=\"Open source for " + escapeHtml(task.id) + "\">Source</a>" : "<span class=\"registry-source registry-source--muted\">Source unavailable</span>";
+  function renderTask(record) {
+    var href = "task.html?id=" + encodeURIComponent(record.baseTaskId) + "&variant=" + encodeURIComponent(record.variantType);
+    var difficulty = record.difficulty ? "<span class=\"difficulty-pill difficulty-pill--" + escapeHtml(record.difficulty) + "\">" + escapeHtml(slugLabel(record.difficulty)) + "</span>" : "";
+    var source = record.sourceUrl ? "<a class=\"registry-source\" href=\"" + escapeHtml(record.sourceUrl) + "\" aria-label=\"Open source for " + escapeHtml(record.baseTaskId) + "\">Source</a>" : "<span class=\"registry-source registry-source--muted\">Source unavailable</span>";
     return "<article class=\"task-registry-card\">" +
       "<a class=\"task-registry-card__main\" href=\"" + href + "\">" +
         "<div class=\"registry-card-topline\">" +
-          "<span class=\"category-pill\">" + escapeHtml(slugLabel(task.category || task.domain)) + "</span>" +
+          "<span class=\"category-pill\">" + escapeHtml(slugLabel(record.category)) + "</span>" +
           difficulty +
         "</div>" +
-        "<h3>" + escapeHtml(task.id) + "</h3>" +
-        "<p class=\"task-card-name\">" + escapeHtml(task.name) + "</p>" +
-        "<p class=\"task-card-preview\">" + escapeHtml(firstSentence(task.instruction)) + "</p>" +
+        "<h3>" + escapeHtml(record.variantName) + "</h3>" +
+        "<p class=\"task-card-name\">" + escapeHtml(record.baseTaskId + " / " + record.variantType) + "</p>" +
+        "<p class=\"task-card-preview\">" + escapeHtml(firstSentence(record.instruction)) + "</p>" +
       "</a>" +
       "<div class=\"task-card-footer\">" +
-        "<div class=\"registry-tags\">" + renderTags(task.tags) + "</div>" +
-        "<div class=\"registry-card-meta\"><span>" + escapeHtml(variantSummary(task)) + "</span>" + source + "</div>" +
+        "<div class=\"registry-tags\">" + renderTags(record.tags) + "</div>" +
+        "<div class=\"registry-card-meta\"><span>" + escapeHtml(record.categoryCode || "variant") + " / " + escapeHtml(record.fragility) + " fragility</span>" + source + "</div>" +
       "</div>" +
     "</article>";
+  }
+
+  function countBaseTasks(records) {
+    var seen = {};
+    records.forEach(function (record) {
+      seen[record.baseTaskId] = true;
+    });
+    return Object.keys(seen).length;
   }
 
   function renderGallery() {
     if (!taskGrid || !galleryCount) {
       return;
     }
-    var visible = state.tasks.filter(taskMatches);
-    var visibleVariants = visible.reduce(function (sum, task) {
-      return sum + (task.variants || []).length;
-    }, 0);
-    var totalVariants = state.tasks.reduce(function (sum, task) {
-      return sum + (task.variants || []).length;
-    }, 0);
-    var availableInstructions = state.tasks.filter(function (task) {
-      return task.instructionAvailable;
-    }).length;
-    galleryCount.textContent = "Showing " + visible.length + " of " + state.tasks.length + " tasks (" + visibleVariants + " of " + totalVariants + " variants). " + availableInstructions + " tasks include source-backed instructions.";
+    var visible = state.variants.filter(variantMatches);
+    var availableBaseInstructions = countBaseTasks(state.variants.filter(function (record) {
+      return record.instructionAvailable;
+    }));
+    galleryCount.textContent = "Showing " + visible.length + " of " + state.variants.length + " variants across " + countBaseTasks(visible) + " base tasks. " + availableBaseInstructions + " base tasks include source-backed instructions.";
     taskGrid.innerHTML = visible.map(renderTask).join("");
   }
 
@@ -230,7 +238,7 @@
         return response.json();
       })
     ]).then(function (results) {
-      state.tasks = mergeTasks(results[0], results[1]);
+      state.variants = mergeTasks(results[0], results[1]);
       setupFilters();
       renderGallery();
     }).catch(function () {
