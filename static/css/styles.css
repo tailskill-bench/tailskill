@@ -1565,6 +1565,7 @@ h3 {
 
 .case-figure img {
   max-height: clamp(200px, 44vh, 420px);
+  object-fit: contain;
 }
 
 #distillation-example .image-figure .image-frame {
