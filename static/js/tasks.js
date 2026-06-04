@@ -34,6 +34,16 @@
     return String(value || "").trim().toLowerCase();
   }
 
+  function toArray(value) {
+    if (Array.isArray(value)) {
+      return value;
+    }
+    if (typeof value === "string" && value) {
+      return [value];
+    }
+    return [];
+  }
+
   function firstSentence(text) {
     var compact = String(text || "").replace(/\s+/g, " ").trim();
     if (!compact) {
@@ -87,7 +97,7 @@
         name: metadata.name || slugLabel(task.id),
         category: metadata.category || task.domain,
         difficulty: metadata.difficulty || "",
-        tags: metadata.tags || [],
+        tags: toArray(metadata.tags),
         instruction: detail.instruction || "",
         instructionAvailable: detail.instruction_available === true,
         sourceUrl: detail.source_url || "",

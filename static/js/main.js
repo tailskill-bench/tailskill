@@ -144,4 +144,17 @@
       section.classList.add("is-visible");
     });
   }
+
+  function revealHashTarget() {
+    if (!window.location.hash) {
+      return;
+    }
+    var target = document.querySelector(window.location.hash);
+    if (target && target.classList.contains("page-section")) {
+      target.classList.add("is-visible");
+    }
+  }
+
+  revealHashTarget();
+  window.addEventListener("hashchange", revealHashTarget);
 })();

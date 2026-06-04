@@ -23,6 +23,16 @@
     return new URLSearchParams(window.location.search).get(name);
   }
 
+  function toArray(value) {
+    if (Array.isArray(value)) {
+      return value;
+    }
+    if (typeof value === "string" && value) {
+      return [value];
+    }
+    return [];
+  }
+
   function findTask(baseData, detailData, id) {
     var base = (baseData.tasks || []).filter(function (task) {
       return task.id === id;
@@ -43,7 +53,7 @@
       name: metadata.name || slugLabel(id),
       difficulty: metadata.difficulty || "",
       category: metadata.category || ((base && base.domain) || ""),
-      tags: metadata.tags || [],
+      tags: toArray(metadata.tags),
       instruction: (detail && detail.instruction) || "",
       instructionAvailable: detail && detail.instruction_available === true,
       sourceUrl: (detail && detail.source_url) || "",
