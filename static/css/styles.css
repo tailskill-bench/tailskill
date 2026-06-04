@@ -757,6 +757,10 @@ h3 {
   line-height: 1.75;
 }
 
+.skill-document pre[hidden] {
+  display: none;
+}
+
 .tail-text {
   color: var(--accent-tail);
   opacity: var(--tail-opacity, 1);

@@ -213,31 +213,79 @@
           </div>
           <div class="autopsy-layout">
             <aside class="depth-rail" aria-label="Distillation depth">
-              <div class="depth-indicator is-active" data-depth-stage="0"><span>S1 baseline</span></div>
-              <div class="depth-indicator" data-depth-stage="1"><span>S2 rewrite</span></div>
-              <div class="depth-indicator" data-depth-stage="2"><span>S3 standardized</span></div>
-              <div class="depth-indicator" data-depth-stage="3"><span>S4 compressed</span></div>
+              <div class="depth-indicator is-active" data-depth-stage="0"><span>S1 baseline (17,730 B)</span></div>
+              <div class="depth-indicator" data-depth-stage="1"><span>S2 rewrite (14,209 B)</span></div>
+              <div class="depth-indicator" data-depth-stage="2"><span>S3 standardized (8,221 B)</span></div>
+              <div class="depth-indicator" data-depth-stage="3"><span>S4 compressed (7,299 B)</span></div>
             </aside>
             <article class="skill-document" aria-label="Skill document autopsy">
               <div class="skill-document__header">
                 <span>Skill Document</span>
                 <span>energy-market-pricing / E1 missing dependency</span>
               </div>
-              <pre><code>Dependencies:
-pip install numpy scipy cvxpy
+              <pre class="skill-stage is-active" data-autopsy-stage="0"><code>## Dependencies
 
-<span class="tail-text">[TAIL] If cvxpy is unavailable, install it before solving.</span>
-<span class="tail-text">[TAIL] Prefer CLARABEL; if the solver is missing, fall back to SCIPY.</span>
-<span class="tail-text">[TAIL] Write a diagnostic note when dependency recovery was required.</span>
+The DC-OPF solver requires CVXPY:
+```bash
+pip3 install --break-system-packages numpy==1.26.4 scipy==1.11.4 cvxpy==1.4.2
+```
 
-Analysis Workflow:
-1. Load network.json and validate buses, generators, and demand
-2. Formulate market-clearing objective and power-flow constraints
-3. Solve dispatch and marginal-price calculation
-4. Save report.json with prices, generation, and feasibility checks
+<span class="tail-text">If you encounter a `ModuleNotFoundError: No module named 'cvxpy'`, the package may have been removed from the environment. Reinstall it with:</span>
+<span class="tail-text">```bash</span>
+<span class="tail-text">pip3 install --break-system-packages --no-cache-dir cvxpy==1.4.2</span>
+<span class="tail-text">```</span>
 
-Solver Configuration:
-Use prob.solve(solver=cp.CLARABEL) when cvxpy is present</code></pre>
+## Solver Selection
+
+For quadratic costs with network constraints, use CLARABEL (robust interior-point solver):
+
+```python
+prob = cp.Problem(cp.Minimize(cost), constraints)
+prob.solve(solver=cp.CLARABEL)
+```
+
+Note: OSQP may fail on ill-conditioned problems. CLARABEL is more robust for DC-OPF with reserves.</code></pre>
+              <pre class="skill-stage" data-autopsy-stage="1" hidden><code>## Dependencies
+
+```bash
+pip3 install --break-system-packages numpy==1.26.4 scipy==1.11.4 cvxpy==1.4.2
+```
+
+<span class="tail-text">If `ModuleNotFoundError: No module named 'cvxpy'`, reinstall:</span>
+<span class="tail-text">```bash</span>
+<span class="tail-text">pip3 install --break-system-packages --no-cache-dir cvxpy==1.4.2</span>
+<span class="tail-text">```</span>
+
+## Solver Selection
+
+For quadratic costs with network constraints, use CLARABEL:
+
+```python
+prob = cp.Problem(cp.Minimize(cost), constraints)
+prob.solve(solver=cp.CLARABEL)
+```</code></pre>
+              <pre class="skill-stage" data-autopsy-stage="2" hidden><code>## Dependencies
+
+```bash
+pip3 install --break-system-packages numpy==1.26.4 scipy==1.11.4 cvxpy==1.4.2
+```
+
+## Solver Selection
+
+```python
+prob = cp.Problem(cp.Minimize(cost), constraints)
+prob.solve(solver=cp.CLARABEL)
+```</code></pre>
+              <pre class="skill-stage" data-autopsy-stage="3" hidden><code>## Dependencies and Solver
+
+```bash
+pip3 install --break-system-packages numpy==1.26.4 scipy==1.11.4 cvxpy==1.4.2
+```
+
+```python
+prob = cp.Problem(cp.Minimize(cost), constraints)
+prob.solve(solver=cp.CLARABEL)
+```</code></pre>
             </article>
           </div>
         </div>

@@ -9,13 +9,13 @@
   var copyStatus = document.querySelector("[data-copy-status]");
   var bibtexCode = document.querySelector("#bibtex-code");
   var counters = document.querySelectorAll("[data-counter]");
-  var sectionIndicatorDots = document.querySelectorAll(".section-indicator__dot");
   var autopsyContainer = document.querySelector(".autopsy-scroll-container");
   var autopsyProgressFill = document.querySelector(".autopsy-progress-bar__fill");
   var autopsyRetentionMeterFill = document.querySelector(".autopsy-retention-meter__fill");
   var autopsyIntroOverlay = document.querySelector(".autopsy-intro-overlay");
   var tailTexts = document.querySelectorAll(".tail-text");
   var depthIndicators = document.querySelectorAll(".depth-indicator");
+  var skillStages = document.querySelectorAll("[data-autopsy-stage]");
   var retentionLabel = document.querySelector(".autopsy-retention");
   var prefersReducedMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -140,56 +140,14 @@
     });
   }
 
-  function setActiveSectionIndicator(sectionId) {
-    sectionIndicatorDots.forEach(function (dot) {
-      var isActive = dot.getAttribute("href") === "#" + sectionId;
-      dot.classList.toggle("is-active", isActive);
-      if (isActive) {
-        dot.setAttribute("aria-current", "true");
-      } else {
-        dot.removeAttribute("aria-current");
-      }
-    });
-  }
-
-  function setupSectionIndicator() {
-    if (!sectionIndicatorDots.length || !("IntersectionObserver" in window)) {
-      return;
-    }
-    var sections = [];
-    sectionIndicatorDots.forEach(function (dot) {
-      var id = dot.getAttribute("href");
-      if (id && id.charAt(0) === "#") {
-        var section = document.querySelector(id);
-        if (section) {
-          sections.push(section);
-        }
-      }
-    });
-    if (!sections.length) {
-      return;
-    }
-    var observer = new IntersectionObserver(function (entries) {
-      var visible = Array.prototype.slice.call(entries).filter(function (entry) {
-        return entry.isIntersecting;
-      }).sort(function (a, b) {
-        return b.intersectionRatio - a.intersectionRatio;
-      })[0];
-      if (visible && visible.target.id) {
-        setActiveSectionIndicator(visible.target.id);
-      }
-    }, {
-      rootMargin: "-45% 0px -45% 0px",
-      threshold: [0, 0.25, 0.5]
-    });
-    sections.forEach(function (section) {
-      observer.observe(section);
-    });
-  }
-
   function setActiveDepth(index) {
     depthIndicators.forEach(function (indicator) {
       indicator.classList.toggle("is-active", Number(indicator.getAttribute("data-depth-stage")) === index);
+    });
+    skillStages.forEach(function (stage) {
+      var isActive = Number(stage.getAttribute("data-autopsy-stage")) === index;
+      stage.classList.toggle("is-active", isActive);
+      stage.hidden = !isActive;
     });
   }
 
@@ -293,6 +251,5 @@
   }
 
   setupCounters();
-  setupSectionIndicator();
   setupAutopsy();
 })();
