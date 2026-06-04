@@ -59,6 +59,7 @@
         icon.textContent = isDark ? "\u263e" : "\u263c";
       }
     }
+    swapThemeImages(isDark);
     document.dispatchEvent(new CustomEvent("tailskills:themechange", {
       detail: {
         theme: theme,
@@ -69,6 +70,24 @@
         }
       }
     }));
+  }
+
+  function swapThemeImages(isDark) {
+    document.querySelectorAll("img[data-dark-src]").forEach(function (img) {
+      var darkSrc = img.getAttribute("data-dark-src");
+      if (!darkSrc) return;
+      if (isDark) {
+        if (!img.getAttribute("data-light-src")) {
+          img.setAttribute("data-light-src", img.getAttribute("src"));
+        }
+        img.setAttribute("src", darkSrc);
+      } else {
+        var lightSrc = img.getAttribute("data-light-src");
+        if (lightSrc) {
+          img.setAttribute("src", lightSrc);
+        }
+      }
+    });
   }
 
   window.TailSkills = window.TailSkills || {};
