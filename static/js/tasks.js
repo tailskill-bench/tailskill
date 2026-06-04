@@ -1,16 +1,20 @@
 (function () {
+  var PAGE_SIZE = 24;
   var taskSearch = document.querySelector("#task-search");
   var categoryFilter = document.querySelector("#category-filter");
   var difficultyFilter = document.querySelector("#difficulty-filter");
   var tagFilter = document.querySelector("#tag-filter");
   var taskGrid = document.querySelector("#task-grid");
   var galleryCount = document.querySelector("#gallery-count");
+  var loadMoreWrap = document.querySelector("#load-more-wrap");
+  var loadMoreBtn = document.querySelector("#load-more-btn");
   var state = {
     variants: [],
     filterCategory: "all",
     filterDifficulty: "all",
     filterTag: "all",
-    query: ""
+    query: "",
+    visibleCount: PAGE_SIZE
   };
 
   function escapeHtml(value) {
@@ -213,11 +217,25 @@
       return;
     }
     var visible = state.variants.filter(variantMatches);
+    var shown = visible.slice(0, state.visibleCount);
     var availableBaseInstructions = countBaseTasks(state.variants.filter(function (record) {
       return record.instructionAvailable;
     }));
-    galleryCount.textContent = "Showing " + visible.length + " of " + state.variants.length + " variants across " + countBaseTasks(visible) + " base tasks. " + availableBaseInstructions + " base tasks include source-backed instructions.";
-    taskGrid.innerHTML = visible.map(renderTask).join("");
+    galleryCount.textContent = "Showing " + shown.length + " of " + visible.length + " variants across " + countBaseTasks(visible) + " base tasks. " + availableBaseInstructions + " base tasks include source-backed instructions.";
+    taskGrid.innerHTML = shown.map(renderTask).join("");
+
+    if (loadMoreWrap) {
+      if (shown.length < visible.length) {
+        loadMoreWrap.style.display = "block";
+        loadMoreBtn.textContent = "Load more (" + (visible.length - shown.length) + " remaining)";
+      } else {
+        loadMoreWrap.style.display = "none";
+      }
+    }
+  }
+
+  function resetPagination() {
+    state.visibleCount = PAGE_SIZE;
   }
 
   function loadTasks() {
@@ -251,6 +269,7 @@
   if (taskSearch) {
     taskSearch.addEventListener("input", function (event) {
       state.query = event.target.value;
+      resetPagination();
       renderGallery();
     });
   }
@@ -258,6 +277,7 @@
   if (categoryFilter) {
     categoryFilter.addEventListener("change", function (event) {
       state.filterCategory = event.target.value;
+      resetPagination();
       renderGallery();
     });
   }
@@ -265,6 +285,7 @@
   if (difficultyFilter) {
     difficultyFilter.addEventListener("change", function (event) {
       state.filterDifficulty = event.target.value;
+      resetPagination();
       renderGallery();
     });
   }
@@ -272,6 +293,14 @@
   if (tagFilter) {
     tagFilter.addEventListener("change", function (event) {
       state.filterTag = event.target.value;
+      resetPagination();
+      renderGallery();
+    });
+  }
+
+  if (loadMoreBtn) {
+    loadMoreBtn.addEventListener("click", function () {
+      state.visibleCount += PAGE_SIZE;
       renderGallery();
     });
   }

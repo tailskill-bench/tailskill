@@ -2742,7 +2742,7 @@ h3 {
   }
 
   .intro-layout {
-    grid-template-columns: minmax(0, 1fr) minmax(20rem, 1fr);
+    grid-template-columns: minmax(0, 1fr) minmax(22rem, 1.25fr);
   }
 
   .finding-stat-grid--intro {
