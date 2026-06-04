@@ -2751,6 +2751,15 @@ h3 {
     grid-template-columns: minmax(0, 1fr) minmax(22rem, 1.25fr);
   }
 
+  .intro-layout .stat-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .intro-layout .image-frame img {
+    max-height: clamp(300px, 52vh, 540px);
+  }
+
   .finding-stat-grid--intro {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
