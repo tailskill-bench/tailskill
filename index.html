@@ -84,16 +84,43 @@
             </div>
           </div>
         </div>
-        <a class="scroll-hint" href="#core-findings" aria-label="Scroll to core findings"></a>
+        <a class="scroll-hint" href="#abstract" aria-label="Scroll to abstract"></a>
       </section>
 
-      <section class="page-section" id="core-findings" aria-labelledby="findings-title">
+      <section class="page-section academic-section" id="abstract" aria-labelledby="abstract-title">
+        <div class="section-inner is-narrow">
+          <h2 id="abstract-title" class="academic-heading">Abstract</h2>
+          <div class="abstract-text">
+            <p>
+              Agent skills package procedural knowledge into reusable artifacts that can improve LLM agents at inference time.
+              Existing work shows that curated skills can materially raise average pass rates and that transferable skills can
+              be distilled from execution traces. However, current evaluations emphasize average-case performance and
+              systematically under-measure rare exceptions. This paper studies <strong>tail-knowledge collapse</strong>: under
+              recursive rewriting of a robust skill artifact into shorter or more standardized variants, common-case utility may
+              remain stable while rare exception handling degrades. To investigate this, we introduce the <strong>TailSkills</strong>
+              benchmark, a tail-focused evaluation suite featuring 14 variant types across six categories, 208 oracle-verified
+              exception-heavy task variants with deterministic verifiers, and an expert-guided agentic construction pipeline.
+              We show that recursive distillation can preserve common-case utility while degrading tail-case performance, and
+              that this degradation is accompanied by the preferential removal of short, local tail-handling instructions
+              relative to regular workflow content.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section class="page-section academic-section" id="introduction" aria-labelledby="intro-title">
         <div class="section-inner">
-          <p class="section-kicker">Core Findings</p>
-          <h2 id="findings-title">Tail knowledge fails first</h2>
-          <p class="page-subtitle">
-            Recursive skill rewriting keeps much of the common workflow intact, while short local exception-handling instructions disappear early.
-          </p>
+          <p class="section-kicker">Introduction</p>
+          <h2 id="intro-title">Recursive skill rewriting erodes rare knowledge</h2>
+          <figure class="paper-figure paper-figure--portrait">
+            <a class="image-frame intro-figure" href="static/images/introduction-infographic.png" aria-label="Open introduction infographic at full size">
+              <img src="static/images/introduction-infographic.png" alt="Skill distillation conveyor belt: as skills are recursively rewritten from S1 to S4, common-case workflow instructions in green persist while tail-case exception handling in pink progressively disappears." width="1000" height="1284" loading="lazy" decoding="async">
+            </a>
+            <figcaption>
+              Recursive skill distillation compresses a robust skill across S1 to S4. Common workflow instructions are preserved, while local exception-handling knowledge disappears.
+            </figcaption>
+          </figure>
+
           <div class="finding-stat-grid">
             <article class="finding-stat-card" tabindex="0">
               <span class="counter-value"><span data-counter data-target="27.4" data-decimals="1" data-duration="600">0.0</span><span class="counter-affix">pp</span></span>
@@ -111,60 +138,55 @@
               <p>The S1 common-case and tail-case starting point is nearly matched before distillation.</p>
             </article>
           </div>
-          <div class="mini-chart-preview" aria-label="Preview of common-case and tail-case collapse curves">
-            <svg class="mini-collapse-chart" viewBox="0 0 240 150" role="img" aria-labelledby="mini-chart-title mini-chart-desc">
-              <title id="mini-chart-title">TailSkills collapse curve preview</title>
-              <desc id="mini-chart-desc">A preview chart with axes: common-case pass rate stays near 50 percent from S1 to S4 while tail-case pass rate drops to about 23 percent.</desc>
-              <g class="mini-chart-grid" aria-hidden="true">
-                <line x1="42" y1="110" x2="218" y2="110"></line>
-                <line x1="42" y1="73" x2="218" y2="73"></line>
-                <line x1="42" y1="36" x2="218" y2="36"></line>
-              </g>
-              <g class="mini-chart-axis" aria-hidden="true">
-                <line x1="42" y1="18" x2="42" y2="110"></line>
-                <line x1="42" y1="110" x2="218" y2="110"></line>
-              </g>
-              <g class="mini-chart-ticks" aria-hidden="true">
-                <text x="34" y="113" text-anchor="end">0</text>
-                <text x="34" y="76" text-anchor="end">25</text>
-                <text x="34" y="39" text-anchor="end">50</text>
-                <text x="42" y="130" text-anchor="middle">S1</text>
-                <text x="101" y="130" text-anchor="middle">S2</text>
-                <text x="160" y="130" text-anchor="middle">S3</text>
-                <text x="218" y="130" text-anchor="middle">S4</text>
-                <text x="11" y="64" text-anchor="middle" transform="rotate(-90 11 64)">Pass rate (%)</text>
-              </g>
-              <polyline points="42,35 101,31 160,37 218,37" fill="none" stroke="var(--accent-common)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></polyline>
-              <polyline points="42,36 101,58 160,75 218,76" fill="none" stroke="var(--accent-tail)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></polyline>
-            </svg>
-            <div class="mini-chart-legend" aria-hidden="true">
-              <span class="legend-common">Common-case</span>
-              <span class="legend-tail">Tail-case</span>
-            </div>
-            <a href="experiments.html#main-results" class="chart-expand-link">View full interactive chart -&gt;</a>
-          </div>
         </div>
       </section>
 
-      <section class="page-section" id="figure-gallery" aria-labelledby="figure-gallery-title">
+      <section class="page-section academic-section" id="benchmark" aria-labelledby="benchmark-title">
         <div class="section-inner">
-          <p class="section-kicker">Paper Figures</p>
-          <h2 id="figure-gallery-title">At a glance</h2>
-          <p class="page-subtitle">A compact preview of the benchmark pipeline, distillation process, and skill-card evidence.</p>
-          <div class="figure-grid">
-            <a class="figure-card" href="experiments.html#introduction" aria-label="Open benchmark pipeline figure on the experiments page">
-              <img src="static/images/benchmark-pipeline-preview.png" alt="TailSkills benchmark construction pipeline." width="720" height="420" loading="lazy" decoding="async">
-              <span class="figure-label">Benchmark Pipeline</span>
+          <p class="section-kicker">Benchmark</p>
+          <h2 id="benchmark-title">208 oracle-verified exception-heavy task variants</h2>
+          <figure class="paper-figure paper-figure--wide">
+            <a class="image-frame pipeline-figure" href="static/images/benchmark-pipeline.png" aria-label="Open benchmark pipeline at full size">
+              <img src="static/images/benchmark-pipeline.png" alt="TailSkills benchmark construction pipeline: base tasks, variant injection families, oracle verification, and final task variants." width="1960" height="1142" loading="lazy" decoding="async">
             </a>
-            <a class="figure-card" href="experiments.html#introduction" aria-label="Open distillation process figure on the experiments page">
-              <img src="static/images/introduction-infographic-preview.png" alt="Overview of the skill distillation process." width="520" height="668" loading="lazy" decoding="async">
-              <span class="figure-label">Distillation Process</span>
-            </a>
-            <a class="figure-card" href="experiments.html#distillation-example" aria-label="Open S1 to S4 skill-card comparison on the experiments page">
-              <img src="static/images/distillation-example-preview.png" alt="S1 to S4 skill-card comparison showing tail knowledge disappearing." width="720" height="322" loading="lazy" decoding="async">
-              <span class="figure-label">Skill Cards S1-S4</span>
-            </a>
+            <figcaption>
+              Benchmark construction pipeline: 54 base tasks are transformed with 14 variant types across 6 tail categories, then admitted only after deterministic oracle verification.
+            </figcaption>
+          </figure>
+
+          <div class="taxonomy-mini-grid" aria-label="TailSkills taxonomy summary">
+            <article class="taxonomy-mini-card taxonomy-mini-card--a">
+              <span class="taxonomy-mini-code">A</span>
+              <span class="taxonomy-mini-name">Data Encoding</span>
+              <span class="taxonomy-mini-count">49 variants</span>
+            </article>
+            <article class="taxonomy-mini-card taxonomy-mini-card--b">
+              <span class="taxonomy-mini-code">B</span>
+              <span class="taxonomy-mini-name">File System</span>
+              <span class="taxonomy-mini-count">60 variants</span>
+            </article>
+            <article class="taxonomy-mini-card taxonomy-mini-card--c">
+              <span class="taxonomy-mini-code">C</span>
+              <span class="taxonomy-mini-name">Data Quality</span>
+              <span class="taxonomy-mini-count">39 variants</span>
+            </article>
+            <article class="taxonomy-mini-card taxonomy-mini-card--d">
+              <span class="taxonomy-mini-code">D</span>
+              <span class="taxonomy-mini-name">Network</span>
+              <span class="taxonomy-mini-count">35 variants</span>
+            </article>
+            <article class="taxonomy-mini-card taxonomy-mini-card--e">
+              <span class="taxonomy-mini-code">E</span>
+              <span class="taxonomy-mini-name">Dependency</span>
+              <span class="taxonomy-mini-count">22 variants</span>
+            </article>
+            <article class="taxonomy-mini-card taxonomy-mini-card--g">
+              <span class="taxonomy-mini-code">G</span>
+              <span class="taxonomy-mini-name">Security</span>
+              <span class="taxonomy-mini-count">3 variants</span>
+            </article>
           </div>
+          <a href="tasks.html" class="section-link">View all 208 tasks -&gt;</a>
         </div>
       </section>
 
@@ -199,22 +221,23 @@
             <article class="skill-document" aria-label="Skill document autopsy">
               <div class="skill-document__header">
                 <span>Skill Document</span>
-                <span>energy-market-pricing / E1</span>
+                <span>energy-market-pricing / E1 missing dependency</span>
               </div>
               <pre><code>Dependencies:
-pip install numpy scipy cvxpy==1.4.2
+pip install numpy scipy cvxpy
 
-<span class="tail-text">[TAIL] If ModuleNotFoundError: the package may have been removed.</span>
-<span class="tail-text">[TAIL] Reinstall with: pip install --no-cache cvxpy==1.4.2</span>
+<span class="tail-text">[TAIL] If cvxpy is unavailable, install it before solving.</span>
+<span class="tail-text">[TAIL] Prefer CLARABEL; if the solver is missing, fall back to SCIPY.</span>
+<span class="tail-text">[TAIL] Write a diagnostic note when dependency recovery was required.</span>
 
 Analysis Workflow:
-1. Load data from CSV files
-2. Compute trend using linear regression
-3. Extract dominant factor via PCA
-4. Run attribution analysis
+1. Load network.json and validate buses, generators, and demand
+2. Formulate market-clearing objective and power-flow constraints
+3. Solve dispatch and marginal-price calculation
+4. Save report.json with prices, generation, and feasibility checks
 
 Solver Configuration:
-Use prob.solve(solver=cp.CLARABEL)</code></pre>
+Use prob.solve(solver=cp.CLARABEL) when cvxpy is present</code></pre>
             </article>
           </div>
         </div>
@@ -270,14 +293,6 @@ Use prob.solve(solver=cp.CLARABEL)</code></pre>
         </div>
       </section>
     </main>
-
-    <nav class="section-indicator" aria-label="Page sections">
-      <a class="section-indicator__dot is-active" href="#hero" aria-label="Hero section" aria-current="true"></a>
-      <a class="section-indicator__dot" href="#core-findings" aria-label="Core findings section"></a>
-      <a class="section-indicator__dot" href="#figure-gallery" aria-label="Paper figures section"></a>
-      <a class="section-indicator__dot" href="#skill-autopsy" aria-label="Skill autopsy section"></a>
-      <a class="section-indicator__dot" href="#explore" aria-label="Explore section"></a>
-    </nav>
 
     <script src="static/js/main.js" defer></script>
     <script src="static/js/home.js" defer></script>

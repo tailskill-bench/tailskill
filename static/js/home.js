@@ -230,19 +230,19 @@
     } else if (progress < 0.5) {
       var s2 = (progress - 0.25) / 0.25;
       opacity = 1 - 0.4 * s2;
-      blur = s2 * 1.5;
+      blur = s2 * 0.5;
       strikethrough = s2;
       retention = 100 - 56.5 * s2;
     } else if (progress < 0.75) {
       var s3 = (progress - 0.5) / 0.25;
       opacity = 0.6 - 0.3 * s3;
-      blur = 1.5 + s3 * 1.5;
+      blur = 0.5 + s3 * 0.5;
       strikethrough = 1;
       retention = 43.5 - 20.8 * s3;
     } else {
       var s4 = (progress - 0.75) / 0.25;
       opacity = 0.3 - 0.22 * s4;
-      blur = 3 + s4 * 1.5;
+      blur = 1 + s4 * 0.5;
       strikethrough = 1;
       retention = 22.7 - 7 * s4;
     }
