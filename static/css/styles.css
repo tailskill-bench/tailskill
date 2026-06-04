@@ -1792,6 +1792,367 @@ h3 {
   background: var(--bg-secondary);
 }
 
+.registry-inner {
+  width: min(100% - 2rem, 1080px);
+  margin: 0 auto;
+}
+
+.task-registry-hero {
+  padding-top: calc(var(--nav-height) + clamp(3rem, 8vw, 5.5rem));
+}
+
+.registry-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1.8rem;
+}
+
+.registry-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  margin-bottom: 1rem;
+  color: var(--text-secondary);
+  font-family: var(--font-code);
+  font-size: 0.82rem;
+}
+
+.status-dot {
+  width: 0.62rem;
+  height: 0.62rem;
+  background: var(--accent-common);
+  border: 1px solid color-mix(in srgb, var(--accent-common) 55%, var(--text-primary));
+  border-radius: 999px;
+}
+
+.registry-toolbar {
+  display: grid;
+  gap: 0.8rem;
+  margin-bottom: 1rem;
+}
+
+.registry-search input,
+.registry-select select {
+  width: 100%;
+  min-height: 3rem;
+  padding: 0.72rem 0.85rem;
+  color: var(--text-primary);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+.registry-select select {
+  cursor: pointer;
+}
+
+.data-note {
+  max-width: 62rem;
+  margin: 0 0 1.5rem;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+.task-registry-grid {
+  display: grid;
+  gap: 1rem;
+}
+
+.task-registry-card {
+  display: grid;
+  min-height: 21rem;
+  overflow: hidden;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: 0 16px 42px color-mix(in srgb, var(--shadow-color) 58%, transparent);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.task-registry-card:hover,
+.task-registry-card:focus-within {
+  border-color: color-mix(in srgb, var(--accent-highlight) 45%, var(--border));
+  box-shadow: 0 24px 58px var(--shadow-color);
+  transform: translateY(-2px);
+}
+
+.task-registry-card__main {
+  display: grid;
+  gap: 0.75rem;
+  align-content: start;
+  padding: 1.15rem 1.15rem 0;
+  color: var(--text-primary);
+  text-decoration: none;
+}
+
+.registry-card-topline {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  align-items: center;
+}
+
+.category-pill,
+.difficulty-pill,
+.registry-tag {
+  display: inline-flex;
+  align-items: center;
+  min-height: 1.55rem;
+  padding: 0.16rem 0.55rem;
+  color: var(--text-secondary);
+  font-family: var(--font-code);
+  font-size: 0.72rem;
+  line-height: 1.2;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+}
+
+.difficulty-pill--hard {
+  color: color-mix(in srgb, var(--accent-tail) 72%, var(--text-primary));
+  background: color-mix(in srgb, var(--accent-tail) 16%, transparent);
+  border-color: color-mix(in srgb, var(--accent-tail) 58%, var(--border));
+}
+
+.difficulty-pill--medium {
+  color: color-mix(in srgb, var(--category-d) 75%, var(--text-primary));
+  background: color-mix(in srgb, var(--category-d) 14%, transparent);
+  border-color: color-mix(in srgb, var(--category-d) 50%, var(--border));
+}
+
+.difficulty-pill--easy {
+  color: color-mix(in srgb, var(--accent-common) 60%, var(--text-primary));
+  background: color-mix(in srgb, var(--accent-common) 17%, transparent);
+  border-color: color-mix(in srgb, var(--accent-common) 55%, var(--border));
+}
+
+.task-registry-card h3 {
+  max-width: none;
+  font-family: var(--font-body);
+  font-size: 1rem;
+  line-height: 1.25;
+}
+
+.task-card-name {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.task-card-preview {
+  display: -webkit-box;
+  min-height: 7.8rem;
+  margin: 0;
+  overflow: hidden;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  line-height: 1.55;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 5;
+}
+
+.task-card-footer {
+  display: grid;
+  gap: 0.8rem;
+  align-self: end;
+  padding: 0.95rem 1.15rem 1rem;
+  border-top: 1px solid var(--border);
+}
+
+.registry-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.registry-tag {
+  min-height: 1.45rem;
+  background: color-mix(in srgb, var(--bg-tertiary) 80%, transparent);
+}
+
+.registry-tag--muted {
+  color: var(--text-tertiary);
+}
+
+.registry-card-meta {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  justify-content: space-between;
+  color: var(--text-secondary);
+  font-size: 0.78rem;
+}
+
+.registry-source {
+  flex: 0 0 auto;
+  color: var(--accent-highlight);
+  font-family: var(--font-code);
+  font-size: 0.74rem;
+  text-decoration: none;
+}
+
+.registry-source--muted {
+  color: var(--text-tertiary);
+}
+
+.task-detail-shell {
+  max-width: 860px;
+}
+
+.task-detail-page {
+  padding-top: calc(var(--nav-height) + clamp(3rem, 8vw, 5.5rem));
+}
+
+.task-detail-name {
+  margin: 0.8rem 0 0;
+  color: var(--text-secondary);
+  font-size: clamp(1.05rem, 2vw, 1.25rem);
+}
+
+.task-detail-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem 1rem;
+  margin-top: 1.1rem;
+  color: var(--text-secondary);
+  font-family: var(--font-code);
+  font-size: 0.8rem;
+}
+
+.task-detail-meta span + span::before {
+  margin-right: 1rem;
+  content: "/";
+  color: var(--text-tertiary);
+}
+
+.task-detail-tags {
+  margin-top: 1rem;
+}
+
+.task-detail-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+}
+
+.task-detail-summary {
+  max-width: 56rem;
+  margin: 2rem 0;
+  color: var(--text-secondary);
+  font-size: clamp(1rem, 1.7vw, 1.16rem);
+  line-height: 1.65;
+}
+
+.detail-tabs {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin-top: 1.5rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.detail-tab {
+  min-height: 3rem;
+  color: var(--text-secondary);
+  font-weight: 700;
+  background: transparent;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+}
+
+.detail-tab.is-active,
+.detail-tab[aria-selected="true"] {
+  color: var(--text-primary);
+  border-bottom-color: var(--text-primary);
+}
+
+.detail-panel {
+  padding-top: 1.6rem;
+}
+
+.instruction-block {
+  max-height: 42rem;
+  margin: 0;
+  overflow: auto;
+  padding: 1.2rem;
+  color: var(--text-primary);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  white-space: pre-wrap;
+}
+
+.instruction-block code {
+  font-family: var(--font-body);
+  font-size: 0.98rem;
+  line-height: 1.7;
+  white-space: pre-wrap;
+}
+
+.detail-variant-list {
+  display: grid;
+  gap: 0.7rem;
+  margin-top: 1.1rem;
+}
+
+.detail-variant {
+  display: flex;
+  gap: 0.7rem;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 0.9rem;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+.detail-variant strong {
+  font-size: 0.92rem;
+}
+
+.detail-variant span {
+  color: var(--text-secondary);
+  font-family: var(--font-code);
+  font-size: 0.75rem;
+}
+
+.detail-note,
+.empty-state {
+  padding: 1rem;
+  color: var(--text-secondary);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+.detail-definition-list {
+  display: grid;
+  gap: 0.75rem;
+  margin: 1rem 0 0;
+}
+
+.detail-definition-list div {
+  display: grid;
+  grid-template-columns: 9rem minmax(0, 1fr);
+  gap: 1rem;
+}
+
+.detail-definition-list dt {
+  color: var(--text-secondary);
+  font-family: var(--font-code);
+  font-size: 0.78rem;
+  text-transform: uppercase;
+}
+
+.detail-definition-list dd {
+  margin: 0;
+  color: var(--text-primary);
+  overflow-wrap: anywhere;
+}
+
 .bibtex-panel {
   margin-top: 2rem;
   overflow: hidden;
@@ -2256,7 +2617,16 @@ h3 {
     align-items: start;
   }
 
+  .registry-toolbar {
+    grid-template-columns: minmax(18rem, 1fr) minmax(11rem, 0.32fr) minmax(11rem, 0.32fr) minmax(11rem, 0.32fr);
+    align-items: start;
+  }
+
   .task-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .task-registry-grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
@@ -2345,6 +2715,8 @@ h3 {
   }
 
   .hero-actions,
+  .registry-actions,
+  .task-detail-actions,
   .bibtex-toolbar,
   .site-footer {
     align-items: stretch;
@@ -2354,6 +2726,16 @@ h3 {
   .button-link,
   .copy-button {
     width: 100%;
+  }
+
+  .detail-tabs {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .detail-variant,
+  .detail-definition-list div {
+    display: grid;
+    grid-template-columns: 1fr;
   }
 
   .compression-slider {
