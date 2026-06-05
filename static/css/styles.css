@@ -979,11 +979,6 @@ h3 {
   object-fit: contain;
 }
 
-.intro-portrait {
-  width: min(100%, 560px);
-  margin: 2rem auto;
-}
-
 .paper-figure figcaption {
   max-width: 56rem;
   margin: 1rem auto 0;

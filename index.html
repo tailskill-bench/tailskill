@@ -110,33 +110,36 @@
 
       <section class="page-section academic-section" id="introduction" aria-labelledby="intro-title">
         <div class="section-inner">
-          <p class="section-kicker">Introduction</p>
-          <h2 id="intro-title">Recursive skill rewriting erodes rare knowledge</h2>
-          <figure class="paper-figure paper-figure--portrait intro-portrait">
-            <a class="image-frame intro-figure" href="static/images/introduction-infographic.png" aria-label="Open introduction infographic at full size">
-              <img src="static/images/introduction-infographic.jpg" data-dark-src="static/images/introduction-infographic-dark.jpg" alt="Skill distillation conveyor belt: as skills are recursively rewritten from S1 to S4, common-case workflow instructions in green persist while tail-case exception handling in pink progressively disappears." width="1000" height="1284" loading="lazy" decoding="async">
-            </a>
-            <figcaption>
-              Recursive skill distillation compresses a robust skill across S1 to S4. Common workflow instructions are preserved, while local exception-handling knowledge disappears.
-            </figcaption>
-          </figure>
-
-          <div class="finding-stat-grid">
-            <article class="finding-stat-card" tabindex="0">
-              <span class="counter-value"><span data-counter data-target="27.4" data-decimals="1" data-duration="600">0.0</span><span class="counter-affix">pp</span></span>
-              <span class="counter-label">Drop</span>
-              <p>Tail pass rate falls from 50.5% to 23.1% by S4, a 54% relative degradation.</p>
-            </article>
-            <article class="finding-stat-card" tabindex="0">
-              <span class="counter-value"><span class="counter-affix">CI =</span><span data-counter data-target="0.65" data-decimals="2" data-duration="500">0.00</span></span>
-              <span class="counter-label">Index</span>
-              <p>Tail-specific instructions degrade about twice as fast as regular workflow content.</p>
-            </article>
-            <article class="finding-stat-card" tabindex="0">
-              <span class="counter-value"><span data-counter data-target="0.3" data-decimals="1" data-duration="400">0.0</span><span class="counter-affix">% Gap</span></span>
-              <span class="counter-label">Baseline</span>
-              <p>The S1 common-case and tail-case starting point is nearly matched before distillation.</p>
-            </article>
+          <div class="intro-layout">
+            <div class="intro-copy">
+              <p class="section-kicker">Introduction</p>
+              <h2 id="intro-title">Recursive skill rewriting erodes rare knowledge</h2>
+              <div class="finding-stat-grid finding-stat-grid--intro">
+                <article class="finding-stat-card" tabindex="0">
+                  <span class="counter-value"><span data-counter data-target="27.4" data-decimals="1" data-duration="600">0.0</span><span class="counter-affix">pp</span></span>
+                  <span class="counter-label">Drop</span>
+                  <p>Tail pass rate falls from 50.5% to 23.1% by S4, a 54% relative degradation.</p>
+                </article>
+                <article class="finding-stat-card" tabindex="0">
+                  <span class="counter-value"><span class="counter-affix">CI =</span><span data-counter data-target="0.65" data-decimals="2" data-duration="500">0.00</span></span>
+                  <span class="counter-label">Index</span>
+                  <p>Tail-specific instructions degrade about twice as fast as regular workflow content.</p>
+                </article>
+                <article class="finding-stat-card" tabindex="0">
+                  <span class="counter-value"><span data-counter data-target="0.3" data-decimals="1" data-duration="400">0.0</span><span class="counter-affix">% Gap</span></span>
+                  <span class="counter-label">Baseline</span>
+                  <p>The S1 common-case and tail-case starting point is nearly matched before distillation.</p>
+                </article>
+              </div>
+            </div>
+            <figure class="paper-figure paper-figure--portrait">
+              <a class="image-frame intro-figure" href="static/images/introduction-infographic.png" aria-label="Open introduction infographic at full size">
+                <img src="static/images/introduction-infographic.jpg" data-dark-src="static/images/introduction-infographic-dark.jpg" alt="Skill distillation conveyor belt: as skills are recursively rewritten from S1 to S4, common-case workflow instructions in green persist while tail-case exception handling in pink progressively disappears." width="1000" height="1284" loading="lazy" decoding="async">
+              </a>
+              <figcaption>
+                Recursive skill distillation compresses a robust skill across S1 to S4. Common workflow instructions are preserved, while local exception-handling knowledge disappears.
+              </figcaption>
+            </figure>
           </div>
         </div>
       </section>

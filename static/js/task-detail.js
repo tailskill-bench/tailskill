@@ -179,11 +179,9 @@
       "<div class=\"detail-tabs\" role=\"tablist\" aria-label=\"Task detail tabs\">" +
         "<button type=\"button\" class=\"detail-tab is-active\" role=\"tab\" aria-selected=\"true\" aria-controls=\"detail-instruction\">Instruction</button>" +
         "<button type=\"button\" class=\"detail-tab\" role=\"tab\" aria-selected=\"false\" aria-controls=\"detail-verifier\">Verifier</button>" +
-        "<button type=\"button\" class=\"detail-tab\" role=\"tab\" aria-selected=\"false\" aria-controls=\"detail-trajectory\">Trajectory</button>" +
       "</div>" +
       "<section id=\"detail-instruction\" class=\"detail-panel\" role=\"tabpanel\">" + renderInstruction(task) + "</section>" +
-      "<section id=\"detail-verifier\" class=\"detail-panel\" role=\"tabpanel\" hidden>" + renderVerifier(task) + "</section>" +
-      "<section id=\"detail-trajectory\" class=\"detail-panel\" role=\"tabpanel\" hidden>" + renderUnavailable("Execution trajectory") + "</section>";
+      "<section id=\"detail-verifier\" class=\"detail-panel\" role=\"tabpanel\" hidden>" + renderVerifier(task) + "</section>";
 
     root.querySelectorAll("[role=\"tab\"]").forEach(function (tab) {
       tab.addEventListener("click", function () {
