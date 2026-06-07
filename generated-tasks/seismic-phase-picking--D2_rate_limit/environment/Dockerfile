@@ -1,0 +1,47 @@
+# Dockerfile for running SeisBench inference
+# Supports CPU and NVIDIA GPU execution
+
+FROM python:3.11-slim-bookworm
+
+RUN pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple/
+
+# Set working directory
+WORKDIR /root
+
+# Install runtime libraries required by ObsPy for XML parsing
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libxml2 \
+    libxslt1.1 \
+    curl \
+    iptables \
+    iproute2 \
+    && rm -rf /var/lib/apt/lists/*
+
+# Pre-install uv and pytest to speed up test.sh
+RUN curl -x http://host.docker.internal:7897 -LsSf https://astral.sh/uv/0.9.7/install.sh | sh
+ENV PATH="/root/.local/bin:${PATH}"
+
+# Copy data files
+COPY data /root/data
+
+# Copy skills to ALL agent paths (required)
+COPY skills /root/.claude/skills
+COPY skills /etc/claude-code/.claude/skills
+COPY skills /root/.codex/skills
+COPY skills /root/.opencode/skill
+COPY skills /root/.goose/skills
+COPY skills /root/.factory/skills
+COPY skills /root/.agents/skills
+# Gemini
+COPY skills /root/.gemini/skills
+
+RUN mkdir -p /root/output
+
+# ============================================
+# TailSkills Variant: D2_rate_limit
+# Limit concurrent HTTPS connections to 3 via iptables. Tests whether agent can handle rate-limited network access.
+# ============================================
+RUN echo '#!/bin/bash' > /usr/local/bin/network_fault.sh && echo 'iptables -A OUTPUT -p tcp --dport 443 -m connlimit --connlimit-above 3 -j DROP 2>/dev/null || true' >> /usr/local/bin/network_fault.sh && chmod +x /usr/local/bin/network_fault.sh
+RUN echo '#!/bin/bash' > /usr/local/bin/entrypoint_wrapper.sh && echo '/usr/local/bin/network_fault.sh' >> /usr/local/bin/entrypoint_wrapper.sh && echo 'exec "$@"' >> /usr/local/bin/entrypoint_wrapper.sh && chmod +x /usr/local/bin/entrypoint_wrapper.sh
+ENTRYPOINT ["/usr/local/bin/entrypoint_wrapper.sh"]
+CMD ["/bin/bash"]

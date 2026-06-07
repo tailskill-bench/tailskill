@@ -1,0 +1,4 @@
+# generated-tasks/
+# This directory contains auto-generated variant tasks.
+# Files here are produced by `tailskills generate` commands.
+# Do not edit manually — regenerate with --force if needed.

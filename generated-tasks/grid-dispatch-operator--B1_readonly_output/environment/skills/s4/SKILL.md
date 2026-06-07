@@ -1,0 +1,221 @@
+---
+name: s1
+description: "DC power flow analysis, generator economic dispatch and cost optimization, and power system network data formats and topology for power systems."
+---
+
+# DC Power Flow
+
+Linearized approximation: lossless lines (R ≈ 0), flat voltage (1.0 pu), small angles (sin(θ) ≈ θ). Power flow depends only on bus angles (θ) and line reactances (X).
+
+## Bus Number Mapping
+
+Bus numbers may not be contiguous. Always map to 0-indexed array positions:
+
+```python
+bus_num_to_idx = {int(buses[i, 0]): i for i in range(n_bus)}
+f = bus_num_to_idx[int(br[0])]  # NOT br[0] - 1
+```
+
+## Susceptance Matrix (B)
+
+```python
+B = np.zeros((n_bus, n_bus))
+for br in branches:
+    f = bus_num_to_idx[int(br[0])]
+    t = bus_num_to_idx[int(br[1])]
+    x = br[3]
+    if x != 0:
+        b = 1.0 / x
+        B[f, f] += b; B[t, t] += b
+        B[f, t] -= b; B[t, f] -= b
+```
+
+## Power Balance Equation
+
+At each bus: `Pg - Pd = B[i, :] @ θ` where Pg = generation (pu), Pd = load (pu), θ = bus angles (radians).
+
+## Slack Bus
+
+One bus must have θ = 0 as reference (type=3):
+
+```python
+slack_idx = None
+for i in range(n_bus):
+    if buses[i, 1] == 3:
+        slack_idx = i
+        break
+constraints.append(theta[slack_idx] == 0)
+```
+
+## Line Flow and Loading
+
+Flow on branch from bus f to bus t:
+
+```python
+b = 1.0 / br[3]
+flow_pu = b * (theta[f] - theta[t])
+flow_MW = flow_pu * baseMVA
+loading_pct = abs(flow_MW) / rating_MW * 100  # rating_MW = branch[5]
+```
+
+Enforce thermal limits: `constraints.append(flow <= rate)` and `constraints.append(flow >= -rate)`.
+
+---
+
+# Economic Dispatch
+
+Minimize total generation cost while meeting load and respecting generator limits.
+
+## Generator Data Indices
+
+MATPOWER generator columns (0-indexed): index 0 = GEN_BUS, index 8 = PMAX, index 9 = PMIN.
+
+```python
+gen_bus = [bus_num_to_idx[int(g[0])] for g in gens]
+pmax_MW = gen[8]; pmin_MW = gen[9]
+```
+
+## Cost Function Format
+
+MATPOWER gencost (polynomial type 2): index 0 = MODEL (2), index 3 = NCOST, indices 4+ = coefficients (highest order first).
+
+- Quadratic (NCOST=3): [c2, c1, c0] at indices 4, 5, 6
+- Linear (NCOST=2): [c1, c0] at indices 4, 5
+
+Cost = c₂·P² + c₁·P + c₀ ($/hr), P in MW.
+
+## Optimization Formulation
+
+```python
+import cvxpy as cp
+
+Pg = cp.Variable(n_gen)
+cost = 0
+for i in range(n_gen):
+    ncost = int(gencost[i, 3])
+    Pg_MW = Pg[i] * baseMVA
+    if ncost >= 3:
+        c2, c1, c0 = gencost[i, 4], gencost[i, 5], gencost[i, 6]
+        cost += c2 * cp.square(Pg_MW) + c1 * Pg_MW + c0
+    elif ncost == 2:
+        c1, c0 = gencost[i, 4], gencost[i, 5]
+        cost += c1 * Pg_MW + c0
+
+constraints = []
+for i in range(n_gen):
+    constraints.append(Pg[i] >= gens[i, 9] / baseMVA)
+    constraints.append(Pg[i] <= gens[i, 8] / baseMVA)
+
+total_load_pu = sum(buses[i, 2] for i in range(n_bus)) / baseMVA
+constraints.append(cp.sum(Pg) == total_load_pu)
+```
+
+## Reserve Co-optimization
+
+```python
+reserve_capacity = np.array(data['reserve_capacity'])
+reserve_requirement = data['reserve_requirement']
+Rg = cp.Variable(n_gen)
+constraints.append(Rg >= 0)
+for i in range(n_gen):
+    constraints.append(Rg[i] <= reserve_capacity[i])
+    constraints.append(Pg[i] * baseMVA + Rg[i] <= gens[i, 8])
+constraints.append(cp.sum(Rg) >= reserve_requirement)
+```
+
+## Operating Margin
+
+```python
+Pg_MW = Pg.value * baseMVA
+Rg_MW = Rg.value
+operating_margin_MW = sum(gens[i, 8] - Pg_MW[i] - Rg_MW[i] for i in range(n_gen))
+```
+
+## Dispatch Output
+
+```python
+generator_dispatch = []
+for i in range(n_gen):
+    generator_dispatch.append({
+        "id": i + 1, "bus": int(gens[i, 0]),
+        "output_MW": round(float(Pg_MW[i]), 2),
+        "reserve_MW": round(float(Rg_MW[i]), 2),
+        "pmax_MW": round(float(gens[i, 8]), 2)
+    })
+```
+
+## Solver Selection
+
+Use CLARABEL for quadratic costs with network constraints: `prob.solve(solver=cp.CLARABEL)`. OSQP may fail on ill-conditioned problems.
+
+---
+
+# Power Flow Data Guide
+
+Network data follows MATPOWER format (PGLib-OPF: github.com/power-grid-lib/pglib-opf).
+
+## Loading Network Data
+
+**Never read large JSON files line-by-line.** Use Python's JSON parser:
+
+```python
+import json, numpy as np
+
+def load_network(filepath):
+    with open(filepath) as f:
+        data = json.load(f)
+    return {
+        'baseMVA': data['baseMVA'],
+        'bus': np.array(data['bus']),
+        'gen': np.array(data['gen']),
+        'branch': np.array(data['branch']),
+        'gencost': np.array(data['gencost']),
+        'reserve_capacity': np.array(data['reserve_capacity']),
+        'reserve_requirement': data['reserve_requirement']
+    }
+```
+
+## Bus Types
+
+- **Slack (3):** V, θ=0 specified; P, Q solved. Reference bus.
+- **PV (2):** P, V specified; Q, θ solved. Generator bus.
+- **PQ (1):** P, Q specified; V, θ solved. Load bus.
+
+## Per-Unit System
+
+`baseMVA = 100` (typical). `P_pu = P_MW / baseMVA`.
+
+## Reserve Data
+
+- `reserve_capacity`: max reserve per generator (MW)
+- `reserve_requirement`: minimum total system reserves (MW)
+
+## Branch Data
+
+Columns: 0=from_bus, 1=to_bus, 2=resistance, 3=reactance, 4=susceptance, 5=rating (RATE_A), 10=in_service (1=yes).
+
+## Helper Functions
+
+```python
+def get_generators_at_bus(gens, bus_idx, bus_num_to_idx):
+    return [i for i, g in enumerate(gens) if bus_num_to_idx[int(g[0])] == bus_idx]
+
+def find_slack_bus(buses):
+    for i, bus in enumerate(buses):
+        if bus[1] == 3: return i
+    return None
+
+def total_load(buses):
+    return sum(bus[2] for bus in buses)  # Column 2 = Pd
+```
+
+## Writing Output Files
+
+Fix permissions if needed: `os.chmod('/root', 0o755)` or run `python3 /root/.claude/skills/s1/scripts/prepare_output.py /root/report.json`.
+
+```python
+import json, os
+output_path = '/root/report.json'
+os.makedirs(os.path.dirname(output_path) or '.', exist_ok=True)
+with open(output_path, 'w') as f:
+    json.dump(report, f, indent=2)

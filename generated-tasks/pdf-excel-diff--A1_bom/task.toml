@@ -1,0 +1,24 @@
+version = "1.0"
+
+[task]
+id = "pdf-excel-diff"
+name = "tailskills/pdf-excel-diff"
+
+[metadata]
+author_name = "Xuandong Zhao"
+author_email = "csxuandongzhao@gmail.com"
+difficulty = "medium"
+category = "data-comparison"
+tags = ["tail-variant:A1_bom", "tailskills", "category:data_encoding", "pdf", "excel", "data-extraction", "diff", "table-parsing", "office"]
+
+[verifier]
+timeout_sec = 900.0
+
+[agent]
+timeout_sec = 900.0
+
+[environment]
+build_timeout_sec = 600.0
+cpus = 1
+memory_mb = 4096
+storage_mb = 10240

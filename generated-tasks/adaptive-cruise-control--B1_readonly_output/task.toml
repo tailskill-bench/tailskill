@@ -1,0 +1,29 @@
+version = "1.0"
+
+[metadata]
+author_name = "Jiachen Li"
+author_email = "jiachenli@utexas.edu"
+id = "adaptive-cruise-control"
+name = "Adaptive Cruise Control Simulation"
+difficulty = "medium"
+category = "control-systems"
+tags = ["tail-variant:B1_readonly_output", "tailskills", "category:filesystem_state", "python", "pid-control", "simulation", "vehicle-dynamics", "automotive", "control-theory"]
+
+[verifier]
+timeout_sec = 1800.0
+
+[agent]
+timeout_sec = 1800.0
+
+[environment]
+build_timeout_sec = 900.0
+cpus = 2
+gpus = 0
+memory_mb = 4096
+storage_mb = 10240
+allow_internet = true
+skills_dir = "/root/.claude/skills"
+
+[verifier.env]
+
+[solution.env]
