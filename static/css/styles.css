@@ -1009,75 +1009,82 @@ h3 {
   max-height: clamp(260px, 48vh, 520px);
 }
 
-.taxonomy-mini-grid {
+.taxonomy-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 0.75rem;
-  width: min(100%, 720px);
-  margin: 1.75rem auto 0;
+  gap: 1.25rem;
+  width: min(100%, 1120px);
+  margin: 2rem auto 0;
 }
 
-.taxonomy-mini-card {
-  display: flex;
-  align-items: center;
-  gap: 0.55rem;
-  min-height: 3.25rem;
-  padding: 0.65rem 0.8rem;
+.taxonomy-card {
   background: var(--bg-secondary);
   border: 1px solid var(--border);
   border-radius: var(--radius);
+  padding: 1.25rem;
   box-shadow: 0 12px 32px color-mix(in srgb, var(--shadow-color) 45%, transparent);
 }
 
-.taxonomy-mini-code {
+.taxonomy-card__header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.taxonomy-card__code {
   display: inline-grid;
   flex: 0 0 auto;
   place-items: center;
-  width: 1.7rem;
-  height: 1.7rem;
-  color: var(--bg-secondary);
+  width: 2.5rem;
+  height: 2.5rem;
   font-family: var(--font-code);
-  font-size: 0.76rem;
   font-weight: 700;
-  border-radius: calc(var(--radius) - 4px);
+  font-size: 1rem;
+  color: #fff;
+  border-radius: calc(var(--radius) - 2px);
 }
 
-.taxonomy-mini-card--a .taxonomy-mini-code {
-  background: var(--category-a);
-}
+.taxonomy-card--a .taxonomy-card__code { background: var(--category-a); }
+.taxonomy-card--b .taxonomy-card__code { background: var(--category-b); }
+.taxonomy-card--c .taxonomy-card__code { background: var(--category-c); }
+.taxonomy-card--d .taxonomy-card__code { background: var(--category-d); }
+.taxonomy-card--e .taxonomy-card__code { background: var(--category-e); }
+.taxonomy-card--g .taxonomy-card__code { background: var(--category-g); }
 
-.taxonomy-mini-card--b .taxonomy-mini-code {
-  background: var(--category-b);
-}
-
-.taxonomy-mini-card--c .taxonomy-mini-code {
-  background: var(--category-c);
-}
-
-.taxonomy-mini-card--d .taxonomy-mini-code {
-  background: var(--category-d);
-}
-
-.taxonomy-mini-card--e .taxonomy-mini-code {
-  background: var(--category-e);
-}
-
-.taxonomy-mini-card--g .taxonomy-mini-code {
-  background: var(--category-g);
-}
-
-.taxonomy-mini-name {
-  min-width: 0;
+.taxonomy-card__name {
+  display: block;
   font-weight: 700;
+  font-size: 1.05rem;
   line-height: 1.2;
 }
 
-.taxonomy-mini-count {
-  margin-left: auto;
+.taxonomy-card__count {
+  display: block;
   color: var(--text-secondary);
+  font-size: 0.85rem;
+  margin-top: 0.15rem;
+}
+
+.taxonomy-card__subtypes {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  border-top: 1px solid var(--border);
+  padding-top: 0.6rem;
+}
+
+.taxonomy-card__subtypes li {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  padding: 0.2rem 0;
+}
+
+.taxonomy-card__subtypes li strong {
   font-family: var(--font-code);
-  font-size: 0.76rem;
-  white-space: nowrap;
+  font-size: 0.78rem;
+  color: var(--text-primary);
+  margin-right: 0.35rem;
 }
 
 .section-link {
@@ -1564,7 +1571,7 @@ h3 {
 }
 
 .case-figure img {
-  max-height: clamp(200px, 44vh, 420px);
+  max-height: clamp(260px, 54vh, 540px);
   object-fit: contain;
 }
 
@@ -2890,17 +2897,8 @@ h3 {
     max-width: 100%;
   }
 
-  .taxonomy-mini-grid {
+  .taxonomy-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .taxonomy-mini-card {
-    align-items: flex-start;
-    flex-direction: column;
-  }
-
-  .taxonomy-mini-count {
-    margin-left: 0;
   }
 }
 

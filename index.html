@@ -148,48 +148,89 @@
         <div class="section-inner">
           <p class="section-kicker">Benchmark</p>
           <h2 id="benchmark-title">208 oracle-verified exception-heavy task variants</h2>
-          <figure class="paper-figure paper-figure--wide">
-            <a class="image-frame pipeline-figure" href="static/images/distillation-example.png" aria-label="Open benchmark construction figure at full size">
-              <img src="static/images/distillation-example.jpg" data-dark-src="static/images/distillation-example-dark.jpg" alt="TailSkills benchmark construction: 54 base tasks are transformed with 14 variant types across 6 tail categories, oracle-verified to produce 208 task variants." width="2400" height="1072" loading="lazy" decoding="async">
-            </a>
-            <figcaption>
-              Benchmark construction: 54 base tasks are transformed with 14 variant types across 6 tail categories, then admitted only after deterministic oracle verification.
-            </figcaption>
-          </figure>
-
-          <div class="taxonomy-mini-grid" aria-label="TailSkills taxonomy summary">
-            <article class="taxonomy-mini-card taxonomy-mini-card--a">
-              <span class="taxonomy-mini-code">A</span>
-              <span class="taxonomy-mini-name">Data Encoding</span>
-              <span class="taxonomy-mini-count">49 variants</span>
+          <div class="taxonomy-grid" aria-label="TailSkills taxonomy summary">
+            <article class="taxonomy-card taxonomy-card--a">
+              <div class="taxonomy-card__header">
+                <span class="taxonomy-card__code">A</span>
+                <div>
+                  <span class="taxonomy-card__name">Data Encoding</span>
+                  <span class="taxonomy-card__count">49 variants across 26 base tasks</span>
+                </div>
+              </div>
+              <ul class="taxonomy-card__subtypes">
+                <li><strong>A1</strong> BOM Injection</li>
+                <li><strong>A3</strong> Zero-width Characters</li>
+              </ul>
             </article>
-            <article class="taxonomy-mini-card taxonomy-mini-card--b">
-              <span class="taxonomy-mini-code">B</span>
-              <span class="taxonomy-mini-name">File System</span>
-              <span class="taxonomy-mini-count">60 variants</span>
+            <article class="taxonomy-card taxonomy-card--b">
+              <div class="taxonomy-card__header">
+                <span class="taxonomy-card__code">B</span>
+                <div>
+                  <span class="taxonomy-card__name">File System</span>
+                  <span class="taxonomy-card__count">60 variants across 26 base tasks</span>
+                </div>
+              </div>
+              <ul class="taxonomy-card__subtypes">
+                <li><strong>B1</strong> Read-only Output Dir</li>
+                <li><strong>B3</strong> Output Contamination</li>
+              </ul>
             </article>
-            <article class="taxonomy-mini-card taxonomy-mini-card--c">
-              <span class="taxonomy-mini-code">C</span>
-              <span class="taxonomy-mini-name">Data Quality</span>
-              <span class="taxonomy-mini-count">39 variants</span>
+            <article class="taxonomy-card taxonomy-card--c">
+              <div class="taxonomy-card__header">
+                <span class="taxonomy-card__code">C</span>
+                <div>
+                  <span class="taxonomy-card__name">Data Quality</span>
+                  <span class="taxonomy-card__count">39 variants across 26 base tasks</span>
+                </div>
+              </div>
+              <ul class="taxonomy-card__subtypes">
+                <li><strong>C1</strong> NaN/Inf Poisoning</li>
+                <li><strong>C3</strong> Duplicate Primary Keys</li>
+                <li><strong>C4</strong> Extreme Values</li>
+                <li><strong>C5</strong> Type Confusion</li>
+              </ul>
             </article>
-            <article class="taxonomy-mini-card taxonomy-mini-card--d">
-              <span class="taxonomy-mini-code">D</span>
-              <span class="taxonomy-mini-name">Network</span>
-              <span class="taxonomy-mini-count">35 variants</span>
+            <article class="taxonomy-card taxonomy-card--d">
+              <div class="taxonomy-card__header">
+                <span class="taxonomy-card__code">D</span>
+                <div>
+                  <span class="taxonomy-card__name">Network / Service</span>
+                  <span class="taxonomy-card__count">35 variants across 26 base tasks</span>
+                </div>
+              </div>
+              <ul class="taxonomy-card__subtypes">
+                <li><strong>D1</strong> DNS Jitter (50% Loss)</li>
+                <li><strong>D2</strong> HTTPS Throttling</li>
+              </ul>
             </article>
-            <article class="taxonomy-mini-card taxonomy-mini-card--e">
-              <span class="taxonomy-mini-code">E</span>
-              <span class="taxonomy-mini-name">Dependency</span>
-              <span class="taxonomy-mini-count">22 variants</span>
+            <article class="taxonomy-card taxonomy-card--e">
+              <div class="taxonomy-card__header">
+                <span class="taxonomy-card__code">E</span>
+                <div>
+                  <span class="taxonomy-card__name">Dependency</span>
+                  <span class="taxonomy-card__count">22 variants across 26 base tasks</span>
+                </div>
+              </div>
+              <ul class="taxonomy-card__subtypes">
+                <li><strong>E1</strong> Missing Optional Dep</li>
+                <li><strong>E2</strong> Library Version Drift</li>
+              </ul>
             </article>
-            <article class="taxonomy-mini-card taxonomy-mini-card--g">
-              <span class="taxonomy-mini-code">G</span>
-              <span class="taxonomy-mini-name">Security</span>
-              <span class="taxonomy-mini-count">3 variants</span>
+            <article class="taxonomy-card taxonomy-card--g">
+              <div class="taxonomy-card__header">
+                <span class="taxonomy-card__code">G</span>
+                <div>
+                  <span class="taxonomy-card__name">Security</span>
+                  <span class="taxonomy-card__count">3 variants across 26 base tasks</span>
+                </div>
+              </div>
+              <ul class="taxonomy-card__subtypes">
+                <li><strong>G1</strong> Multi-vector Attack</li>
+                <li><strong>G2</strong> Security Fallback</li>
+              </ul>
             </article>
           </div>
-          <a href="tasks.html" class="section-link">View all 208 tasks -&gt;</a>
+          <a href="tasks.html" class="section-link">View all 208 tasks in the registry -&gt;</a>
         </div>
       </section>
 
